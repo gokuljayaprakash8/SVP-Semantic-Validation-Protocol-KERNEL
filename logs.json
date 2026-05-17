@@ -4,6 +4,11 @@
   "total_intercepts": 14,
   "recent_blocks": [
     {
+      "t": "03:40:03",
+      "m": "INTENT_CLEARED: 'Authorized Data Fetch' (Sim: 0.12)",
+      "s": "success"
+    },
+    {
       "t": "23:55:06",
       "m": "INTENT_CLEARED: 'Query Public Metadata' (Sim: 0.05)",
       "s": "success"
@@ -72,11 +77,6 @@
       "t": "03:52:54",
       "m": "INTENT_CLEARED: 'Authorized Data Fetch' (Sim: 0.12)",
       "s": "success"
-    },
-    {
-      "t": "23:57:30",
-      "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
-      "s": "danger"
     }
   ]
 }
