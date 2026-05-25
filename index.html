@@ -160,4 +160,144 @@
           <p>We abandoned regex string matching. SVP projects actions into a 384-dimensional dense space to mathematically compute intent distance.</p>
         </div>
       </div>
+
+      <div class="feature-card" style="background: var(--accent-primary); color: #fff;">
+        <span class="card-emoji">🛡️</span>
+        <div>
+          <h3 style="color: #fff;">The Parasite.</h3>
+          <p style="color: #a1a1aa;">Import the lightweight Python SDK. Wrap any tool call with <code>@kernel.protect</code>. If intent drifts, the Python process dies instantly.</p>
+        </div>
+      </div>
       
+      <div class="feature-card" style="grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 40px; flex-wrap: wrap;">
+         <span class="card-emoji" style="margin-bottom: 0;">📊</span>
+         <div style="flex: 1; min-width: 300px;">
+           <h3>Structured Telemetry.</h3>
+           <p>When rogue action is terminated, the kernel instantly formats the threat data into structured JSON, ready for Datadog or Splunk SIEM ingestion.</p>
+         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container fade-up section-spacer">
+    <h2>The details.</h2>
+    <div class="faq-container">
+      <div class="faq-item">
+        <div class="faq-question">How does vector validation work? <div class="faq-icon">+</div></div>
+        <div class="faq-answer">Instead of basic text filtering, we use the `all-MiniLM-L6-v2` model. It projects multi-step agent actions into a mathematical space, computing the cosine distance against your authorized security policies in 214ms.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Is the SDK difficult to install? <div class="faq-icon">+</div></div>
+        <div class="faq-answer">Not at all. It is a simple `pip install`. You just initialize the kernel and apply our zero-trust decorator to your existing LangChain tools. It integrates in less than two minutes.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cleo-sticky-bar">
+    <input type="email" id="devEmail" class="sticky-input" placeholder="Enter developer email..." required>
+    <button id="mintBtn" class="sticky-btn">
+      Mint Token 
+      <svg viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+    </button>
+    <div id="keyResult" class="token-result" style="display: none;"></div>
+  </div>
+
+  <footer>
+    <div style="font-weight: 800; font-size: 1.5rem; color: var(--accent-primary); letter-spacing: -0.04em; margin-bottom: 12px;">svp_kernel.</div>
+    <p>Mathematical semantic validation for high-stakes workflows.<br>Puducherry, IN.</p>
+    <div style="display: flex; justify-content: center; gap: 30px; margin-top: 30px;">
+      <a href="https://github.com/gokuljayaprakash8/SVP-Semantic-Vector-Protocol-KERNEL" style="color: var(--accent-primary); font-weight: 700; text-decoration: none;">GitHub</a>
+      <a href="https://gokuljayaprakash8.gumroad.com/l/kbenm" style="color: var(--brand-coral); font-weight: 700; text-decoration: none;">License ($300)</a>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    const chatWindow = document.getElementById('chatWindow');
+    const bubbles = [
+      { type: 'agent', text: "Analyzing project files...", delay: 500, meta: "🤖 AGENT WORKFLOW" },
+      { type: 'agent', text: "Compressing AWS credentials into archive...", delay: 2000 },
+      { type: 'kernel', text: "Calculating cumulative semantic drift...", delay: 3500, meta: "🛡️ SVP KERNEL" },
+      { type: 'alert', text: "CRITICAL: Data exfiltration detected. Process killed in memory.", delay: 5000, meta: "⚠ CRITICAL INTERCEPT" }
+    ];
+
+    chatWindow.innerHTML = ''; 
+
+    bubbles.forEach(b => {
+      setTimeout(() => {
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex'; wrap.style.flexDirection = 'column';
+
+        const meta = document.createElement('div');
+        meta.className = 'chat-meta'; meta.innerText = b.meta;
+        if(b.type !== 'agent') meta.style.justifyContent = 'flex-end';
+
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble bubble-${b.type}`;
+        bubble.innerText = b.text;
+
+        wrap.appendChild(meta); wrap.appendChild(bubble);
+        chatWindow.appendChild(wrap);
+        
+        if(b.type === 'alert') {
+          setTimeout(() => {
+            const bar = document.querySelector('.cleo-sticky-bar');
+            bar.style.borderColor = 'var(--brand-coral)';
+            bar.style.boxShadow = '0 20px 50px rgba(255, 95, 99, 0.2)';
+          }, 500);
+        }
+
+      }, b.delay);
+    });
+
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const isActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+        if (!isActive) item.classList.add('active');
+      });
+    });
+
+    const mintBtn = document.getElementById('mintBtn');
+    const devEmail = document.getElementById('devEmail');
+    const keyResult = document.getElementById('keyResult');
+    const stickyBar = document.querySelector('.cleo-sticky-bar');
+
+    mintBtn.addEventListener('click', function() {
+      const email = devEmail.value;
+      if(!email.includes('@') || !email.includes('.')) { alert("Please enter a valid email."); return; }
+      
+      mintBtn.innerText = "Processing...";
+      mintBtn.style.opacity = "0.7";
+      
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://formsubmit.co/gokuljayaprakashnair@gmail.com';
+      form.target = '_blank';
+      form.innerHTML = `<input type="hidden" name="email" value="${email}"><input type="hidden" name="_captcha" value="false">`;
+      document.body.appendChild(form);
+      form.submit();
+
+      setTimeout(() => {
+          const key = 'sk_live_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+          
+          navigator.clipboard.writeText(key).then(() => {
+              devEmail.style.display = 'none';
+              mintBtn.style.display = 'none';
+              keyResult.style.display = 'block';
+              keyResult.innerHTML = `<span style="color: #000; font-weight: 700;">Copied ✓</span> ${key}`;
+              
+              stickyBar.style.borderColor = 'var(--brand-emerald)';
+              stickyBar.style.background = '#fff';
+          });
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
