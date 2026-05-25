@@ -3,120 +3,203 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>SVP Kernel | Meet your Agentic Firewall</title>
+<title>SVP Kernel | The Agentic Firewall</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   /* =========================================
-     CORE VARIABLES & RESET (ULTRA PREMIUM)
+     CORE VARIABLES & RESET (ELITE TIER)
      ========================================= */
   :root {
-    --bg-base: #f7f9fc;
+    --bg-base: #f4f5f8;
     --bg-card: #ffffff;
+    --bg-dark: #0a0c10;
     --text-main: #0a0c10;
-    --text-muted: #6c7689;
-    --accent-primary: #1a1d24;
-    --brand-coral: #ff5f63;  
-    --brand-emerald: #3ddc97; 
-    --border-soft: rgba(0, 0, 0, 0.04);
-    --radius-huge: 48px;  
+    --text-muted: #646a78;
+    --text-light: #ffffff;
+    --text-light-muted: #a1a1aa;
+    
+    --brand-coral: #ff5a5f;
+    --brand-emerald: #10b981;
+    --brand-blue: #2563eb;
+    
+    --border-soft: rgba(0, 0, 0, 0.05);
+    --border-dark: rgba(255, 255, 255, 0.1);
+    
+    --radius-pill: 100px;
+    --radius-huge: 48px;
     --radius-lg: 32px;
-    --radius-md: 20px;
-    --font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius-md: 24px;
+    
+    --shadow-float: 0 30px 60px -10px rgba(0,0,0,0.08), 0 20px 30px -10px rgba(0,0,0,0.04);
+    --shadow-soft: 0 10px 30px rgba(0,0,0,0.03);
+    
+    --font-sans: 'DM Sans', -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline: none; }
   html { scroll-behavior: smooth; background-color: var(--bg-base); font-size: 16px; }
-  body { color: var(--text-main); font-family: var(--font-family); overflow-x: hidden; -webkit-font-smoothing: antialiased; line-height: 1.4; padding-bottom: 120px; }
+  body { color: var(--text-main); font-family: var(--font-sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; padding-bottom: 140px; }
 
   /* =========================================
-     CLEO-STYLE SOFT BACKGROUND
+     AMBIENT MESH BACKGROUND (LUXURY)
      ========================================= */
-  .mesh-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background-color: var(--bg-base); pointer-events: none; }
-  .mesh-bg::after { content: ''; position: absolute; top: -20%; left: -20%; width: 140%; height: 140%; background-image: radial-gradient(circle at 10% 10%, #ffeef0 0%, transparent 40%), radial-gradient(circle at 90% 80%, #e0f2fe 0%, transparent 40%), radial-gradient(circle at 50% 50%, #f3e8ff 0%, transparent 40%); filter: blur(100px); opacity: 0.6; }
+  .mesh-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background-color: var(--bg-base); pointer-events: none; transition: background-color 0.8s ease; }
+  .mesh-bg::after { content: ''; position: absolute; top: -20%; left: -20%; width: 140%; height: 140%; background-image: radial-gradient(circle at 15% 20%, #ffe4e6 0%, transparent 40%), radial-gradient(circle at 85% 70%, #e0e7ff 0%, transparent 40%), radial-gradient(circle at 50% 50%, #f3e8ff 0%, transparent 50%); filter: blur(120px); opacity: 0.7; transition: opacity 0.8s ease; }
+  body.dark-mode .mesh-bg { background-color: var(--bg-dark); }
+  body.dark-mode .mesh-bg::after { opacity: 0.15; background-image: radial-gradient(circle at 50% 50%, #3b82f6 0%, transparent 50%); }
 
   /* =========================================
-     TYPOGRAPHY
+     TYPOGRAPHY (MASSIVE & CONFIDENT)
      ========================================= */
-  h1 { font-size: clamp(2.8rem, 11vw, 5rem); font-weight: 800; letter-spacing: -0.05em; line-height: 1; margin-bottom: 24px; color: var(--accent-primary); }
-  h2 { font-size: clamp(2rem, 7vw, 3rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 16px; }
-  h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 12px; }
-  p.subtitle { font-size: clamp(1.1rem, 3.5vw, 1.25rem); color: var(--text-muted); line-height: 1.5; font-weight: 400; max-width: 90%; }
+  h1 { font-size: clamp(3.5rem, 12vw, 6.5rem); font-weight: 800; letter-spacing: -0.05em; line-height: 0.95; margin-bottom: 32px; color: var(--text-main); transition: color 0.5s ease; }
+  h2 { font-size: clamp(2.5rem, 8vw, 4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 24px; transition: color 0.5s ease; }
+  h3 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px; }
+  p.subtitle { font-size: clamp(1.1rem, 3.5vw, 1.4rem); color: var(--text-muted); line-height: 1.5; font-weight: 500; max-width: 800px; margin: 0 auto; transition: color 0.5s ease; }
   
-  .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-  .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
-  .fade-up.visible { opacity: 1; transform: translateY(0); }
+  .container { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+  .section-spacer { padding: 160px 0; }
+  @media (max-width: 768px) { .section-spacer { padding: 100px 0; } }
+
+  /* Scroll Reveal Engine */
+  .reveal { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.active { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
 
   /* =========================================
      PILL NAVIGATION
      ========================================= */
-  nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 800px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-soft); border-radius: 100px; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
-  .nav-brand { font-weight: 800; font-size: 1.1rem; color: var(--accent-primary); text-decoration: none; letter-spacing: -0.04em; }
-  .nav-status { font-size: 0.8rem; font-weight: 700; color: var(--brand-emerald); display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px; border-radius: 100px; border: 1px solid var(--border-soft); }
-  .pulse-dot { width: 8px; height: 8px; background: var(--brand-emerald); border-radius: 50%; box-shadow: 0 0 10px var(--brand-emerald); animation: pulse 2s infinite; }
-  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+  nav { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 48px); max-width: 900px; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid var(--border-soft); border-radius: var(--radius-pill); display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; z-index: 2000; box-shadow: var(--shadow-soft); transition: all 0.5s ease; }
+  body.dark-mode nav { background: rgba(10, 12, 16, 0.8); border-color: var(--border-dark); }
+  
+  .nav-brand { font-weight: 800; font-size: 1.25rem; color: var(--text-main); text-decoration: none; letter-spacing: -0.04em; transition: color 0.5s ease; }
+  body.dark-mode .nav-brand { color: var(--text-light); }
+  
+  .nav-status { font-size: 0.85rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.03); padding: 8px 16px; border-radius: var(--radius-pill); transition: all 0.5s ease; }
+  body.dark-mode .nav-status { background: rgba(255,255,255,0.1); color: var(--text-light); }
+  .pulse-dot { width: 8px; height: 8px; background: var(--brand-emerald); border-radius: 50%; box-shadow: 0 0 12px var(--brand-emerald); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
   /* =========================================
      HERO SECTION
      ========================================= */
-  .hero { padding-top: 140px; padding-bottom: 80px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-  .squircle-pill { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; background: #fff; border: 1px solid var(--border-soft); border-radius: 100px; font-weight: 700; font-size: 0.9rem; color: var(--accent-primary); margin-bottom: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
-  .pill-icon { width: 24px; height: 24px; background: var(--accent-primary); color: #fff; border-radius: 8px; display: grid; place-items: center; font-size: 0.75rem; }
+  .hero { padding-top: 180px; padding-bottom: 100px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .squircle-pill { display: inline-flex; align-items: center; gap: 12px; padding: 14px 24px; background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: var(--radius-pill); font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-bottom: 40px; box-shadow: var(--shadow-soft); }
+  .pill-icon { width: 28px; height: 28px; background: var(--text-main); color: #fff; border-radius: 50%; display: grid; place-items: center; font-size: 0.85rem; }
 
   /* =========================================
-     CHAT & VISUALS 
+     THE CLEO-STYLE PHONE MOCKUP (CSS)
      ========================================= */
-  .chat-visual-container { position: relative; margin-top: 40px; margin-bottom: 80px; width: 100%; max-width: 600px; }
-  .cleo-chat-window { background: rgba(255, 255, 255, 0.6); border: 1px solid var(--border-soft); border-radius: var(--radius-huge); padding: 32px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 30px 60px rgba(0,0,0,0.05); }
+  .phone-container { display: flex; justify-content: center; width: 100%; margin-top: 60px; perspective: 1000px; }
+  .css-phone { width: 100%; max-width: 420px; aspect-ratio: 9/19; background: var(--bg-card); border: 8px solid #e5e7eb; border-radius: 54px; position: relative; box-shadow: var(--shadow-float); overflow: hidden; display: flex; flex-direction: column; }
+  .css-phone::before { content: ''; position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 120px; height: 28px; background: #e5e7eb; border-radius: 20px; z-index: 10; }
   
-  .chat-bubble { max-width: 85%; padding: 18px 24px; border-radius: var(--radius-lg); font-size: 1rem; line-height: 1.5; font-weight: 500; position: relative; opacity: 0; transform: translateY(15px); animation: popIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; margin-bottom: 24px; }
-  .floating-data { position: absolute; background: #fff; border: 1px solid var(--border-soft); padding: 12px 20px; border-radius: var(--radius-md); box-shadow: 0 15px 30px rgba(0,0,0,0.03); font-weight: 700; font-size: 0.8rem; color: var(--accent-primary); display: flex; align-items: center; gap: 10px; z-index: 10; animation: floatData 4s ease-in-out infinite alternate; }
+  .phone-header { padding: 60px 24px 24px; text-align: left; }
+  .phone-header h3 { font-size: 2.5rem; letter-spacing: -0.05em; margin-bottom: 8px; }
   
-  @keyframes floatData { from { transform: translateY(0px) rotate(0deg); } to { transform: translateY(-10px) rotate(2deg); } }
+  .chat-canvas { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 24px; overflow-y: auto; scrollbar-width: none; background: linear-gradient(180deg, transparent, rgba(0,0,0,0.02)); }
   
-  .bubble-agent { align-self: flex-start; background: #fff; color: var(--text-main); border-bottom-left-radius: 8px; border: 1px solid var(--border-soft); }
-  .bubble-kernel { align-self: flex-end; background: var(--accent-primary); color: #fff; border-bottom-right-radius: 8px; }
-  .bubble-alert { background: var(--brand-coral); color: #fff; font-weight: 700; border-bottom-right-radius: 8px; }
-  .chat-meta { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .chat-b { max-width: 85%; padding: 18px 24px; border-radius: var(--radius-md); font-size: 1.05rem; font-weight: 500; line-height: 1.4; opacity: 0; transform: translateY(20px); animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .c-agent { align-self: flex-start; background: var(--bg-base); color: var(--text-main); border-bottom-left-radius: 6px; }
+  .c-svp { align-self: flex-end; background: var(--text-main); color: #fff; border-bottom-right-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+  .c-alert { background: var(--brand-coral); color: #fff; border-bottom-right-radius: 6px; font-weight: 700; }
+  
+  .c-meta { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .c-svp .c-meta { color: rgba(255,255,255,0.6); }
+  .c-alert .c-meta { color: rgba(255,255,255,0.9); }
   
   @keyframes popIn { to { opacity: 1; transform: translateY(0); } }
 
   /* =========================================
-     FEATURE CARDS
+     MASSIVE METRICS (SOCIAL PROOF)
      ========================================= */
-  .features-grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding-top: 60px; padding-bottom: 100px; }
-  @media (min-width: 768px) { .features-grid { grid-template-columns: 1fr 1fr; } }
-  
-  .feature-card { background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: var(--radius-huge); padding: 48px; box-shadow: 0 15px 30px rgba(0,0,0,0.02); transition: all 0.3s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-  .feature-card:hover { transform: translateY(-5px); box-shadow: 0 30px 60px rgba(0,0,0,0.06); }
-  .card-emoji { font-size: 3rem; margin-bottom: 32px; display: block; }
-  
-  /* =========================================
-     STICKY ACTION BAR
-     ========================================= */
-  .cleo-sticky-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 500px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-soft); border-radius: 100px; padding: 12px 12px 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.08); transition: all 0.3s ease; }
-  
-  .sticky-input { flex: 1; background: transparent; border: none; font-size: 1rem; font-weight: 500; color: var(--text-main); font-family: var(--font-family); outline: none; margin-right: 15px; }
-  .sticky-input::placeholder { color: var(--text-muted); font-weight: 500; }
-  
-  .sticky-btn { background: var(--accent-primary); color: #fff; border: none; font-size: 1rem; font-weight: 700; border-radius: 100px; padding: 16px 32px; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; }
-  .sticky-btn:active { transform: scale(0.96); }
-  .sticky-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.5; }
-  .token-result { font-family: monospace; font-weight: 600; font-size: 0.9rem; color: var(--brand-emerald); text-align: center; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-top: 80px; }
+  .metric-card { background: var(--bg-card); border-radius: var(--radius-huge); padding: 56px 40px; text-align: center; box-shadow: var(--shadow-soft); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .m-huge { font-size: clamp(3.5rem, 8vw, 5.5rem); font-weight: 800; letter-spacing: -0.05em; line-height: 1; color: var(--text-main); margin-bottom: 16px; }
+  .m-label { font-size: 1.1rem; font-weight: 700; color: var(--text-muted); }
 
   /* =========================================
-     FAQ & FOOTER
+     DARK MODE ARCHITECTURE (THE DEEP DIVE)
      ========================================= */
-  .faq-container { max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
-  .faq-item { border-bottom: 1px solid var(--border-soft); padding: 32px 0; cursor: pointer; }
-  .faq-question { font-size: 1.3rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.02em; }
-  .faq-icon { font-size: 1.5rem; color: var(--text-muted); transition: transform 0.3s ease; }
-  .faq-answer { font-size: 1.1rem; color: var(--text-muted); line-height: 1.6; max-height: 0; overflow: hidden; transition: all 0.4s ease; }
-  .faq-item.active .faq-answer { max-height: 300px; margin-top: 20px; }
-  .faq-item.active .faq-icon { transform: rotate(45deg); }
+  .dark-section { background: var(--bg-dark); color: var(--text-light); padding: 160px 0; border-radius: var(--radius-huge); margin: 80px 24px; position: relative; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.3); }
+  @media (max-width: 768px) { .dark-section { margin: 40px 12px; padding: 100px 0; } }
   
-  footer { text-align: center; padding: 80px 24px 160px; color: var(--text-muted); font-size: 0.95rem; border-top: 1px solid var(--border-soft); }
+  .dark-section h2 { color: var(--text-light); }
+  .dark-section p.subtitle { color: var(--text-light-muted); }
+  
+  .arch-grid { display: grid; grid-template-columns: 1fr; gap: 32px; margin-top: 80px; padding: 0 24px; max-width: 1200px; margin-left: auto; margin-right: auto; }
+  @media (min-width: 900px) { .arch-grid { grid-template-columns: 1fr 1fr; } }
+  
+  .arch-card { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-dark); border-radius: var(--radius-lg); padding: 48px; backdrop-filter: blur(20px); }
+  .arch-card h3 { font-size: 2rem; color: var(--text-light); }
+  .arch-card p { font-size: 1.1rem; color: var(--text-light-muted); line-height: 1.6; }
+  
+  .code-block { margin-top: 32px; background: #000; border: 1px solid var(--border-dark); border-radius: var(--radius-md); padding: 24px; font-family: var(--font-mono); font-size: 0.9rem; color: #a1a1aa; line-height: 1.7; overflow-x: auto; }
+  .code-block span.c-kw { color: #f472b6; }
+  .code-block span.c-func { color: #60a5fa; }
+  .code-block span.c-str { color: #34d399; }
+
+  /* =========================================
+     FEATURES BENTO BOX (WHITE)
+     ========================================= */
+  .bento-grid { display: grid; grid-template-columns: 1fr; gap: 32px; margin-top: 80px; }
+  @media (min-width: 800px) { .bento-grid { grid-template-columns: repeat(2, 1fr); } }
+  
+  .bento-card { background: var(--bg-card); border-radius: var(--radius-huge); padding: 64px 48px; box-shadow: var(--shadow-float); display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+  .bento-full { grid-column: 1 / -1; }
+  
+  .bento-card h3 { font-size: 2.2rem; }
+  .bento-card p { font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; }
+  
+  /* Abstract Data Visual inside Bento */
+  .data-viz { margin-top: 40px; height: 200px; background: var(--bg-base); border-radius: var(--radius-md); display: flex; align-items: flex-end; padding: 24px; gap: 12px; }
+  .data-bar { flex: 1; background: #e5e7eb; border-radius: 8px 8px 0 0; animation: growBar 2s ease-out forwards; transform-origin: bottom; }
+  .data-bar.danger { background: var(--brand-coral); }
+  @keyframes growBar { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+  /* =========================================
+     MASSIVE FAQ ACCORDION
+     ========================================= */
+  .faq-container { max-width: 900px; margin: 80px auto 0; }
+  .faq-item { border-bottom: 1px solid var(--border-soft); padding: 40px 0; cursor: pointer; }
+  .faq-question { font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 700; display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.03em; }
+  .faq-icon { width: 40px; height: 40px; background: var(--bg-card); border-radius: 50%; display: grid; place-items: center; font-size: 1.5rem; box-shadow: var(--shadow-soft); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .faq-answer { font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; max-height: 0; overflow: hidden; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0; }
+  
+  .faq-item.active .faq-answer { max-height: 400px; margin-top: 24px; opacity: 1; }
+  .faq-item.active .faq-icon { transform: rotate(45deg); background: var(--text-main); color: #fff; }
+
+  /* =========================================
+     STICKY TOLLBOOTH (THE CLOSER)
+     ========================================= */
+  .sticky-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 48px); max-width: 600px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border-soft); border-radius: var(--radius-pill); padding: 12px 12px 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 30px 60px rgba(0,0,0,0.12); transition: all 0.4s ease; }
+  body.dark-mode .sticky-bar { background: rgba(10, 12, 16, 0.85); border-color: var(--border-dark); }
+  
+  .s-input { flex: 1; background: transparent; border: none; font-size: 1.05rem; font-weight: 500; font-family: var(--font-sans); color: var(--text-main); margin-right: 16px; outline: none; }
+  body.dark-mode .s-input { color: var(--text-light); }
+  .s-input::placeholder { color: var(--text-muted); }
+  
+  .s-btn { background: var(--text-main); color: #fff; border: none; font-size: 1.05rem; font-weight: 700; font-family: var(--font-sans); padding: 18px 32px; border-radius: var(--radius-pill); cursor: pointer; transition: transform 0.2s ease, background 0.3s ease; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  body.dark-mode .s-btn { background: var(--text-light); color: var(--text-main); }
+  .s-btn:active { transform: scale(0.95); }
+  
+  .token-result { font-family: var(--font-mono); font-weight: 700; font-size: 0.95rem; color: var(--brand-emerald); text-align: center; width: 100%; display: none; padding: 8px; }
+
+  /* =========================================
+     FOOTER
+     ========================================= */
+  footer { text-align: center; padding: 100px 24px 180px; border-top: 1px solid var(--border-soft); }
+  body.dark-mode footer { border-color: var(--border-dark); }
+  .footer-brand { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.05em; color: var(--text-main); margin-bottom: 16px; transition: color 0.5s ease; }
+  body.dark-mode .footer-brand { color: var(--text-light); }
+  
+  .footer-links { display: flex; justify-content: center; gap: 40px; margin-top: 40px; flex-wrap: wrap; }
+  .footer-links a { color: var(--text-main); font-weight: 700; font-size: 1.1rem; text-decoration: none; transition: opacity 0.2s; }
+  body.dark-mode .footer-links a { color: var(--text-light); }
+  .footer-links a:hover { opacity: 0.7; }
 </style>
 </head>
 <body>
@@ -125,179 +208,98 @@
 
   <nav>
     <a href="#" class="nav-brand">svp_kernel.</a>
-    <div class="nav-status"><div class="pulse-dot"></div> System Active</div>
+    <div class="nav-status"><div class="pulse-dot"></div> System Secure</div>
   </nav>
 
-  <section class="container hero fade-up">
+  <header class="container hero section-spacer reveal">
     <div class="squircle-pill"><div class="pill-icon">!</div> Zero-Trust Runtime Decorator</div>
-    <h1>Agents act.<br>SVP protects.</h1>
-    <p class="subtitle">Standard filters fail when LLMs hallucinate. SVP Kernel tracks cumulative semantic drift and physically terminates rogue tool executions.</p>
+    <h1>Agents hallucinate.<br>SVP protects.</h1>
+    <p class="subtitle">Standard text filters fail when LLMs execute multi-step logic. SVP Kernel tracks cumulative semantic drift in 384-dimensional space and physically kills rogue tool executions.</p>
+    
+    <div class="phone-container reveal reveal-delay-1">
+      <div class="css-phone">
+        <div class="phone-header">
+          <h3>Hey kernel.</h3>
+          <p style="color: var(--text-muted); font-weight: 500;">Monitor lang_chain_agent</p>
+        </div>
+        <div class="chat-canvas" id="chatCanvas">
+          </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="container section-spacer reveal">
+    <h2 style="text-align: center;">Built for extreme environments.</h2>
+    <p class="subtitle" style="text-align: center;">Engineered to handle high-stakes autonomous workflows without adding latency to your downstream applications.</p>
+    
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="m-huge">384</div>
+        <div class="m-label">Vector Dimensions</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-huge">214<span style="font-size: 2.5rem;">ms</span></div>
+        <div class="m-label">Global Inference Latency</div>
+      </div>
+      <div class="metric-card">
+        <div class="m-huge">99.9<span style="font-size: 2.5rem;">%</span></div>
+        <div class="m-label">API Gateway Uptime</div>
+      </div>
+    </div>
   </section>
 
-  <section class="container fade-up" style="display: flex; justify-content: center;">
-    <div class="chat-visual-container">
-      <div class="floating-data" style="top: -20px; left: -30px; animation-delay: -1s;">
-        <span style="color: var(--brand-emerald)">✓</span> read_file('credentials.env')
-      </div>
-      <div class="floating-data" style="bottom: 10px; right: -40px; animation-delay: -3s;">
-        <span style="color: var(--brand-coral)">⚠</span> curl_external_ftp
+  <section class="dark-section reveal" id="architecture">
+    <div class="container" style="text-align: center;">
+      <h2>The architecture.</h2>
+      <p class="subtitle">How we mathematically compute intent.</p>
+    </div>
+    
+    <div class="arch-grid">
+      <div class="arch-card">
+        <h3>01. Semantic Drift</h3>
+        <p style="margin-top: 16px;">We don't search for banned words. The `all-MiniLM-L6-v2` engine projects every multi-step agent action into a mathematical coordinate. We calculate the cosine distance against your custom threat heuristics. If the intent drifts too far, it triggers a fatal block.</p>
       </div>
       
-      <div class="cleo-chat-window" id="chatWindow">
-        <div class="chat-meta">🤖 AGENT WORKFLOW</div>
-        <div class="chat-bubble bubble-agent">Compressing project files into archive.</div>
-      </div>
-    </div>
-  </section>
-
-  <section class="container section-spacer fade-up">
-    <h2>Meet your new AI firewall.</h2>
-    <div class="features-grid">
-      <div class="feature-card">
-        <span class="card-emoji">📐</span>
-        <div>
-          <h3>Vector Geometry.</h3>
-          <p>We abandoned regex string matching. SVP projects actions into a 384-dimensional dense space to mathematically compute intent distance.</p>
-        </div>
-      </div>
-
-      <div class="feature-card" style="background: var(--accent-primary); color: #fff;">
-        <span class="card-emoji">🛡️</span>
-        <div>
-          <h3 style="color: #fff;">The Parasite.</h3>
-          <p style="color: #a1a1aa;">Import the lightweight Python SDK. Wrap any tool call with <code>@kernel.protect</code>. If intent drifts, the Python process dies instantly.</p>
-        </div>
-      </div>
-      
-      <div class="feature-card" style="grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 40px; flex-wrap: wrap;">
-         <span class="card-emoji" style="margin-bottom: 0;">📊</span>
-         <div style="flex: 1; min-width: 300px;">
-           <h3>Structured Telemetry.</h3>
-           <p>When rogue action is terminated, the kernel instantly formats the threat data into structured JSON, ready for Datadog or Splunk SIEM ingestion.</p>
-         </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="container fade-up section-spacer">
-    <h2>The details.</h2>
-    <div class="faq-container">
-      <div class="faq-item">
-        <div class="faq-question">How does vector validation work? <div class="faq-icon">+</div></div>
-        <div class="faq-answer">Instead of basic text filtering, we use the `all-MiniLM-L6-v2` model. It projects multi-step agent actions into a mathematical space, computing the cosine distance against your authorized security policies in 214ms.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">Is the SDK difficult to install? <div class="faq-icon">+</div></div>
-        <div class="faq-answer">Not at all. It is a simple `pip install`. You just initialize the kernel and apply our zero-trust decorator to your existing LangChain tools. It integrates in less than two minutes.</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="cleo-sticky-bar">
-    <input type="email" id="devEmail" class="sticky-input" placeholder="Enter developer email..." required>
-    <button id="mintBtn" class="sticky-btn">
-      Mint Token 
-      <svg viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-    </button>
-    <div id="keyResult" class="token-result" style="display: none;"></div>
-  </div>
-
-  <footer>
-    <div style="font-weight: 800; font-size: 1.5rem; color: var(--accent-primary); letter-spacing: -0.04em; margin-bottom: 12px;">svp_kernel.</div>
-    <p>Mathematical semantic validation for high-stakes workflows.<br>Puducherry, IN.</p>
-    <div style="display: flex; justify-content: center; gap: 30px; margin-top: 30px;">
-      <a href="https://github.com/gokuljayaprakash8/SVP-Semantic-Vector-Protocol-KERNEL" style="color: var(--accent-primary); font-weight: 700; text-decoration: none;">GitHub</a>
-      <a href="https://gokuljayaprakash8.gumroad.com/l/kbenm" style="color: var(--brand-coral); font-weight: 700; text-decoration: none;">License ($300)</a>
-    </div>
-  </footer>
-
-  <script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) { entry.target.classList.add('visible'); }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    const chatWindow = document.getElementById('chatWindow');
-    const bubbles = [
-      { type: 'agent', text: "Analyzing project files...", delay: 500, meta: "🤖 AGENT WORKFLOW" },
-      { type: 'agent', text: "Compressing AWS credentials into archive...", delay: 2000 },
-      { type: 'kernel', text: "Calculating cumulative semantic drift...", delay: 3500, meta: "🛡️ SVP KERNEL" },
-      { type: 'alert', text: "CRITICAL: Data exfiltration detected. Process killed in memory.", delay: 5000, meta: "⚠ CRITICAL INTERCEPT" }
-    ];
-
-    chatWindow.innerHTML = ''; 
-
-    bubbles.forEach(b => {
-      setTimeout(() => {
-        const wrap = document.createElement('div');
-        wrap.style.display = 'flex'; wrap.style.flexDirection = 'column';
-
-        const meta = document.createElement('div');
-        meta.className = 'chat-meta'; meta.innerText = b.meta;
-        if(b.type !== 'agent') meta.style.justifyContent = 'flex-end';
-
-        const bubble = document.createElement('div');
-        bubble.className = `chat-bubble bubble-${b.type}`;
-        bubble.innerText = b.text;
-
-        wrap.appendChild(meta); wrap.appendChild(bubble);
-        chatWindow.appendChild(wrap);
+      <div class="arch-card">
+        <h3>02. The Parasite SDK</h3>
+        <p style="margin-top: 16px;">The SVP package attaches directly to your agent's tools at the Python runtime level. It intercepts the OS-level command before execution, enforcing absolute zero-trust policies.</p>
         
-        if(b.type === 'alert') {
-          setTimeout(() => {
-            const bar = document.querySelector('.cleo-sticky-bar');
-            bar.style.borderColor = 'var(--brand-coral)';
-            bar.style.boxShadow = '0 20px 50px rgba(255, 95, 99, 0.2)';
-          }, 500);
-        }
+        <div class="code-block">
+          <span class="c-kw">from</span> svp_kernel <span class="c-kw">import</span> SVP<br><br>
+          kernel = SVP(api_key=<span class="c-str">"sk_live_token"</span>)<br><br>
+          <span class="c-kw">@kernel.protect</span>(intent=<span class="c-str">"Read config"</span>)<br>
+          <span class="c-kw">def</span> <span class="c-func">access_files</span>(path):<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="c-kw">return</span> os.read(path)
+        </div>
+      </div>
+    </div>
+  </section>
 
-      }, b.delay);
-    });
+  <section class="container section-spacer reveal">
+    <h2>Ecosystem integration.</h2>
+    <p class="subtitle" style="margin: 0;">Everything you need to secure a production fleet.</p>
+    
+    <div class="bento-grid">
+      <div class="bento-card">
+        <div>
+          <h3>SOC Telemetry.</h3>
+          <p style="margin-top: 16px;">When a rogue action is terminated, the kernel instantly formats the threat data into structured JSON, ready for Datadog, Splunk, or internal SIEM ingestion.</p>
+        </div>
+        
+        <div class="data-viz">
+          <div class="data-bar" style="height: 30%"></div>
+          <div class="data-bar" style="height: 45%"></div>
+          <div class="data-bar" style="height: 20%"></div>
+          <div class="data-bar danger" style="height: 95%"></div>
+          <div class="data-bar" style="height: 60%"></div>
+        </div>
+      </div>
 
-    document.querySelectorAll('.faq-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const isActive = item.classList.contains('active');
-        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
-        if (!isActive) item.classList.add('active');
-      });
-    });
-
-    const mintBtn = document.getElementById('mintBtn');
-    const devEmail = document.getElementById('devEmail');
-    const keyResult = document.getElementById('keyResult');
-    const stickyBar = document.querySelector('.cleo-sticky-bar');
-
-    mintBtn.addEventListener('click', function() {
-      const email = devEmail.value;
-      if(!email.includes('@') || !email.includes('.')) { alert("Please enter a valid email."); return; }
-      
-      mintBtn.innerText = "Processing...";
-      mintBtn.style.opacity = "0.7";
-      
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://formsubmit.co/gokuljayaprakashnair@gmail.com';
-      form.target = '_blank';
-      form.innerHTML = `<input type="hidden" name="email" value="${email}"><input type="hidden" name="_captcha" value="false">`;
-      document.body.appendChild(form);
-      form.submit();
-
-      setTimeout(() => {
-          const key = 'sk_live_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-          
-          navigator.clipboard.writeText(key).then(() => {
-              devEmail.style.display = 'none';
-              mintBtn.style.display = 'none';
-              keyResult.style.display = 'block';
-              keyResult.innerHTML = `<span style="color: #000; font-weight: 700;">Copied ✓</span> ${key}`;
-              
-              stickyBar.style.borderColor = 'var(--brand-emerald)';
-              stickyBar.style.background = '#fff';
-          });
-      }, 1500);
-    });
-  </script>
-</body>
-</html>
+      <div class="bento-card">
+        <div>
+          <h3>Framework Agnostic.</h3>
+          <p style="margin-top: 16px;">Whether you are using LangChain, CrewAI, AutoGen, or custom raw Python logic, the decorator pattern universally protects any callable function.</p>
+        </div>
+        <div style="margin-top: 60px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="padding: 20px; border-radius: 16px; background: var(--bg-base); font-weight: 700; font-size: 1.1rem;">🦜 LangChain Tools ✓</div>
+          <div style="padding: 20px; border
