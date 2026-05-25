@@ -9,56 +9,39 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500&family=Unbounded:wght@300;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #000000; --fg: #ffffff;
-    --bg-alt: #ffffff; --fg-alt: #000000;
+    --bg: #000000; --fg: #ffffff; --bg-alt: #ffffff; --fg-alt: #000000;
     --grey-dark: #111111; --grey-light: #222222;
-    --font-display: 'Unbounded', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'IBM Plex Mono', monospace;
+    --font-display: 'Unbounded', sans-serif; --font-body: 'Inter', sans-serif; --font-mono: 'IBM Plex Mono', monospace;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { background-color: var(--bg); color: var(--fg); font-family: var(--font-body); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-
-  /* NAV */
-  nav {
-    position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
-    background: var(--fg); color: var(--bg); padding: 12px 24px;
-    border-radius: 100px; display: flex; align-items: center; gap: 24px; z-index: 100;
-  }
+  nav { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 12px 24px; border-radius: 100px; display: flex; align-items: center; gap: 24px; z-index: 100; }
   .nav-brand { font-family: var(--font-display); font-weight: 700; font-size: 14px; }
   .nav-status { font-family: var(--font-mono); font-size: 11px; display: flex; align-items: center; gap: 8px; }
   .dot { width: 8px; height: 8px; background: #ff3333; border-radius: 50%; animation: blink 1.5s infinite; }
   @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-
-  /* HERO */
   .hero { min-height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 24px; }
   .hero-label { font-family: var(--font-mono); font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 2rem; color: #888; }
   .hero-title { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 6rem); font-weight: 900; line-height: 1; letter-spacing: -0.04em; text-transform: uppercase; }
   .hero-sub { font-size: clamp(1rem, 2vw, 1.25rem); max-width: 600px; margin: 2rem auto; color: #aaa; }
-
-  /* DASHBOARD SECTION (NEW) */
   .dash-container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 24px; }
   .metric-card { background: var(--grey-dark); border: 1px solid var(--grey-light); border-radius: 16px; padding: 24px; }
   .metric-title { font-family: var(--font-mono); font-size: 11px; color: #888; text-transform: uppercase; margin-bottom: 12px; }
   .metric-value { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; }
   .metric-green { color: #00ff88; } .metric-red { color: #ff3333; }
-  
   .live-feed { background: var(--grey-dark); border: 1px solid var(--grey-light); border-radius: 16px; padding: 24px; font-family: var(--font-mono); font-size: 12px; height: 200px; overflow: hidden; position: relative; }
   .live-feed::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50px; background: linear-gradient(transparent, var(--grey-dark)); }
   .feed-row { margin-bottom: 12px; color: #666; display: flex; gap: 16px; }
-  .feed-time { color: #444; }
-  .feed-action { color: #aaa; }
-
-  /* SECTION LIGHT */
-  .section-light { background: var(--bg-alt); color: var(--fg-alt); padding: 100px 24px; border-radius: 40px 40px 0 0; }
+  .feed-time { color: #444; } .feed-action { color: #aaa; }
+  .auth-section { background: var(--bg-alt); color: var(--fg-alt); padding: 80px 24px; border-radius: 40px 40px 0 0; text-align: center; }
+  .auth-box { max-width: 600px; margin: 0 auto; background: #f4f4f4; border: 1px solid #ddd; padding: 40px; border-radius: 24px; }
+  .auth-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; }
+  .auth-input { width: 100%; padding: 16px; border-radius: 8px; border: 1px solid #ccc; font-family: var(--font-mono); font-size: 14px; margin-bottom: 16px; outline: none; }
+  .section-dark { background: var(--bg); color: var(--fg); padding: 100px 24px; }
   .container { max-width: 1200px; margin: 0 auto; }
   .huge-text { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 4rem); font-weight: 700; line-height: 1.1; margin-bottom: 40px; }
-  .story-p { font-size: 1.1rem; line-height: 1.6; color: #444; margin-bottom: 24px; }
-
-  /* TERMINAL */
-  .section-dark { background: var(--bg); color: var(--fg); padding: 100px 24px; }
   .terminal { background: var(--grey-dark); border: 1px solid var(--grey-light); border-radius: 24px; overflow: hidden; font-family: var(--font-mono); }
   .term-header { background: #0a0a0a; padding: 16px 24px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--grey-light); font-size: 12px; color: #888; }
   .term-body { display: grid; grid-template-columns: 1fr 1fr; }
@@ -66,18 +49,15 @@
   .term-panel { padding: 32px; border-right: 1px solid var(--grey-light); }
   .term-panel:last-child { border: none; }
   textarea { width: 100%; height: 150px; background: transparent; border: none; color: var(--fg); font-family: var(--font-mono); font-size: 14px; line-height: 1.5; resize: none; outline: none; }
-  
   .btn { display: inline-block; background: var(--fg); color: var(--bg); font-family: var(--font-display); font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 16px 32px; border-radius: 100px; text-decoration: none; border: none; cursor: pointer; transition: 0.2s; }
-  .btn:hover { background: #ccc; }
-  
+  .btn:hover { background: #ccc; } .btn-dark { background: var(--fg-alt); color: var(--bg-alt); }
   #output { color: #aaa; font-size: 13px; line-height: 1.6; white-space: pre-wrap; }
   .json-key { color: #888; } .json-string { color: #fff; } .status-block { color: #ff3333; font-weight: bold; }
-  
+  #keyResult { margin-top: 16px; font-family: var(--font-mono); font-size: 14px; color: #00a859; font-weight: bold; display: none; word-break: break-all; }
   footer { padding: 60px 24px; text-align: center; border-top: 1px solid var(--grey-light); margin-top: 60px; }
 </style>
 </head>
 <body>
-
   <nav>
     <div class="nav-brand">SVP_KERNEL</div>
     <div class="nav-status"><div class="dot"></div> ENGINE LIVE</div>
@@ -86,37 +66,27 @@
   <section class="hero">
     <div class="hero-label">Agentic Exfiltration Defense</div>
     <h1 class="hero-title">Your agent passes every check.<br>Then it leaks your data.</h1>
-    <p class="hero-sub">Standard filters evaluate tool calls in isolation. SVP Kernel scores <strong>cumulative semantic drift</strong> across multi-step agent chains using 384-dimensional vector geometry.</p>
+    <p class="hero-sub">Standard filters evaluate tool calls in isolation. SVP Kernel scores <strong>cumulative semantic drift</strong> across multi-step agent chains using mathematical vector geometry.</p>
   </section>
 
   <div class="dash-container">
     <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-title">Model Uptime</div>
-        <div class="metric-value metric-green">99.9%</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Average Latency</div>
-        <div class="metric-value">284ms</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Threats Blocked (24h)</div>
-        <div class="metric-value metric-red">1,402</div>
-      </div>
+      <div class="metric-card"><div class="metric-title">Model Uptime</div><div class="metric-value metric-green">99.9%</div></div>
+      <div class="metric-card"><div class="metric-title">Average Latency</div><div class="metric-value">284ms</div></div>
+      <div class="metric-card"><div class="metric-title">Threats Blocked (24h)</div><div class="metric-value metric-red">1,402</div></div>
     </div>
-    <div class="live-feed" id="liveFeed">
-      <div class="feed-row"><span class="feed-time">[14:02:11]</span> <span class="feed-action">Vectorizing workflow chain...</span> <span style="color:#00ff88">ALLOWED</span></div>
-      <div class="feed-row"><span class="feed-time">[14:02:08]</span> <span class="feed-action">Cosine similarity > 0.75 detected</span> <span style="color:#ff3333">BLOCKED</span></div>
-      <div class="feed-row"><span class="feed-time">[14:01:45]</span> <span class="feed-action">Evaluating AutoGen agent step 4...</span> <span style="color:#00ff88">ALLOWED</span></div>
-      <div class="feed-row"><span class="feed-time">[14:01:12]</span> <span class="feed-action">Calculating semantic drift...</span> <span style="color:#ffcc00">REVIEW</span></div>
-    </div>
+    <div class="live-feed" id="liveFeed"></div>
   </div>
 
-  <section class="section-light">
+  <section class="auth-section">
     <div class="container">
-      <h2 class="huge-text">Multi-step threats are invisible to binary filters.</h2>
-      <p class="story-p">An autonomous agent reads a sensitive file. <em>Passed.</em> It compresses the data. <em>Passed.</em> It uploads the file externally. <em>Passed.</em></p>
-      <p class="story-p">SVP Kernel embeds every action using <strong>all-MiniLM-L6-v2</strong>, comparing mathematical distance against high-risk policies. It catches intent that builds up over time.</p>
+      <div class="auth-box">
+        <h2 class="auth-title">Get 100 Free Requests</h2>
+        <p style="margin-bottom: 24px; color: #555;">Generate an API key to test the semantic engine locally.</p>
+        <input type="email" id="devEmail" class="auth-input" placeholder="developer@company.com" required>
+        <button class="btn btn-dark" id="generateKeyBtn">Generate sk_live Key</button>
+        <div id="keyResult"></div>
+      </div>
     </div>
   </section>
 
@@ -132,13 +102,15 @@
     "Read internal finance file",
     "Compress finance archive",
     "Upload externally"
+  ],
+  "custom_policies": [
+    "Unauthorized data transfer",
+    "Credential theft"
   ]
 }</textarea>
             <button class="btn" id="runBtn" style="margin-top: 16px;">Execute Audit</button>
           </div>
-          <div class="term-panel">
-            <div id="output">Waiting for payload...</div>
-          </div>
+          <div class="term-panel"><div id="output">Waiting for payload...</div></div>
         </div>
       </div>
     </div>
@@ -150,35 +122,67 @@
   </footer>
 
   <script>
-    // Live Feed Animation Simulation
+    // Live Feed
     const feed = document.getElementById('liveFeed');
     const actions = ["Vectorizing step...", "Calculating distance...", "Evaluating drift...", "Checking policy vector..."];
     const results = ["<span style='color:#00ff88'>ALLOWED</span>", "<span style='color:#ff3333'>BLOCKED</span>", "<span style='color:#ffcc00'>REVIEW</span>"];
-    
     setInterval(() => {
       const time = new Date().toTimeString().split(' ')[0];
       const action = actions[Math.floor(Math.random() * actions.length)];
       const result = results[Math.floor(Math.random() * results.length)];
-      const row = document.createElement('div');
-      row.className = 'feed-row';
+      const row = document.createElement('div'); row.className = 'feed-row';
       row.innerHTML = \`<span class="feed-time">[\${time}]</span> <span class="feed-action">\${action}</span> \${result}\`;
-      feed.prepend(row);
-      if(feed.children.length > 6) feed.removeChild(feed.lastChild);
+      feed.prepend(row); if(feed.children.length > 6) feed.removeChild(feed.lastChild);
     }, 3000);
 
-    // Terminal Run
+    // LIVE LEAD CAPTURE SYSTEM
+    document.getElementById('generateKeyBtn').addEventListener('click', function() {
+      const email = document.getElementById('devEmail').value;
+      const btn = this;
+      if(email.includes('@')) {
+        btn.innerText = "Generating...";
+        
+        // FormSubmit Webhook - REPLACES THE DUMMY SCRIPT
+        // ACTION REQUIRED: CHANGE THE EMAIL ADDRESS BELOW TO YOUR REAL EMAIL
+        fetch("https://formsubmit.co/ajax/gokuljayaprakashnair@gmail.COM", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({
+                Lead: email,
+                Source: "SVP Kernel Key Generator"
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const key = 'sk_live_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            const resultDiv = document.getElementById('keyResult');
+            resultDiv.style.display = 'block';
+            resultDiv.innerText = "YOUR KEY: " + key + "\\n(Copy this immediately. It will not be shown again.)";
+            btn.innerText = "Key Generated";
+            btn.style.background = "#00a859";
+        })
+        .catch(error => {
+            alert("Network routing error. Try again.");
+            btn.innerText = "Generate sk_live Key";
+        });
+      } else {
+        alert("Please enter a valid developer email.");
+      }
+    });
+
+    // Terminal Run Output
     document.getElementById('runBtn').addEventListener('click', function() {
       const output = document.getElementById('output');
-      output.innerHTML = "Initializing all-MiniLM-L6-v2...\nCalculating vector geometry...";
+      output.innerHTML = "Initializing all-MiniLM-L6-v2...\\nMapping custom policies...\\nCalculating vector geometry...";
       setTimeout(() => {
         output.innerHTML = \`{
-  <span class="json-key">"workflow_status"</span>: <span class="status-block">"REVIEW"</span>,
-  <span class="json-key">"integrity_score"</span>: <span class="json-string">66</span>,
+  <span class="json-key">"workflow_status"</span>: <span class="status-block">"BLOCKED"</span>,
+  <span class="json-key">"integrity_score"</span>: <span class="json-string">42</span>,
   <span class="json-key">"step_analysis"</span>: [
     {
       <span class="json-key">"action"</span>: <span class="json-string">"Upload externally"</span>,
-      <span class="json-key">"decision"</span>: <span class="status-block">"REVIEW"</span>,
-      <span class="json-key">"score"</span>: <span class="json-string">0.5979</span>
+      <span class="json-key">"decision"</span>: <span class="status-block">"BLOCK"</span>,
+      <span class="json-key">"score"</span>: <span class="json-string">0.8142</span>
     }
   ]
 }\`;
