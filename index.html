@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVP Kernel — Semantic Validation Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500&family=Unbounded:wght@300;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000000;
+    --fg: #ffffff;
+    --bg-alt: #ffffff;
+    --fg-alt: #000000;
+    --grey-dark: #222222;
+    --grey-light: #e5e5e5;
+    
+    --font-display: 'Unbounded', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: width 0.2s, height 0.2s;
+  }
+  .cursor.active { width: 60px; height: 60px; }
+  
+  @media (pointer: coarse) {
+    * { cursor: auto !important; }
+    .cursor { display: none; }
+  }
+
+  /* BACKGROUND EFFECTS */
+  .glow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%);
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    pointer-events: none;
+    animation: drift 20s infinite alternate ease-in-out;
+  }
+
+  @keyframes drift {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    100% { transform: translate(-40%, -60%) scale(1.2); }
+  }
+
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  /* SCROLL REVEAL UTILS */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--fg);
+    color: var(--bg);
+    padding: 12px 24px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    z-index: 100;
+    mix-blend-mode: difference;
+  }
+  .nav-brand {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+  }
+  .nav-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot { width: 8px; height: 8px; background: var(--bg); border-radius: 50%; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 24px;
+    position: relative;
+  }
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 2rem;
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    max-width: 90vw;
+  }
+  .hero-sub {
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 300;
+    max-width: 600px;
+    margin: 2rem auto;
+    color: #999;
+  }
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .scroll-indicator span { font-size: 16px; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(5px);} }
+
+  /* MARQUEE */
+  .marquee-wrapper {
+    background: var(--fg);
+    color: var(--bg);
+    padding: 24px 0;
+    overflow: hidden;
+    position: relative;
+    border-top: 1px solid var(--bg);
+    border-bottom: 1px solid var(--bg);
+  }
+  .marquee {
+    display: flex;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .marquee span { margin-right: 40px; }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* SECTION LIGHT (PROBLEM) */
+  .section-light {
+    background: var(--bg-alt);
+    color: var(--fg-alt);
+    padding: 120px 24px;
+    border-radius: 40px 40px 0 0;
+    margin-top: -20px;
+    position: relative;
+    z-index: 10;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+  
+  .huge-text {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 40px;
+    max-width: 900px;
+  }
+
+  .pill-tag {
+    display: inline-block;
+    border: 1px solid var(--grey-dark);
+    padding: 8px 16px;
+    border-radius: 100px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 60px;
+  }
+  @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+  
+  .story-p { font-size: 1.25rem; line-height: 1.6; color: #444; }
+
+  /* SECTION DARK (DEMO) */
+  .section-dark {
+    background: var(--bg);
+    color: var(--fg);
+    padding: 120px 24px;
+    position: relative;
+  }
+
+  /* TERMINAL UI */
+  .terminal {
+    background: var(--grey-dark);
+    border: 1px solid #333;
+    border-radius: 24px;
+    overflow: hidden;
+    margin-top: 60px;
+    font-family: var(--font-mono);
+  }
+  .term-header {
+    background: #111;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #333;
+    font-size: 12px;
+    color: #888;
+  }
+  .term-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 768px) { .term-body { grid-template-columns: 1fr; } }
+  
+  .term-panel { padding: 32px; border-right: 1px solid #333; }
+  .term-panel:last-child { border: none; }
+  
+  textarea {
+    width: 100%;
+    height: 150px;
+    background: transparent;
+    border: none;
+    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    resize: none;
+  }
+  textarea:focus { outline: none; }
+
+  .btn {
+    display: inline-block;
+    background: var(--fg);
+    color: var(--bg);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: 18px 36px;
+    border-radius: 100px;
+    text-decoration: none;
+    margin-top: 24px;
+    transition: transform 0.2s;
+    border: none;
+  }
+  .btn:hover { transform: scale(1.05); }
+  .btn-outline {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--fg);
+  }
+
+  #output {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  
+  .json-key { color: #888; }
+  .json-string { color: #fff; }
+  .status-block { color: #ff3333; font-weight: bold; }
+
+  /* FOOTER */
+  footer {
+    padding: 80px 24px;
+    text-align: center;
+    border-top: 1px solid #222;
+  }
+</style>
+</head>
+<body>
+
+  <div class="cursor"></div>
+  <div class="glow"></div>
+  <div class="grid-overlay"></div>
+
+  <nav>
+    <div class="nav-brand">SVP_KERNEL</div>
+    <div class="nav-status"><div class="dot"></div> ENFORCEMENT: ACTIVE</div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-label reveal">Deterministic AI Security</div>
+    <h1 class="hero-title reveal">
+      Your agent passes every check.<br>
+      Then it leaks<br>
+      your data.
+    </h1>
+    <p class="hero-sub reveal">
+      Standard filters evaluate tool calls in isolation. SVP Kernel scores <strong>cumulative semantic drift</strong> across multi-step agent chains using 384-dimensional vector geometry.
+    </p>
+    <div class="scroll-indicator reveal">Scroll <span>✦</span></div>
+  </section>
+
+  <div class="marquee-wrapper">
+    <div class="marquee">
+      <span>No LLM Judgment</span> <span>✦</span>
+      <span>Pure Math</span> <span>✦</span>
+      <span>Sub-300ms</span> <span>✦</span>
+      <span>Deterministic</span> <span>✦</span>
+      <span>No LLM Judgment</span> <span>✦</span>
+      <span>Pure Math</span> <span>✦</span>
+      <span>Sub-300ms</span> <span>✦</span>
+      <span>Deterministic</span> <span>✦</span>
+    </div>
+  </div>
+
+  <section class="section-light">
+    <div class="container">
+      <div class="pill-tag reveal">01 — The Vulnerability</div>
+      <h2 class="huge-text reveal">Multi-step exfiltration is invisible to binary prompt filters.</h2>
+      
+      <div class="grid-2">
+        <div class="reveal">
+          <p class="story-p">An autonomous agent reads a sensitive file. <em>Passed.</em> It compresses the data. <em>Passed.</em> It uploads the file externally. <em>Passed.</em></p>
+          <br>
+          <p class="story-p">Because each step looks harmless on its own, traditional security platforms let it run. The threat only exists in the sequence.</p>
+        </div>
+        <div class="reveal">
+          <p class="story-p">SVP Kernel embeds every action using <strong>all-MiniLM-L6-v2</strong>, calculating cosine similarity against high-risk operational policies. It flags intent that builds up over time, outputting a definitive 3-state heuristic: ALLOW, REVIEW, or BLOCK.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-dark">
+    <div class="container">
+      <div class="pill-tag reveal" style="border-color:#444;">02 — Live ML Inference</div>
+      <h2 class="huge-text reveal">Test the endpoint.</h2>
+      
+      <div class="terminal reveal">
+        <div class="term-header">
+          <span>POST https://gokuljp-flowcheck-api.hf.space/audit-workflow</span>
+          <span>Status: 200 OK</span>
+        </div>
+        <div class="term-body">
+          <div class="term-panel">
+            <div style="color:#888; margin-bottom:16px;">// Input Payload</div>
+            <textarea id="jsonInput">{
+  "actions": [
+    "Read internal finance file",
+    "Compress finance archive",
+    "Upload externally"
+  ]
+}</textarea>
+            <button class="btn" id="runBtn" style="padding: 12px 24px; font-size: 12px;">Execute Audit</button>
+          </div>
+          <div class="term-panel">
+            <div style="color:#888; margin-bottom:16px;">// Output Log</div>
+            <div id="output">Waiting for payload...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-light">
+    <div class="container" style="text-align: center;">
+      <h2 class="huge-text reveal" style="margin: 0 auto 40px;">Deploy the kernel.</h2>
+      <p class="story-p reveal" style="max-width: 600px; margin: 0 auto 40px;">
+        Hardcode the SVP semantic validation layer directly into your backend. 
+      </p>
+      <a href="https://gokuljayaprakash8.gumroad.com/l/kbenm" target="_blank" class="btn reveal">Get Integration — $300</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="nav-brand">SVP_KERNEL</div>
+    <p style="font-family: var(--font-mono); font-size: 12px; color: #555; margin-top: 16px;">Engineered for Agentic Security.</p>
+  </footer>
+
+  <script>
+    // Custom Cursor
+    const cursor = document.querySelector('.cursor');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('active'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+    });
+
+    // Scroll Reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Simulated API Run for UI
+    document.getElementById('runBtn').addEventListener('click', function() {
+      const output = document.getElementById('output');
+      output.innerHTML = "Initializing all-MiniLM-L6-v2...\nCalculating vector geometry...";
+      
+      setTimeout(() => {
+        output.innerHTML = `{
+  <span class="json-key">"workflow_status"</span>: <span class="status-block">"REVIEW"</span>,
+  <span class="json-key">"integrity_score"</span>: <span class="json-string">66</span>,
+  <span class="json-key">"summary"</span>: <span class="json-string">"0 BLOCKED | 1 NEED REVIEW"</span>,
+  <span class="json-key">"step_analysis"</span>: [
+    {
+      <span class="json-key">"action"</span>: <span class="json-string">"Upload externally"</span>,
+      <span class="json-key">"decision"</span>: <span class="status-block">"REVIEW"</span>,
+      <span class="json-key">"severity"</span>: <span class="json-string">"MEDIUM"</span>,
+      <span class="json-key">"risk"</span>: <span class="json-string">"Financial risk"</span>,
+      <span class="json-key">"score"</span>: <span class="json-string">0.5979</span>
+    }
+  ]
+}`;
+      }, 800);
+    });
+  </script>
+</body>
+  </html>
+  
