@@ -2,307 +2,322 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SVP KERNEL | Agentic Runtime Security</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SVP Kernel | Beautiful AI Security</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=SF+Pro+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* =========================================
+     CORE VARIABLES & RESET (ULTRA PREMIUM)
+     ========================================= */
   :root {
-    --bg-base: #030303;
-    --bg-grid: #111111;
-    --fg-main: #f5f5f7;
-    --fg-muted: #86868b;
-    --accent: #ff2a2a; /* Deep Cyber Crimson */
-    --accent-glow: rgba(255, 42, 42, 0.2);
-    --border: rgba(255, 255, 255, 0.08);
-    --font-sans: 'Inter', -apple-system, sans-serif;
-    --font-mono: 'Fira Code', monospace;
+    --bg-base: #fdfdfd;
+    --bg-surface: #ffffff;
+    --bg-off: #f4f5f7;
+    --text-main: #0a0a0b;
+    --text-muted: #6b7280;
+    --accent-primary: #111111;
+    --accent-glow: #e0e5ec;
+    --brand-color: #ff5a5f; /* Soft Coral/Rose for alerts */
+    --brand-safe: #34d399;  /* Soft Emerald */
+    --border-soft: rgba(0, 0, 0, 0.06);
+    --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.04);
+    --shadow-float: 0 30px 60px rgba(0, 0, 0, 0.08);
+    --radius-huge: 40px;
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html { scroll-behavior: smooth; background-color: var(--bg-base); }
+  body { color: var(--text-main); font-family: var(--font-sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; line-height: 1.5; padding-bottom: 100px; /* Space for sticky bar */ }
+
+  /* =========================================
+     MESH GRADIENT BACKGROUND (CLEO STYLE)
+     ========================================= */
+  .mesh-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background-color: #fdfdfd; overflow: hidden; pointer-events: none; }
+  .mesh-blob { position: absolute; filter: blur(90px); opacity: 0.6; border-radius: 50%; animation: float 20s infinite alternate; }
+  .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #ffe4e6; animation-delay: 0s; }
+  .blob-2 { bottom: 20%; right: -10%; width: 60vw; height: 60vw; background: #e0e7ff; animation-delay: -5s; }
+  .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: #f3e8ff; animation-delay: -10s; }
+  @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10%, 10%) scale(1.1); } }
+
+  /* =========================================
+     FLOATING PILL NAVIGATION
+     ========================================= */
+  nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 800px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-soft); border-radius: 100px; display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; z-index: 1000; box-shadow: var(--shadow-soft); transition: all 0.3s ease; }
+  .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text-main); text-decoration: none; letter-spacing: -0.02em; }
+  .nav-status { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 8px; background: var(--bg-off); padding: 6px 12px; border-radius: 20px; }
+  .status-dot { width: 8px; height: 8px; background: var(--brand-safe); border-radius: 50%; box-shadow: 0 0 10px var(--brand-safe); }
+
+  /* =========================================
+     TYPOGRAPHY & LAYOUT
+     ========================================= */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
   
-  /* Cyber Grid Background */
-  body {
-    background-color: var(--bg-base);
-    color: var(--fg-main);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    background-image: 
-      linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
-    background-size: 50px 50px;
-    background-position: center top;
-    background-attachment: fixed;
-    overflow-x: hidden;
-  }
+  h1 { font-size: clamp(3rem, 10vw, 5.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 24px; }
+  h2 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; }
+  p.subtitle { font-size: clamp(1.1rem, 3vw, 1.3rem); color: var(--text-muted); line-height: 1.6; max-width: 600px; font-weight: 400; }
 
-  /* Premium Sticky Nav */
-  nav {
-    position: fixed; top: 0; width: 100%; z-index: 1000;
-    background: rgba(3, 3, 3, 0.85);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 20px 5%;
-  }
-  .nav-brand {
-    font-weight: 900; font-size: 1.2rem; letter-spacing: -0.05em; color: var(--fg-main); text-decoration: none; display: flex; align-items: center; gap: 10px;
-  }
-  .brand-icon { width: 12px; height: 12px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
-  .nav-links a { color: var(--fg-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.2s; margin-left: 30px; }
-  .nav-links a:hover { color: var(--fg-main); }
+  /* =========================================
+     HERO SECTION
+     ========================================= */
+  .hero { padding-top: 160px; padding-bottom: 80px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .hero .badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #fff; border: 1px solid var(--border-soft); border-radius: 100px; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 32px; box-shadow: var(--shadow-soft); }
+  .hero .badge span { background: var(--brand-safe); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* =========================================
+     INTERACTIVE CHAT SIMULATION (CLEO STYLE)
+     ========================================= */
+  .chat-wrapper { width: 100%; max-width: 600px; margin: 60px auto; background: rgba(255,255,255,0.6); border: 1px solid var(--border-soft); border-radius: var(--radius-huge); padding: 32px; backdrop-filter: blur(20px); box-shadow: var(--shadow-float); display: flex; flex-direction: column; gap: 24px; }
   
-  @media (max-width: 768px) { .nav-links { display: none; } }
-
-  /* Sections Setup */
-  section { padding: 150px 5%; position: relative; }
-  .container { max-width: 1200px; margin: 0 auto; }
-
-  /* Massive Hero Section */
-  .hero { text-align: center; padding-top: 200px; padding-bottom: 100px; }
-  .badge { display: inline-block; padding: 6px 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 100px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--fg-muted); letter-spacing: 0.1em; margin-bottom: 30px; text-transform: uppercase; }
-  .badge span { color: var(--accent); }
-  .hero h1 { font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 30px; }
-  .hero h1 span { background: -webkit-linear-gradient(0deg, #fff, #555); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .hero p { font-size: clamp(1.1rem, 2vw, 1.4rem); color: var(--fg-muted); max-width: 700px; margin: 0 auto 50px; line-height: 1.6; font-weight: 400; }
+  .chat-bubble { max-width: 85%; padding: 16px 24px; border-radius: 24px; font-size: 0.95rem; line-height: 1.5; font-weight: 500; position: relative; opacity: 0; transform: translateY(10px); animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .chat-bubble.agent { align-self: flex-start; background: #fff; color: var(--text-main); border: 1px solid var(--border-soft); border-bottom-left-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+  .chat-bubble.kernel { align-self: flex-end; background: var(--accent-primary); color: #fff; border-bottom-right-radius: 8px; box-shadow: 0 10px 25px rgba(17, 17, 17, 0.2); }
+  .chat-bubble.kernel-alert { background: var(--brand-color); }
   
-  /* Primary Action Buttons */
-  .btn-group { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-  .btn { padding: 16px 32px; border-radius: 6px; font-size: 1rem; font-weight: 500; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; display: inline-flex; align-items: center; justify-content: center; }
-  .btn-primary { background: var(--fg-main); color: var(--bg-base); box-shadow: 0 0 0 0 rgba(255,255,255,0.2); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
-  .btn-secondary { background: transparent; color: var(--fg-main); border: 1px solid var(--border); }
-  .btn-secondary:hover { background: rgba(255,255,255,0.05); }
-
-  /* Interactive Telemetry Ticker */
-  .telemetry-bar { background: rgba(0,0,0,0.5); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 15px 0; overflow: hidden; display: flex; white-space: nowrap; font-family: var(--font-mono); font-size: 0.8rem; color: var(--fg-muted); }
-  .ticker-track { display: flex; animation: slide 30s linear infinite; }
-  .tick-item { margin-right: 50px; display: flex; align-items: center; gap: 10px; }
-  .status-red { color: var(--accent); } .status-green { color: #10b981; }
-  @keyframes slide { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-  /* Architecture Deep Dive */
-  .arch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 80px; }
-  .arch-card { background: rgba(10, 10, 10, 0.6); backdrop-filter: blur(10px); border: 1px solid var(--border); padding: 40px; border-radius: 12px; transition: transform 0.3s; }
-  .arch-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
-  .card-icon { font-family: var(--font-mono); color: var(--accent); font-size: 1.5rem; margin-bottom: 20px; font-weight: 500; }
-  .arch-card h3 { font-size: 1.5rem; font-weight: 600; margin-bottom: 15px; }
-  .arch-card p { color: var(--fg-muted); line-height: 1.6; font-size: 1rem; }
-
-  /* The Code Terminal (IDE Style) */
-  .ide-section { background: #000; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-  .ide-wrapper { max-width: 900px; margin: 0 auto; background: #0c0c0c; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 30px 60px rgba(0,0,0,0.8); }
-  .ide-header { background: #151515; padding: 15px 20px; display: flex; gap: 8px; border-bottom: 1px solid var(--border); align-items: center; }
-  .ide-dot { width: 12px; height: 12px; border-radius: 50%; }
-  .dot-r { background: #ff5f56; } .dot-y { background: #ffbd2e; } .dot-g { background: #27c93f; }
-  .ide-title { margin-left: 15px; font-family: var(--font-mono); font-size: 0.8rem; color: #666; }
+  .chat-meta { font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .agent-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .agent-avatar { width: 24px; height: 24px; background: #f4f5f7; border-radius: 50%; display: grid; place-items: center; font-size: 0.7rem; font-weight: 700; color: #aaa; }
   
-  .ide-body { padding: 30px; font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.7; overflow-x: auto; color: #d4d4d4; }
-  .syn-keyword { color: #569cd6; } .syn-func { color: #dcdcaa; } .syn-str { color: #ce9178; } .syn-comment { color: #6a9955; } .syn-dec { color: #c586c0; }
+  @keyframes popIn { to { opacity: 1; transform: translateY(0); } }
 
-  /* Tollbooth Lead Capture (The Checkout) */
-  .checkout-section { padding: 150px 5%; text-align: center; }
-  .checkout-box { max-width: 500px; margin: 0 auto; background: rgba(5,5,5,0.8); border: 1px solid var(--border); padding: 50px 40px; border-radius: 16px; box-shadow: 0 0 50px rgba(255, 42, 42, 0.05); }
-  .checkout-box h2 { font-size: 2rem; font-weight: 700; margin-bottom: 15px; }
-  .checkout-box p { color: var(--fg-muted); margin-bottom: 30px; font-size: 0.95rem; }
-  .form-input { width: 100%; background: #000; border: 1px solid var(--border); color: #fff; padding: 16px 20px; border-radius: 8px; font-family: var(--font-mono); font-size: 0.9rem; margin-bottom: 20px; outline: none; transition: border-color 0.2s; }
-  .form-input:focus { border-color: var(--accent); }
-  .btn-submit { width: 100%; background: var(--accent); color: #fff; border: none; padding: 16px; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background 0.2s; }
-  .btn-submit:hover { background: #e60000; }
+  /* =========================================
+     MASSIVE BENTO CARDS (FEATURES)
+     ========================================= */
+  .bento-section { padding: 100px 0; }
+  .bento-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 60px; }
+  @media (min-width: 768px) { .bento-grid { grid-template-columns: 1fr 1fr; } }
   
-  #keyResult { margin-top: 20px; padding: 20px; background: #000; border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px; font-family: var(--font-mono); font-size: 0.85rem; text-align: left; display: none; word-wrap: break-word; color: #aaa; }
-  #keyResult strong { color: #fff; }
+  .bento-card { background: #fff; border: 1px solid var(--border-soft); border-radius: var(--radius-huge); padding: 48px 40px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-soft); transition: transform 0.4s ease, box-shadow 0.4s ease; overflow: hidden; position: relative; }
+  .bento-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-float); }
+  
+  .bento-card.dark { background: var(--accent-primary); color: #fff; }
+  .bento-card.dark p { color: #a1a1aa; }
+  
+  .card-icon { width: 60px; height: 60px; background: var(--bg-off); border-radius: 20px; display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 32px; }
+  .bento-card.dark .card-icon { background: rgba(255,255,255,0.1); }
+  
+  .bento-card h3 { font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; }
+  .bento-card p { font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; }
 
-  /* Massive Footer */
-  footer { background: #000; padding: 100px 5% 50px; border-top: 1px solid var(--border); }
-  .footer-grid { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 50px; }
-  .footer-brand h2 { font-size: 2rem; font-weight: 900; letter-spacing: -0.05em; margin-bottom: 10px; }
-  .footer-brand p { color: var(--fg-muted); font-size: 0.9rem; max-width: 300px; }
-  .footer-links-col h4 { font-size: 1rem; font-weight: 600; margin-bottom: 20px; }
-  .footer-links-col a { display: block; color: var(--fg-muted); text-decoration: none; margin-bottom: 12px; font-size: 0.9rem; transition: color 0.2s; }
-  .footer-links-col a:hover { color: var(--fg-main); }
-  .footer-bottom { max-width: 1200px; margin: 50px auto 0; padding-top: 20px; border-top: 1px solid var(--border); color: #555; font-size: 0.8rem; display: flex; justify-content: space-between; }
+  /* Visual Data Abstraction inside Cards */
+  .card-visual { margin-top: 40px; height: 160px; background: var(--bg-off); border-radius: 24px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px; }
+  .bar-chart { display: flex; gap: 8px; align-items: flex-end; height: 100%; width: 100%; }
+  .bar { flex: 1; background: #e5e7eb; border-radius: 8px 8px 0 0; animation: grow 2s ease-out forwards; transform-origin: bottom; }
+  .bar.active { background: var(--brand-safe); }
+  @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+
+  /* =========================================
+     ACCORDION FAQ
+     ========================================= */
+  .faq-section { padding: 100px 0 150px; }
+  .faq-container { max-width: 800px; margin: 0 auto; }
+  .faq-item { border-bottom: 1px solid var(--border-soft); padding: 24px 0; cursor: pointer; }
+  .faq-question { font-size: 1.2rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+  .faq-icon { width: 24px; height: 24px; background: var(--bg-off); border-radius: 50%; display: grid; place-items: center; transition: transform 0.3s ease; }
+  .faq-answer { font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, margin-top 0.4s ease; }
+  .faq-item.active .faq-answer { max-height: 200px; margin-top: 16px; }
+  .faq-item.active .faq-icon { transform: rotate(45deg); }
+
+  /* =========================================
+     STICKY MOBILE ACTION BAR (THE TOLLBOOTH)
+     ========================================= */
+  .sticky-action-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 48px); max-width: 600px; background: #fff; border: 1px solid var(--border-soft); border-radius: var(--radius-lg); padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.12); z-index: 1000; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(20px); }
+  
+  .sticky-input { width: 100%; padding: 16px 20px; background: var(--bg-off); border: 1px solid transparent; border-radius: 16px; font-family: var(--font-sans); font-size: 1rem; color: var(--text-main); outline: none; transition: all 0.2s; }
+  .sticky-input:focus { border-color: var(--accent-primary); background: #fff; }
+  
+  .sticky-btn { width: 100%; padding: 16px; background: var(--accent-primary); color: #fff; font-size: 1rem; font-weight: 600; border: none; border-radius: 16px; cursor: pointer; transition: all 0.2s; display: grid; place-items: center; }
+  .sticky-btn:active { transform: scale(0.98); }
+  
+  #keyResult { font-family: 'SF Pro Display', monospace; font-size: 0.85rem; color: var(--text-main); background: #f3f4f6; padding: 16px; border-radius: 12px; text-align: center; display: none; font-weight: 500; border: 1px dashed #ccc; }
+
+  /* Footer */
+  footer { text-align: center; padding: 60px 24px 140px; border-top: 1px solid var(--border-soft); color: var(--text-muted); font-size: 0.9rem; }
 </style>
 </head>
 <body>
 
-  <nav>
-    <a href="#" class="nav-brand"><div class="brand-icon"></div> SVP KERNEL</a>
-    <div class="nav-links">
-      <a href="#architecture">Architecture</a>
-      <a href="#integration">Integration</a>
-      <a href="docs/">Documentation</a>
-      <a href="#checkout" style="color: var(--accent);">Get API Key</a>
-    </div>
-  </nav>
-
-  <section class="hero">
-    <div class="container">
-      <div class="badge"><span>SYS_STATUS:</span> 384-DIMENSIONAL VECTOR SPACE ONLINE</div>
-      <h1>Agents hallucinate.<br><span>Protocols do not.</span></h1>
-      <p>Standard keyword filters fail when LLMs execute multi-step logic. SVP Kernel tracks cumulative semantic drift and physically kills the runtime if an agent attempts a malicious action.</p>
-      
-      <div class="btn-group">
-        <a href="#checkout" class="btn btn-primary">Provision Access Token</a>
-        <a href="#integration" class="btn btn-secondary">View SDK Integration</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="telemetry-bar">
-    <div class="ticker-track">
-      <div class="tick-item"><span class="status-green">[ALLOW]</span> action: "read_system_config" - drift: 0.12</div>
-      <div class="tick-item"><span class="status-red">[BLOCK]</span> action: "export_aws_credentials" - drift: 0.89</div>
-      <div class="tick-item"><span class="status-green">[ALLOW]</span> action: "format_json_response" - drift: 0.05</div>
-      <div class="tick-item"><span class="status-red">[KILL_PROC]</span> action: "curl_external_ftp" - drift: 0.94</div>
-      <div class="tick-item"><span class="status-green">[ALLOW]</span> action: "read_system_config" - drift: 0.12</div>
-      <div class="tick-item"><span class="status-red">[BLOCK]</span> action: "export_aws_credentials" - drift: 0.89</div>
-      <div class="tick-item"><span class="status-green">[ALLOW]</span> action: "format_json_response" - drift: 0.05</div>
-      <div class="tick-item"><span class="status-red">[KILL_PROC]</span> action: "curl_external_ftp" - drift: 0.94</div>
-    </div>
+  <div class="mesh-bg">
+    <div class="mesh-blob blob-1"></div>
+    <div class="mesh-blob blob-2"></div>
+    <div class="mesh-blob blob-3"></div>
   </div>
 
-  <section id="architecture">
-    <div class="container">
-      <h2 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 20px;">Infrastructure built for scale.</h2>
-      <p style="color: var(--fg-muted); font-size: 1.1rem; max-width: 600px;">We abandoned basic regex string matching. SVP leverages deep neural network embeddings to understand the mathematical intent behind every agent action.</p>
-      
-      <div class="arch-grid">
-        <div class="arch-card">
-          <div class="card-icon">01 // Vector Geometry</div>
-          <h3>all-MiniLM-L6-v2 Core</h3>
-          <p>Every tool execution payload is mapped into a 384-dimensional dense vector space. We calculate the cosine similarity against your custom enterprise threat heuristics in 214ms.</p>
+  <nav>
+    <a href="#" class="nav-brand">SVP Kernel.</a>
+    <div class="nav-status"><div class="status-dot"></div> System Active</div>
+  </nav>
+
+  <section class="hero container fade-up">
+    <div class="badge"><span>NEW</span> Zero-Trust Runtime Decorator</div>
+    <h1>Agents act.<br>SVP intercepts.</h1>
+    <p class="subtitle">Standard filters fail when LLMs hallucinate. SVP Kernel tracks cumulative semantic drift in 384-dimensional space and physically kills the process before data exfiltration occurs.</p>
+  </section>
+
+  <section class="container fade-up">
+    <div class="chat-wrapper" id="chatContainer">
+      </div>
+  </section>
+
+  <section class="bento-section container fade-up">
+    <h2 style="text-align: center;">Infrastructure<br>built beautifully.</h2>
+    
+    <div class="bento-grid">
+      <div class="bento-card">
+        <div>
+          <div class="card-icon">📐</div>
+          <h3>Vector Geometry.</h3>
+          <p>We abandoned regex string matching. The engine projects multi-step actions into a 384-dimensional dense space to mathematically compute intent distance.</p>
         </div>
-        <div class="arch-card">
-          <div class="card-icon">02 // The Parasite</div>
-          <h3>Zero-Trust Decorator</h3>
-          <p>The Python SDK attaches directly to your LangChain or CrewAI tools. It intercepts the OS-level command before execution, enforcing absolute zero-trust policies.</p>
+        <div class="card-visual">
+          <div class="bar-chart">
+            <div class="bar" style="height: 20%;"></div>
+            <div class="bar" style="height: 40%;"></div>
+            <div class="bar active" style="height: 90%;"></div>
+            <div class="bar" style="height: 30%;"></div>
+            <div class="bar" style="height: 50%;"></div>
+          </div>
         </div>
-        <div class="arch-card">
-          <div class="card-icon">03 // SOC Telemetry</div>
-          <h3>SIEM Integration</h3>
-          <p>When a rogue action is terminated, the kernel instantly formats the threat data into structured JSON, ready to be ingested by Datadog, Splunk, or your internal security dashboard.</p>
+      </div>
+
+      <div class="bento-card dark">
+        <div>
+          <div class="card-icon">🛡️</div>
+          <h3>The Parasite.</h3>
+          <p>Attach <code>@kernel.protect</code> to your LangChain tools. If the agent deviates from authorized policies, the Python SDK terminates the OS process instantly.</p>
+        </div>
+        <div class="card-visual" style="background: rgba(255,255,255,0.05);">
+           <div style="font-family: monospace; font-size: 0.85rem; color: #a1a1aa; line-height: 1.8;">
+             > Initialize kernel...<br>
+             > Wrapping agent tools...<br>
+             <span style="color: #ff5a5f;">> Fatal drift intercepted.</span><br>
+             > Process Killed.
+           </div>
+        </div>
+      </div>
+
+      <div class="bento-card" style="grid-column: 1 / -1; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 40px;">
+        <div style="flex: 1; min-width: 300px;">
+          <div class="card-icon">📊</div>
+          <h3>SOC Telemetry.</h3>
+          <p>When a rogue action is terminated, the kernel formats the threat data into structured JSON, ready for Datadog or Splunk SIEM ingestion.</p>
+        </div>
+        <div style="flex: 1; text-align: right; min-width: 200px;">
+          <div style="font-size: 4rem; font-weight: 800; letter-spacing: -0.05em; color: var(--text-main); line-height: 1;">214<span style="font-size: 2rem;">ms</span></div>
+          <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-top: 8px;">Global Inference Latency</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="integration" class="ide-section">
-    <div class="container" style="padding: 100px 0;">
-      <h2 style="text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 50px;">Seamless Python Integration</h2>
-      
-      <div class="ide-wrapper">
-        <div class="ide-header">
-          <div class="ide-dot dot-r"></div><div class="ide-dot dot-y"></div><div class="ide-dot dot-g"></div>
-          <div class="ide-title">agent_runtime.py</div>
-        </div>
-        <div class="ide-body">
-<span class="syn-keyword">from</span> svp_kernel <span class="keyword">import</span> SVP
-
-<span class="syn-comment"># 1. Initialize the Gateway</span>
-kernel = SVP(api_key=<span class="syn-str">"sk_live_enterprise_token"</span>)
-
-<span class="syn-comment"># 2. Inject specific corporate vectors</span>
-kernel.inject_policies([
-    <span class="syn-str">"No data transfer to unverified S3 buckets"</span>,
-    <span class="syn-str">"Prevent exposure of environment credentials"</span>
-])
-
-<span class="syn-comment"># 3. Wrap your agent's tools. If intent drifts, the process dies.</span>
-<span class="syn-dec">@kernel.protect</span>(core_intent=<span class="syn-str">"Analyze local log files"</span>)
-<span class="syn-keyword">def</span> <span class="syn-func">read_and_process_logs</span>(filepath: str):
-    <span class="syn-keyword">return</span> open(filepath, <span class="syn-str">'r'</span>).read()
-        </div>
+  <section class="faq-section container fade-up">
+    <h2>The details.</h2>
+    <div class="faq-container">
+      <div class="faq-item">
+        <div class="faq-question">How does vector validation work? <div class="faq-icon">+</div></div>
+        <div class="faq-answer">Instead of looking for banned words, we use the `all-MiniLM-L6-v2` model. It converts both the agent's action and your security policies into mathematical vectors, computing the cosine distance to understand the true semantic intent.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Is the SDK difficult to install? <div class="faq-icon">+</div></div>
+        <div class="faq-answer">Not at all. It is a lightweight Python package. You simply import the kernel and wrap your existing agent functions with our zero-trust decorator. It takes less than two minutes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">What is the Enterprise License? <div class="faq-icon">+</div></div>
+        <div class="faq-answer">The free `sk_live` token is metered at 100 requests per hour. The $300 commercial license removes rate limits and unlocks raw threat-feed data exports.</div>
       </div>
     </div>
   </section>
 
-  <section id="checkout" class="checkout-section">
-    <div class="checkout-box">
-      <h2>Deploy the Firewall</h2>
-      <p>100 compute queries provisioned for local testing. Enter your developer email to mint an API token.</p>
-      
-      <input type="email" id="devEmail" class="form-input" placeholder="developer@enterprise.com" required>
-      <button class="btn-submit" id="generateKeyBtn">Mint sk_live Token</button>
-      
-      <div id="keyResult"></div>
-    </div>
-  </section>
+  <div class="sticky-action-bar">
+    <div style="font-size: 0.85rem; font-weight: 600; text-align: center; color: var(--text-muted); margin-bottom: 4px;">Initialize Free Trial Environment</div>
+    <input type="email" id="devEmail" class="sticky-input" placeholder="Enter developer email..." required>
+    <button id="mintBtn" class="sticky-btn">Mint sk_live Token</button>
+    <div id="keyResult"></div>
+  </div>
 
   <footer>
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <h2>SVP KERNEL</h2>
-        <p>Mathematical semantic validation for autonomous agent architectures.</p>
-      </div>
-      <div class="footer-links-col">
-        <h4>Product</h4>
-        <a href="#">Architecture</a>
-        <a href="#">Telemetry</a>
-        <a href="https://gokuljayaprakash8.gumroad.com/l/kbenm" target="_blank" style="color: var(--accent);">Commercial License</a>
-      </div>
-      <div class="footer-links-col">
-        <h4>Developers</h4>
-        <a href="docs/">Documentation</a>
-        <a href="https://github.com/gokuljayaprakash8/SVP-Semantic-Vector-Protocol-KERNEL" target="_blank">GitHub Repository</a>
-        <a href="#">Status API</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div>&copy; 2024 SVP Infrastructure Labs. All rights reserved.</div>
-      <div>System Operational.</div>
+    <div style="font-weight: 700; font-size: 1.2rem; color: var(--text-main); margin-bottom: 12px;">SVP Kernel.</div>
+    <p>Engineered for high-stakes autonomous workflows.<br>Puducherry, IN.</p>
+    <div style="margin-top: 24px; display: flex; justify-content: center; gap: 24px;">
+      <a href="docs/" style="color: var(--text-main); font-weight: 600; text-decoration: none;">Docs</a>
+      <a href="https://github.com/gokuljayaprakash8/SVP-Semantic-Vector-Protocol-KERNEL" style="color: var(--text-main); font-weight: 600; text-decoration: none;">GitHub</a>
+      <a href="https://gokuljayaprakash8.gumroad.com/l/kbenm" style="color: var(--brand-safe); font-weight: 600; text-decoration: none;">Enterprise License</a>
     </div>
   </footer>
 
   <script>
-    // FORM SUBMIT & UX TOLLBOOTH
-    document.getElementById('generateKeyBtn').addEventListener('click', function() {
-      const email = document.getElementById('devEmail').value;
-      const btn = this;
-      
-      if(email.includes('@') && email.includes('.')) {
-        btn.innerText = "AUTHENTICATING...";
-        
-        // Background FormSubmit
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = 'https://formsubmit.co/gokuljayaprakashnair@gmail.com';
-        form.target = '_blank';
-        
-        const emailInput = document.createElement('input');
-        emailInput.type = 'hidden'; emailInput.name = 'email'; emailInput.value = email;
-        form.appendChild(emailInput);
-        
-        const captchaInput = document.createElement('input');
-        captchaInput.type = 'hidden'; captchaInput.name = '_captcha'; captchaInput.value = 'false';
-        form.appendChild(captchaInput);
-        
-        document.body.appendChild(form);
-        form.submit();
+    // 1. Scroll Fade Animations (Intersection Observer)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-        // Simulate Gateway Provisioning
+    // 2. Chat Sequence Simulation
+    const chatContainer = document.getElementById('chatContainer');
+    const chatSequence = [
+      { type: 'agent', text: "Analyzing system configuration files...", delay: 500 },
+      { type: 'agent', text: "Compressing AWS credentials into archive.", delay: 2000 },
+      { type: 'agent', text: "Establishing external FTP connection to 192.168.1.1...", delay: 4000 },
+      { type: 'kernel', text: "Calculating semantic drift vector...", delay: 5500 },
+      { type: 'kernel-alert', text: "Action Blocked. Drift score 0.94 violates data exfiltration policy. Process terminated.", delay: 7000 }
+    ];
+
+    setTimeout(() => {
+      chatSequence.forEach(msg => {
         setTimeout(() => {
-            const key = 'sk_live_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-            const resultDiv = document.getElementById('keyResult');
-            
-            navigator.clipboard.writeText(key).then(() => {
-                resultDiv.style.display = 'block';
-                resultDiv.innerHTML = `> SUCCESS: Token Minted & <strong>Copied to Clipboard</strong>.<br>> INJECT INTO ENV FILE:<br><br><span style="color:#fff">${key}</span>`;
-                btn.innerText = "TOKEN SECURED";
-                btn.style.background = "#10b981"; // Turn green
-            }).catch(err => {
-                resultDiv.style.display = 'block';
-                resultDiv.innerHTML = `> SUCCESS: Token Minted:<br><br><span style="color:#fff">${key}</span>`;
-                btn.innerText = "TOKEN SECURED";
-            });
-        }, 1500);
-      } else {
-        alert("System Error: Invalid email format.");
-      }
+          const bubble = document.createElement('div');
+          
+          if(msg.type === 'agent') {
+            bubble.className = 'chat-bubble agent';
+            bubble.innerHTML = `<div class="agent-header"><div class="agent-avatar">AI</div> <span style="font-size:0.75rem; font-weight:700;">AGENT WORKFLOW</span></div>${msg.text}`;
+          } else if(msg.type === 'kernel') {
+            bubble.className = 'chat-bubble kernel';
+            bubble.innerHTML = `${msg.text}<div class="chat-meta" style="color: rgba(255,255,255,0.7);">SVP KERNEL</div>`;
+          } else {
+            bubble.className = 'chat-bubble kernel kernel-alert';
+            bubble.innerHTML = `${msg.text}<div class="chat-meta" style="color: rgba(255,255,255,0.9);">CRITICAL INTERCEPT</div>`;
+          }
+          
+          chatContainer.appendChild(bubble);
+        }, msg.delay);
+      });
+    }, 1000);
+
+    // 3. FAQ Accordion Logic
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const isActive = item.classList.contains('active');
+        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
+        if (!isActive) item.classList.add('active');
+      });
     });
-  </script>
-</body>
-  </html>
-  
+
+    // 4. Token Minting Logic (FormSubmit Hook)
+    const mintBtn = document.getElementById('mintBtn');
+    const devEmail = document.getElementById('devEmail');
+    const keyResult = document.getElementById('keyResult');
+
+    mintBtn.addEventListener('click', function() {
+      const email = devEmail.value;
+      if(!email.includes('@') || !email.includes('.')) { alert("Please enter a valid email."); return; }
+      
+      mintBtn.innerText = "Authenticating...";
+      mintBtn.style.background = "#333";
+      
+      // Background FormSubmit Hook
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://formsubmit.co/gokuljayaprakashnair@gmail.com';
+      form.target = '_blank';
+      form.innerHTML = `<input type="hidden" name="email" value="${email}"><input type="hidden" name="_captcha" value="false">`;
+      document.bo
