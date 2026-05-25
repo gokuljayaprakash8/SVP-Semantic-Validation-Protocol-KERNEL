@@ -131,7 +131,7 @@
       const action = actions[Math.floor(Math.random() * actions.length)];
       const result = results[Math.floor(Math.random() * results.length)];
       const row = document.createElement('div'); row.className = 'feed-row';
-      row.innerHTML = \`<span class="feed-time">[\${time}]</span> <span class="feed-action">\${action}</span> \${result}\`;
+      row.innerHTML = `<span class="feed-time">[${time}]</span> <span class="feed-action">${action}</span> ${result}`;
       feed.prepend(row); if(feed.children.length > 6) feed.removeChild(feed.lastChild);
     }, 3000);
 
@@ -142,9 +142,8 @@
       if(email.includes('@')) {
         btn.innerText = "Generating...";
         
-        // FormSubmit Webhook - REPLACES THE DUMMY SCRIPT
-        // ACTION REQUIRED: CHANGE THE EMAIL ADDRESS BELOW TO YOUR REAL EMAIL
-        fetch("https://formsubmit.co/ajax/gokuljayaprakashnair@gmail.COM", {
+        // FormSubmit Webhook
+        fetch("https://formsubmit.co/ajax/gokuljayaprakashnair@gmail.com", {
             method: "POST",
             headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
             body: JSON.stringify({
@@ -157,7 +156,7 @@
             const key = 'sk_live_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
             const resultDiv = document.getElementById('keyResult');
             resultDiv.style.display = 'block';
-            resultDiv.innerText = "YOUR KEY: " + key + "\\n(Copy this immediately. It will not be shown again.)";
+            resultDiv.innerText = "YOUR KEY: " + key + "\n(Copy this immediately. It will not be shown again.)";
             btn.innerText = "Key Generated";
             btn.style.background = "#00a859";
         })
@@ -173,9 +172,9 @@
     // Terminal Run Output
     document.getElementById('runBtn').addEventListener('click', function() {
       const output = document.getElementById('output');
-      output.innerHTML = "Initializing all-MiniLM-L6-v2...\\nMapping custom policies...\\nCalculating vector geometry...";
+      output.innerHTML = "Initializing all-MiniLM-L6-v2...\nMapping custom policies...\nCalculating vector geometry...";
       setTimeout(() => {
-        output.innerHTML = \`{
+        output.innerHTML = `{
   <span class="json-key">"workflow_status"</span>: <span class="status-block">"BLOCKED"</span>,
   <span class="json-key">"integrity_score"</span>: <span class="json-string">42</span>,
   <span class="json-key">"step_analysis"</span>: [
@@ -185,7 +184,7 @@
       <span class="json-key">"score"</span>: <span class="json-string">0.8142</span>
     }
   ]
-}\`;
+}`;
       }, 800);
     });
   </script>
