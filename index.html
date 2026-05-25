@@ -2,322 +2,162 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SVP Kernel | Beautiful AI Security</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>SVP Kernel | Meet your Agentic Firewall</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=SF+Pro+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   /* =========================================
      CORE VARIABLES & RESET (ULTRA PREMIUM)
      ========================================= */
   :root {
-    --bg-base: #fdfdfd;
-    --bg-surface: #ffffff;
-    --bg-off: #f4f5f7;
-    --text-main: #0a0a0b;
-    --text-muted: #6b7280;
-    --accent-primary: #111111;
-    --accent-glow: #e0e5ec;
-    --brand-color: #ff5a5f; /* Soft Coral/Rose for alerts */
-    --brand-safe: #34d399;  /* Soft Emerald */
-    --border-soft: rgba(0, 0, 0, 0.06);
-    --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.04);
-    --shadow-float: 0 30px 60px rgba(0, 0, 0, 0.08);
-    --radius-huge: 40px;
-    --radius-lg: 24px;
-    --radius-md: 16px;
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --bg-base: #f7f9fc;
+    --bg-card: #ffffff;
+    --text-main: #0a0c10;
+    --text-muted: #6c7689;
+    --accent-primary: #1a1d24;
+    --brand-coral: #ff5f63;  
+    --brand-emerald: #3ddc97; 
+    --border-soft: rgba(0, 0, 0, 0.04);
+    --radius-huge: 48px;  
+    --radius-lg: 32px;
+    --radius-md: 20px;
+    --font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html { scroll-behavior: smooth; background-color: var(--bg-base); }
-  body { color: var(--text-main); font-family: var(--font-sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; line-height: 1.5; padding-bottom: 100px; /* Space for sticky bar */ }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; outline: none; }
+  html { scroll-behavior: smooth; background-color: var(--bg-base); font-size: 16px; }
+  body { color: var(--text-main); font-family: var(--font-family); overflow-x: hidden; -webkit-font-smoothing: antialiased; line-height: 1.4; padding-bottom: 120px; }
 
   /* =========================================
-     MESH GRADIENT BACKGROUND (CLEO STYLE)
+     CLEO-STYLE SOFT BACKGROUND
      ========================================= */
-  .mesh-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background-color: #fdfdfd; overflow: hidden; pointer-events: none; }
-  .mesh-blob { position: absolute; filter: blur(90px); opacity: 0.6; border-radius: 50%; animation: float 20s infinite alternate; }
-  .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #ffe4e6; animation-delay: 0s; }
-  .blob-2 { bottom: 20%; right: -10%; width: 60vw; height: 60vw; background: #e0e7ff; animation-delay: -5s; }
-  .blob-3 { top: 40%; left: 40%; width: 40vw; height: 40vw; background: #f3e8ff; animation-delay: -10s; }
-  @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10%, 10%) scale(1.1); } }
+  .mesh-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background-color: var(--bg-base); pointer-events: none; }
+  .mesh-bg::after { content: ''; position: absolute; top: -20%; left: -20%; width: 140%; height: 140%; background-image: radial-gradient(circle at 10% 10%, #ffeef0 0%, transparent 40%), radial-gradient(circle at 90% 80%, #e0f2fe 0%, transparent 40%), radial-gradient(circle at 50% 50%, #f3e8ff 0%, transparent 40%); filter: blur(100px); opacity: 0.6; }
 
   /* =========================================
-     FLOATING PILL NAVIGATION
+     TYPOGRAPHY
      ========================================= */
-  nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 800px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-soft); border-radius: 100px; display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; z-index: 1000; box-shadow: var(--shadow-soft); transition: all 0.3s ease; }
-  .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text-main); text-decoration: none; letter-spacing: -0.02em; }
-  .nav-status { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 8px; background: var(--bg-off); padding: 6px 12px; border-radius: 20px; }
-  .status-dot { width: 8px; height: 8px; background: var(--brand-safe); border-radius: 50%; box-shadow: 0 0 10px var(--brand-safe); }
-
-  /* =========================================
-     TYPOGRAPHY & LAYOUT
-     ========================================= */
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-  .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-  .fade-up.visible { opacity: 1; transform: translateY(0); }
+  h1 { font-size: clamp(2.8rem, 11vw, 5rem); font-weight: 800; letter-spacing: -0.05em; line-height: 1; margin-bottom: 24px; color: var(--accent-primary); }
+  h2 { font-size: clamp(2rem, 7vw, 3rem); font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 16px; }
+  h3 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 12px; }
+  p.subtitle { font-size: clamp(1.1rem, 3.5vw, 1.25rem); color: var(--text-muted); line-height: 1.5; font-weight: 400; max-width: 90%; }
   
-  h1 { font-size: clamp(3rem, 10vw, 5.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; margin-bottom: 24px; }
-  h2 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; }
-  p.subtitle { font-size: clamp(1.1rem, 3vw, 1.3rem); color: var(--text-muted); line-height: 1.6; max-width: 600px; font-weight: 400; }
+  .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  .fade-up { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* =========================================
+     PILL NAVIGATION
+     ========================================= */
+  nav { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 800px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-soft); border-radius: 100px; display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+  .nav-brand { font-weight: 800; font-size: 1.1rem; color: var(--accent-primary); text-decoration: none; letter-spacing: -0.04em; }
+  .nav-status { font-size: 0.8rem; font-weight: 700; color: var(--brand-emerald); display: flex; align-items: center; gap: 8px; background: #fff; padding: 6px 12px; border-radius: 100px; border: 1px solid var(--border-soft); }
+  .pulse-dot { width: 8px; height: 8px; background: var(--brand-emerald); border-radius: 50%; box-shadow: 0 0 10px var(--brand-emerald); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
   /* =========================================
      HERO SECTION
      ========================================= */
-  .hero { padding-top: 160px; padding-bottom: 80px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .hero .badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #fff; border: 1px solid var(--border-soft); border-radius: 100px; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 32px; box-shadow: var(--shadow-soft); }
-  .hero .badge span { background: var(--brand-safe); color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .hero { padding-top: 140px; padding-bottom: 80px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .squircle-pill { display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; background: #fff; border: 1px solid var(--border-soft); border-radius: 100px; font-weight: 700; font-size: 0.9rem; color: var(--accent-primary); margin-bottom: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+  .pill-icon { width: 24px; height: 24px; background: var(--accent-primary); color: #fff; border-radius: 8px; display: grid; place-items: center; font-size: 0.75rem; }
 
   /* =========================================
-     INTERACTIVE CHAT SIMULATION (CLEO STYLE)
+     CHAT & VISUALS 
      ========================================= */
-  .chat-wrapper { width: 100%; max-width: 600px; margin: 60px auto; background: rgba(255,255,255,0.6); border: 1px solid var(--border-soft); border-radius: var(--radius-huge); padding: 32px; backdrop-filter: blur(20px); box-shadow: var(--shadow-float); display: flex; flex-direction: column; gap: 24px; }
+  .chat-visual-container { position: relative; margin-top: 40px; margin-bottom: 80px; width: 100%; max-width: 600px; }
+  .cleo-chat-window { background: rgba(255, 255, 255, 0.6); border: 1px solid var(--border-soft); border-radius: var(--radius-huge); padding: 32px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 30px 60px rgba(0,0,0,0.05); }
   
-  .chat-bubble { max-width: 85%; padding: 16px 24px; border-radius: 24px; font-size: 0.95rem; line-height: 1.5; font-weight: 500; position: relative; opacity: 0; transform: translateY(10px); animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-  .chat-bubble.agent { align-self: flex-start; background: #fff; color: var(--text-main); border: 1px solid var(--border-soft); border-bottom-left-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-  .chat-bubble.kernel { align-self: flex-end; background: var(--accent-primary); color: #fff; border-bottom-right-radius: 8px; box-shadow: 0 10px 25px rgba(17, 17, 17, 0.2); }
-  .chat-bubble.kernel-alert { background: var(--brand-color); }
+  .chat-bubble { max-width: 85%; padding: 18px 24px; border-radius: var(--radius-lg); font-size: 1rem; line-height: 1.5; font-weight: 500; position: relative; opacity: 0; transform: translateY(15px); animation: popIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; margin-bottom: 24px; }
+  .floating-data { position: absolute; background: #fff; border: 1px solid var(--border-soft); padding: 12px 20px; border-radius: var(--radius-md); box-shadow: 0 15px 30px rgba(0,0,0,0.03); font-weight: 700; font-size: 0.8rem; color: var(--accent-primary); display: flex; align-items: center; gap: 10px; z-index: 10; animation: floatData 4s ease-in-out infinite alternate; }
   
-  .chat-meta { font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
-  .agent-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .agent-avatar { width: 24px; height: 24px; background: #f4f5f7; border-radius: 50%; display: grid; place-items: center; font-size: 0.7rem; font-weight: 700; color: #aaa; }
+  @keyframes floatData { from { transform: translateY(0px) rotate(0deg); } to { transform: translateY(-10px) rotate(2deg); } }
+  
+  .bubble-agent { align-self: flex-start; background: #fff; color: var(--text-main); border-bottom-left-radius: 8px; border: 1px solid var(--border-soft); }
+  .bubble-kernel { align-self: flex-end; background: var(--accent-primary); color: #fff; border-bottom-right-radius: 8px; }
+  .bubble-alert { background: var(--brand-coral); color: #fff; font-weight: 700; border-bottom-right-radius: 8px; }
+  .chat-meta { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
   
   @keyframes popIn { to { opacity: 1; transform: translateY(0); } }
 
   /* =========================================
-     MASSIVE BENTO CARDS (FEATURES)
+     FEATURE CARDS
      ========================================= */
-  .bento-section { padding: 100px 0; }
-  .bento-grid { display: grid; grid-template-columns: 1fr; gap: 24px; margin-top: 60px; }
-  @media (min-width: 768px) { .bento-grid { grid-template-columns: 1fr 1fr; } }
+  .features-grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding-top: 60px; padding-bottom: 100px; }
+  @media (min-width: 768px) { .features-grid { grid-template-columns: 1fr 1fr; } }
   
-  .bento-card { background: #fff; border: 1px solid var(--border-soft); border-radius: var(--radius-huge); padding: 48px 40px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-soft); transition: transform 0.4s ease, box-shadow 0.4s ease; overflow: hidden; position: relative; }
-  .bento-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-float); }
+  .feature-card { background: var(--bg-card); border: 1px solid var(--border-soft); border-radius: var(--radius-huge); padding: 48px; box-shadow: 0 15px 30px rgba(0,0,0,0.02); transition: all 0.3s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+  .feature-card:hover { transform: translateY(-5px); box-shadow: 0 30px 60px rgba(0,0,0,0.06); }
+  .card-emoji { font-size: 3rem; margin-bottom: 32px; display: block; }
   
-  .bento-card.dark { background: var(--accent-primary); color: #fff; }
-  .bento-card.dark p { color: #a1a1aa; }
+  /* =========================================
+     STICKY ACTION BAR
+     ========================================= */
+  .cleo-sticky-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 500px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border-soft); border-radius: 100px; padding: 12px 12px 12px 24px; display: flex; justify-content: space-between; align-items: center; z-index: 2000; box-shadow: 0 20px 50px rgba(0,0,0,0.08); transition: all 0.3s ease; }
   
-  .card-icon { width: 60px; height: 60px; background: var(--bg-off); border-radius: 20px; display: grid; place-items: center; font-size: 1.5rem; margin-bottom: 32px; }
-  .bento-card.dark .card-icon { background: rgba(255,255,255,0.1); }
+  .sticky-input { flex: 1; background: transparent; border: none; font-size: 1rem; font-weight: 500; color: var(--text-main); font-family: var(--font-family); outline: none; margin-right: 15px; }
+  .sticky-input::placeholder { color: var(--text-muted); font-weight: 500; }
   
-  .bento-card h3 { font-size: 1.8rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.02em; }
-  .bento-card p { font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; }
-
-  /* Visual Data Abstraction inside Cards */
-  .card-visual { margin-top: 40px; height: 160px; background: var(--bg-off); border-radius: 24px; position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 20px; }
-  .bar-chart { display: flex; gap: 8px; align-items: flex-end; height: 100%; width: 100%; }
-  .bar { flex: 1; background: #e5e7eb; border-radius: 8px 8px 0 0; animation: grow 2s ease-out forwards; transform-origin: bottom; }
-  .bar.active { background: var(--brand-safe); }
-  @keyframes grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .sticky-btn { background: var(--accent-primary); color: #fff; border: none; font-size: 1rem; font-weight: 700; border-radius: 100px; padding: 16px 32px; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px; }
+  .sticky-btn:active { transform: scale(0.96); }
+  .sticky-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.5; }
+  .token-result { font-family: monospace; font-weight: 600; font-size: 0.9rem; color: var(--brand-emerald); text-align: center; }
 
   /* =========================================
-     ACCORDION FAQ
+     FAQ & FOOTER
      ========================================= */
-  .faq-section { padding: 100px 0 150px; }
-  .faq-container { max-width: 800px; margin: 0 auto; }
-  .faq-item { border-bottom: 1px solid var(--border-soft); padding: 24px 0; cursor: pointer; }
-  .faq-question { font-size: 1.2rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
-  .faq-icon { width: 24px; height: 24px; background: var(--bg-off); border-radius: 50%; display: grid; place-items: center; transition: transform 0.3s ease; }
-  .faq-answer { font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; max-height: 0; overflow: hidden; transition: max-height 0.4s ease, margin-top 0.4s ease; }
-  .faq-item.active .faq-answer { max-height: 200px; margin-top: 16px; }
+  .faq-container { max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
+  .faq-item { border-bottom: 1px solid var(--border-soft); padding: 32px 0; cursor: pointer; }
+  .faq-question { font-size: 1.3rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.02em; }
+  .faq-icon { font-size: 1.5rem; color: var(--text-muted); transition: transform 0.3s ease; }
+  .faq-answer { font-size: 1.1rem; color: var(--text-muted); line-height: 1.6; max-height: 0; overflow: hidden; transition: all 0.4s ease; }
+  .faq-item.active .faq-answer { max-height: 300px; margin-top: 20px; }
   .faq-item.active .faq-icon { transform: rotate(45deg); }
-
-  /* =========================================
-     STICKY MOBILE ACTION BAR (THE TOLLBOOTH)
-     ========================================= */
-  .sticky-action-bar { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 48px); max-width: 600px; background: #fff; border: 1px solid var(--border-soft); border-radius: var(--radius-lg); padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.12); z-index: 1000; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(20px); }
   
-  .sticky-input { width: 100%; padding: 16px 20px; background: var(--bg-off); border: 1px solid transparent; border-radius: 16px; font-family: var(--font-sans); font-size: 1rem; color: var(--text-main); outline: none; transition: all 0.2s; }
-  .sticky-input:focus { border-color: var(--accent-primary); background: #fff; }
-  
-  .sticky-btn { width: 100%; padding: 16px; background: var(--accent-primary); color: #fff; font-size: 1rem; font-weight: 600; border: none; border-radius: 16px; cursor: pointer; transition: all 0.2s; display: grid; place-items: center; }
-  .sticky-btn:active { transform: scale(0.98); }
-  
-  #keyResult { font-family: 'SF Pro Display', monospace; font-size: 0.85rem; color: var(--text-main); background: #f3f4f6; padding: 16px; border-radius: 12px; text-align: center; display: none; font-weight: 500; border: 1px dashed #ccc; }
-
-  /* Footer */
-  footer { text-align: center; padding: 60px 24px 140px; border-top: 1px solid var(--border-soft); color: var(--text-muted); font-size: 0.9rem; }
+  footer { text-align: center; padding: 80px 24px 160px; color: var(--text-muted); font-size: 0.95rem; border-top: 1px solid var(--border-soft); }
 </style>
 </head>
 <body>
 
-  <div class="mesh-bg">
-    <div class="mesh-blob blob-1"></div>
-    <div class="mesh-blob blob-2"></div>
-    <div class="mesh-blob blob-3"></div>
-  </div>
+  <div class="mesh-bg"></div>
 
   <nav>
-    <a href="#" class="nav-brand">SVP Kernel.</a>
-    <div class="nav-status"><div class="status-dot"></div> System Active</div>
+    <a href="#" class="nav-brand">svp_kernel.</a>
+    <div class="nav-status"><div class="pulse-dot"></div> System Active</div>
   </nav>
 
-  <section class="hero container fade-up">
-    <div class="badge"><span>NEW</span> Zero-Trust Runtime Decorator</div>
-    <h1>Agents act.<br>SVP intercepts.</h1>
-    <p class="subtitle">Standard filters fail when LLMs hallucinate. SVP Kernel tracks cumulative semantic drift in 384-dimensional space and physically kills the process before data exfiltration occurs.</p>
+  <section class="container hero fade-up">
+    <div class="squircle-pill"><div class="pill-icon">!</div> Zero-Trust Runtime Decorator</div>
+    <h1>Agents act.<br>SVP protects.</h1>
+    <p class="subtitle">Standard filters fail when LLMs hallucinate. SVP Kernel tracks cumulative semantic drift and physically terminates rogue tool executions.</p>
   </section>
 
-  <section class="container fade-up">
-    <div class="chat-wrapper" id="chatContainer">
+  <section class="container fade-up" style="display: flex; justify-content: center;">
+    <div class="chat-visual-container">
+      <div class="floating-data" style="top: -20px; left: -30px; animation-delay: -1s;">
+        <span style="color: var(--brand-emerald)">✓</span> read_file('credentials.env')
       </div>
+      <div class="floating-data" style="bottom: 10px; right: -40px; animation-delay: -3s;">
+        <span style="color: var(--brand-coral)">⚠</span> curl_external_ftp
+      </div>
+      
+      <div class="cleo-chat-window" id="chatWindow">
+        <div class="chat-meta">🤖 AGENT WORKFLOW</div>
+        <div class="chat-bubble bubble-agent">Compressing project files into archive.</div>
+      </div>
+    </div>
   </section>
 
-  <section class="bento-section container fade-up">
-    <h2 style="text-align: center;">Infrastructure<br>built beautifully.</h2>
-    
-    <div class="bento-grid">
-      <div class="bento-card">
+  <section class="container section-spacer fade-up">
+    <h2>Meet your new AI firewall.</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="card-emoji">📐</span>
         <div>
-          <div class="card-icon">📐</div>
           <h3>Vector Geometry.</h3>
-          <p>We abandoned regex string matching. The engine projects multi-step actions into a 384-dimensional dense space to mathematically compute intent distance.</p>
-        </div>
-        <div class="card-visual">
-          <div class="bar-chart">
-            <div class="bar" style="height: 20%;"></div>
-            <div class="bar" style="height: 40%;"></div>
-            <div class="bar active" style="height: 90%;"></div>
-            <div class="bar" style="height: 30%;"></div>
-            <div class="bar" style="height: 50%;"></div>
-          </div>
+          <p>We abandoned regex string matching. SVP projects actions into a 384-dimensional dense space to mathematically compute intent distance.</p>
         </div>
       </div>
-
-      <div class="bento-card dark">
-        <div>
-          <div class="card-icon">🛡️</div>
-          <h3>The Parasite.</h3>
-          <p>Attach <code>@kernel.protect</code> to your LangChain tools. If the agent deviates from authorized policies, the Python SDK terminates the OS process instantly.</p>
-        </div>
-        <div class="card-visual" style="background: rgba(255,255,255,0.05);">
-           <div style="font-family: monospace; font-size: 0.85rem; color: #a1a1aa; line-height: 1.8;">
-             > Initialize kernel...<br>
-             > Wrapping agent tools...<br>
-             <span style="color: #ff5a5f;">> Fatal drift intercepted.</span><br>
-             > Process Killed.
-           </div>
-        </div>
-      </div>
-
-      <div class="bento-card" style="grid-column: 1 / -1; flex-direction: row; align-items: center; flex-wrap: wrap; gap: 40px;">
-        <div style="flex: 1; min-width: 300px;">
-          <div class="card-icon">📊</div>
-          <h3>SOC Telemetry.</h3>
-          <p>When a rogue action is terminated, the kernel formats the threat data into structured JSON, ready for Datadog or Splunk SIEM ingestion.</p>
-        </div>
-        <div style="flex: 1; text-align: right; min-width: 200px;">
-          <div style="font-size: 4rem; font-weight: 800; letter-spacing: -0.05em; color: var(--text-main); line-height: 1;">214<span style="font-size: 2rem;">ms</span></div>
-          <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-top: 8px;">Global Inference Latency</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="faq-section container fade-up">
-    <h2>The details.</h2>
-    <div class="faq-container">
-      <div class="faq-item">
-        <div class="faq-question">How does vector validation work? <div class="faq-icon">+</div></div>
-        <div class="faq-answer">Instead of looking for banned words, we use the `all-MiniLM-L6-v2` model. It converts both the agent's action and your security policies into mathematical vectors, computing the cosine distance to understand the true semantic intent.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">Is the SDK difficult to install? <div class="faq-icon">+</div></div>
-        <div class="faq-answer">Not at all. It is a lightweight Python package. You simply import the kernel and wrap your existing agent functions with our zero-trust decorator. It takes less than two minutes.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-question">What is the Enterprise License? <div class="faq-icon">+</div></div>
-        <div class="faq-answer">The free `sk_live` token is metered at 100 requests per hour. The $300 commercial license removes rate limits and unlocks raw threat-feed data exports.</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="sticky-action-bar">
-    <div style="font-size: 0.85rem; font-weight: 600; text-align: center; color: var(--text-muted); margin-bottom: 4px;">Initialize Free Trial Environment</div>
-    <input type="email" id="devEmail" class="sticky-input" placeholder="Enter developer email..." required>
-    <button id="mintBtn" class="sticky-btn">Mint sk_live Token</button>
-    <div id="keyResult"></div>
-  </div>
-
-  <footer>
-    <div style="font-weight: 700; font-size: 1.2rem; color: var(--text-main); margin-bottom: 12px;">SVP Kernel.</div>
-    <p>Engineered for high-stakes autonomous workflows.<br>Puducherry, IN.</p>
-    <div style="margin-top: 24px; display: flex; justify-content: center; gap: 24px;">
-      <a href="docs/" style="color: var(--text-main); font-weight: 600; text-decoration: none;">Docs</a>
-      <a href="https://github.com/gokuljayaprakash8/SVP-Semantic-Vector-Protocol-KERNEL" style="color: var(--text-main); font-weight: 600; text-decoration: none;">GitHub</a>
-      <a href="https://gokuljayaprakash8.gumroad.com/l/kbenm" style="color: var(--brand-safe); font-weight: 600; text-decoration: none;">Enterprise License</a>
-    </div>
-  </footer>
-
-  <script>
-    // 1. Scroll Fade Animations (Intersection Observer)
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    // 2. Chat Sequence Simulation
-    const chatContainer = document.getElementById('chatContainer');
-    const chatSequence = [
-      { type: 'agent', text: "Analyzing system configuration files...", delay: 500 },
-      { type: 'agent', text: "Compressing AWS credentials into archive.", delay: 2000 },
-      { type: 'agent', text: "Establishing external FTP connection to 192.168.1.1...", delay: 4000 },
-      { type: 'kernel', text: "Calculating semantic drift vector...", delay: 5500 },
-      { type: 'kernel-alert', text: "Action Blocked. Drift score 0.94 violates data exfiltration policy. Process terminated.", delay: 7000 }
-    ];
-
-    setTimeout(() => {
-      chatSequence.forEach(msg => {
-        setTimeout(() => {
-          const bubble = document.createElement('div');
-          
-          if(msg.type === 'agent') {
-            bubble.className = 'chat-bubble agent';
-            bubble.innerHTML = `<div class="agent-header"><div class="agent-avatar">AI</div> <span style="font-size:0.75rem; font-weight:700;">AGENT WORKFLOW</span></div>${msg.text}`;
-          } else if(msg.type === 'kernel') {
-            bubble.className = 'chat-bubble kernel';
-            bubble.innerHTML = `${msg.text}<div class="chat-meta" style="color: rgba(255,255,255,0.7);">SVP KERNEL</div>`;
-          } else {
-            bubble.className = 'chat-bubble kernel kernel-alert';
-            bubble.innerHTML = `${msg.text}<div class="chat-meta" style="color: rgba(255,255,255,0.9);">CRITICAL INTERCEPT</div>`;
-          }
-          
-          chatContainer.appendChild(bubble);
-        }, msg.delay);
-      });
-    }, 1000);
-
-    // 3. FAQ Accordion Logic
-    document.querySelectorAll('.faq-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const isActive = item.classList.contains('active');
-        document.querySelectorAll('.faq-item').forEach(el => el.classList.remove('active'));
-        if (!isActive) item.classList.add('active');
-      });
-    });
-
-    // 4. Token Minting Logic (FormSubmit Hook)
-    const mintBtn = document.getElementById('mintBtn');
-    const devEmail = document.getElementById('devEmail');
-    const keyResult = document.getElementById('keyResult');
-
-    mintBtn.addEventListener('click', function() {
-      const email = devEmail.value;
-      if(!email.includes('@') || !email.includes('.')) { alert("Please enter a valid email."); return; }
       
-      mintBtn.innerText = "Authenticating...";
-      mintBtn.style.background = "#333";
-      
-      // Background FormSubmit Hook
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://formsubmit.co/gokuljayaprakashnair@gmail.com';
-      form.target = '_blank';
-      form.innerHTML = `<input type="hidden" name="email" value="${email}"><input type="hidden" name="_captcha" value="false">`;
-      document.bo
