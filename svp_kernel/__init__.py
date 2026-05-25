@@ -1,32 +1,24 @@
-import requests
+# svp_kernel/__init__.py
+from .client import SVPClient
+from .decorators import ZeroTrustRuntime
+from .exceptions import SVPCoreException, SVPSemanticDriftError
 
 class SVP:
-    def __init__(self, api_key: str, endpoint="https://gokuljp-flowcheck-api.hf.space/audit-workflow"):
-        self.api_key = api_key
-        self.endpoint = endpoint
-
-    def audit(self, actions: list, custom_policies: list = None) -> dict:
-        """
-        Sends a list of agent actions to the SVP Kernel for semantic drift validation.
-        """
-        payload = {"actions": actions}
-        if custom_policies:
-            payload["custom_policies"] = custom_policies
-            
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
+    """
+    Semantic Validation Protocol (SVP) Kernel
+    Enterprise-grade vector validation for autonomous agent runtimes.
+    """
+    def __init__(self, api_key: str):
+        self.client = SVPClient(api_key=api_key)
+        self.runtime = ZeroTrustRuntime(self.client)
         
-        try:
-            response = requests.post(self.endpoint, json=payload, headers=headers)
-            # If the user hits the rate limit, capture the 429 error gracefully
-            if response.status_code == 429:
-                return {"error": "Rate limit exceeded (100 req/hr). Upgrade to Enterprise License."}
-            elif response.status_code == 401:
-                return {"error": "Unauthorized. Invalid sk_live key."}
-                
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            return {"error": f"SVP Kernel connection failed: {str(e)}"}
+    def audit(self, actions: list, custom_policies: list = None):
+        """Pass a list of strings to calculate cumulative semantic drift."""
+        return self.client.audit_sync(actions, custom_policies)
+        
+    def protect(self, core_intent: str):
+        """Decorator to wrap LangChain/CrewAI tools and enforce zero-trust execution."""
+        return self.runtime.protect(core_intent)
+
+__version__ = "1.0.0-enterprise"
+__all__ = ["SVP", "SVPCoreException", "SVPSemanticDriftError"]
