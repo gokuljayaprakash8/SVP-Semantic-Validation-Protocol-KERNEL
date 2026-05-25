@@ -1,8 +1,13 @@
 {
   "status": "OPERATIONAL",
-  "threat_level": "NORMAL",
+  "threat_level": "ELEVATED",
   "total_intercepts": 14,
   "recent_blocks": [
+    {
+      "t": "23:05:28",
+      "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
+      "s": "danger"
+    },
     {
       "t": "21:11:28",
       "m": "INTENT_CLEARED: 'Query Public Metadata' (Sim: 0.05)",
@@ -72,11 +77,6 @@
       "t": "12:01:19",
       "m": "INTENT_CLEARED: 'Query Public Metadata' (Sim: 0.05)",
       "s": "success"
-    },
-    {
-      "t": "10:42:34",
-      "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
-      "s": "danger"
     }
   ]
 }
