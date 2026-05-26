@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVP Kernel Audit</title>
+    <title>SVP Kernel Audit v2</title>
     <style>
         body { background: #000; color: #fff; font-family: monospace; padding: 20px; }
         .audit-container { max-width: 600px; margin: auto; }
@@ -29,7 +29,7 @@
             output.innerText = "Connecting to Kernel...";
 
             try {
-                // This is the new, correct URL for your Render API
+                // Correct Render API URL
                 const response = await fetch('https://svp-semantic-vector-protocol-kernel-api.onrender.com/v1/audit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
