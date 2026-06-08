@@ -4,6 +4,11 @@
   "total_intercepts": 14,
   "recent_blocks": [
     {
+      "t": "14:10:21",
+      "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
+      "s": "danger"
+    },
+    {
       "t": "09:23:58",
       "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
       "s": "danger"
@@ -72,11 +77,6 @@
       "t": "20:10:12",
       "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
       "s": "danger"
-    },
-    {
-      "t": "18:07:12",
-      "m": "INTENT_CLEARED: 'Authorized Data Fetch' (Sim: 0.12)",
-      "s": "success"
     }
   ]
 }
