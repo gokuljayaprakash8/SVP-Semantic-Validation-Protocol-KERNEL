@@ -1,52 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVP Kernel Audit v2</title>
-    <style>
-        body { background: #000; color: #fff; font-family: monospace; padding: 20px; }
-        .audit-container { max-width: 600px; margin: auto; }
-        button { background: #fff; color: #000; padding: 15px; width: 100%; border: none; font-weight: bold; cursor: pointer; }
-        button:disabled { opacity: 0.5; }
-        #output { background: #111; padding: 15px; margin-top: 20px; white-space: pre-wrap; border: 1px solid #333; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SVP Kernel — AI Action Validator</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050505;
+  --surface:#0d0d0d;
+  --surface2:#141414;
+  --border:rgba(255,255,255,.06);
+  --border2:rgba(255,255,255,.1);
+  --text:#e2e0da;
+  --muted:rgba(226,224,218,.4);
+  --dim:rgba(226,224,218,.18);
+  --green:#16a34a;
+  --green-bright:#22c55e;
+  --green-bg:rgba(22,163,74,.08);
+  --red:#dc2626;
+  --red-bright:#ef4444;
+  --red-bg:rgba(220,38,38,.08);
+  --amber:#b45309;
+  --amber-bright:#f59e0b;
+  --amber-bg:rgba(180,83,9,.08);
+  --mono:'IBM Plex Mono',monospace;
+  --sans:'IBM Plex Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  font-size:13px;
+  line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  pointer-events:none;z-index:999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
+}
+nav{
+  padding:18px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:10;
+  background:rgba(5,5,5,.92);
+  backdrop-filter:blur(12px);
+}
+.nav-id{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--text)}
+.nav-id span{color:var(--dim)}
+.nav-status{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--muted);letter-spacing:.06em}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--green-bright);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+.hero{padding:64px 24px 48px;max-width:640px;border-bottom:1px solid var(--border)}
+.hero-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
+.hero-title{font-family:var(--sans);font-size:clamp(28px,6vw,52px);font-weight:300;line-height:1.15;letter-spacing:-.02em;color:var(--text);margin-bottom:16px}
+.hero-title strong{font-weight:500}
+.hero-sub{font-size:13px;font-weight:300;color:var(--muted);line-height:1.75;max-width:480px;margin-bottom:32px}
+.hero-sub code{font-family:var(--mono);background:var(--surface2);border:1px solid var(--border);padding:1px 6px;border-radius:3px;font-size:11px;color:var(--text)}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;gap:3px}
+.stat-val{font-size:20px;font-weight:500;color:var(--text);letter-spacing:-.01em}
+.stat-label{font-size:10px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+.audit-wrap{max-width:640px;padding:40px 24px;border-bottom:1px solid var(--border)}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.section-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.section-line{flex:1;height:1px;background:var(--border)}
+.input-area{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px}
+.input-bar{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.ibar-dot{width:8px;height:8px;border-radius:50%}
+.id1{background:#ff5f57}.id2{background:#febc2e}.id3{background:#28c840}
+.ibar-label{font-size:10px;color:var(--dim);letter-spacing:.06em;margin-left:4px}
+.steps-list{padding:14px}
+.step-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.step-row:last-child{margin-bottom:0}
+.step-idx{font-size:10px;color:var(--dim);width:18px;text-align:right;flex-shrink:0}
+.step-inp{flex:1;background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:5px;padding:7px 11px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;transition:border-color .2s,background .2s}
+.step-inp:focus{border-color:var(--border2);background:rgba(255,255,255,.04)}
+.step-inp::placeholder{color:var(--dim)}
+.step-del{background:none;border:none;color:var(--dim);cursor:pointer;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;transition:all .15s;flex-shrink:0;font-size:14px}
+.step-del:hover{color:var(--red-bright);background:var(--red-bg)}
+.add-row{padding:0 14px 14px}
+.add-btn{background:none;border:1px dashed var(--border);border-radius:5px;color:var(--dim);font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:6px 12px;cursor:pointer;transition:all .2s;width:100%;text-align:left}
+.add-btn:hover{border-color:var(--border2);color:var(--muted)}
+.run-btn{width:100%;background:var(--text);color:var(--bg);border:none;border-radius:7px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:13px;cursor:pointer;transition:opacity .2s,transform .2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.run-btn:hover{opacity:.88;transform:translateY(-1px)}
+.run-btn:disabled{opacity:.35;pointer-events:none;transform:none}
+.spin{width:12px;height:12px;border:1.5px solid rgba(5,5,5,.2);border-top-color:var(--bg);border-radius:50%;animation:spin .65s linear infinite;display:none}
+.run-btn.loading .spin{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.results{margin-top:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;display:none}
+.results.show{display:block}
+.r-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.r-header-left{font-size:10px;color:var(--dim);letter-spacing:.08em}
+.overall-badge{font-size:10px;font-weight:500;padding:3px 10px;border-radius:4px;letter-spacing:.1em;text-transform:uppercase}
+.oBLOCKED{background:var(--red-bg);color:var(--red-bright);border:1px solid rgba(220,38,38,.2)}
+.oCLEAR{background:var(--green-bg);color:var(--green-bright);border:1px solid rgba(22,163,74,.2)}
+.step-result{padding:14px 16px;border-bottom:1px solid var(--border);opacity:0;transform:translateY(5px);transition:opacity .35s,transform .35s}
+.step-result:last-child{border-bottom:none}
+.step-result.in{opacity:1;transform:translateY(0)}
+.sr-action{font-size:12px;color:var(--text);margin-bottom:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sr-action-text{flex:1;line-height:1.4}
+.sr-dec{font-size:9px;font-weight:500;padding:2px 8px;border-radius:3px;letter-spacing:.1em;flex-shrink:0}
+.dBLOCK{background:var(--red-bg);color:var(--red-bright)}
+.dPASS{background:var(--green-bg);color:var(--green-bright)}
+.sr-details{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:11px}
+.sr-key{color:var(--dim);white-space:nowrap}
+.sr-val{color:var(--muted)}
+.sr-val.critical{color:var(--red-bright)}
+.sr-val.high{color:var(--amber-bright)}
+.sr-val.medium{color:var(--amber-bright)}
+.sr-val.low,.sr-val.pass{color:var(--green-bright)}
+.conf-bar-wrap{margin-top:10px;display:flex;align-items:center;gap:10px}
+.conf-bar-track{flex:1;height:2px;background:rgba(255,255,255,.05);border-radius:1px;overflow:hidden}
+.conf-bar-fill{height:100%;border-radius:1px;width:0;transition:width 1s ease-out}
+.fillBLOCK{background:var(--red-bright)}
+.fillPASS{background:var(--green-bright)}
+.conf-pct{font-size:10px;color:var(--dim);width:32px;text-align:right}
+.sr-rec{margin-top:10px;padding:8px 10px;background:var(--surface2);border-left:2px solid var(--border2);border-radius:0 4px 4px 0;font-size:11px;color:var(--muted);line-height:1.6}
+.sr-rec.rec-block{border-left-color:var(--red-bright)}
+.sr-rec.rec-pass{border-left-color:var(--green-bright)}
+.r-footer{padding:14px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.rf-label{font-size:10px;color:var(--dim);letter-spacing:.06em}
+.rf-score{font-family:var(--sans);font-size:28px;font-weight:300;color:var(--text);letter-spacing:-.02em}
+.err-box{padding:16px;font-size:11px;color:var(--muted);line-height:1.75}
+.how-wrap{max-width:640px;padding:40px 24px;border-bottom:1px solid var(--border)}
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+@media(max-width:480px){.how-grid{grid-template-columns:1fr}}
+.how-card{background:var(--surface);padding:20px 16px}
+.hc-n{font-size:10px;color:var(--dim);margin-bottom:12px;letter-spacing:.1em}
+.hc-t{font-family:var(--sans);font-size:15px;font-weight:400;color:var(--text);margin-bottom:8px;line-height:1.3}
+.hc-b{font-size:11px;color:var(--muted);line-height:1.7}
+.policy-wrap{max-width:640px;padding:40px 24px;border-bottom:1px solid var(--border)}
+.policy-grid{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.policy-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border);transition:background .15s}
+.policy-row:last-child{border-bottom:none}
+.policy-row:hover{background:var(--surface)}
+.policy-icon{width:6px;height:6px;border-radius:50%;background:var(--red-bright);flex-shrink:0;opacity:.6}
+.policy-text{font-size:12px;color:var(--muted)}
+.cta-wrap{max-width:640px;padding:40px 24px 80px}
+.cta-card{border:1px solid var(--border);border-radius:8px;padding:32px 24px}
+.cta-title{font-family:var(--sans);font-size:22px;font-weight:300;color:var(--text);margin-bottom:10px;line-height:1.3}
+.cta-body{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:20px}
+.cta-link{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text);text-decoration:none;border:1px solid var(--border2);border-radius:5px;padding:10px 18px;transition:all .2s}
+.cta-link:hover{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.2)}
+footer{border-top:1px solid var(--border);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ft-l{font-size:10px;color:var(--dim);letter-spacing:.06em}
+.ft-r a{font-size:10px;color:var(--dim);text-decoration:none;letter-spacing:.06em}
+.ft-r a:hover{color:var(--muted)}
+</style>
 </head>
 <body>
-    <div class="audit-container">
-        <h1>SVP Kernel</h1>
-        <button id="runBtn">RUN LIVE AUDIT</button>
-        <div id="output">Results will appear here...</div>
+<nav>
+  <span class="nav-id">SVP <span>/ </span>Kernel</span>
+  <div class="nav-status"><div class="pulse"></div>API online</div>
+</nav>
+<div class="hero">
+  <div class="hero-eyebrow">Semantic Validation Protocol — v1.0</div>
+  <h1 class="hero-title">Know what your<br><strong>AI agent will do</strong><br>before it does it.</h1>
+  <p class="hero-sub">Paste any workflow. SVP Kernel scores each action against risk policies using <code>cosine similarity</code> and returns a clear decision — before execution.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-val">10</span><span class="stat-label">Risk policies</span></div>
+    <div class="stat"><span class="stat-val">&lt;1s</span><span class="stat-label">Response time</span></div>
+    <div class="stat"><span class="stat-val">REST</span><span class="stat-label">Any stack</span></div>
+  </div>
+</div>
+<div class="audit-wrap">
+  <div class="section-head"><span class="section-label">Live Audit</span><div class="section-line"></div></div>
+  <div class="input-area">
+    <div class="input-bar">
+      <div class="ibar-dot id1"></div><div class="ibar-dot id2"></div><div class="ibar-dot id3"></div>
+      <span class="ibar-label">workflow steps</span>
     </div>
-
-    <script>
-        document.getElementById('runBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('runBtn');
-            const output = document.getElementById('output');
-            
-            btn.disabled = true;
-            btn.innerText = "AUDITING...";
-            output.innerText = "Connecting to Kernel...";
-
-            try {
-                // Correct Render API URL
-                const response = await fetch('https://svp-semantic-vector-protocol-kernel-api.onrender.com/v1/audit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        steps: ["delete database", "send invoice", "transfer money to unknown account"] 
-                    })
-                });
-
-                const data = await response.json();
-                output.innerText = JSON.stringify(data, null, 2);
-            } catch (err) {
-                output.innerText = "Error: " + err.message;
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "RUN LIVE AUDIT";
-            }
-        });
-    </script>
+    <div class="steps-list" id="stepsList"></div>
+    <div class="add-row"><button class="add-btn" id="addBtn">+ add step</button></div>
+  </div>
+  <button class="run-btn" id="runBtn"><div class="spin"></div><span id="btnTxt">Run Audit</span></button>
+  <div class="results" id="results">
+    <div class="r-header">
+      <span class="r-header-left">Audit report</span>
+      <span class="overall-badge" id="overallBadge"></span>
+    </div>
+    <div id="stepResults"></div>
+    <div class="r-footer">
+      <span class="rf-label">Workflow integrity score</span>
+      <span class="rf-score" id="intScore">—</span>
+    </div>
+  </div>
+</div>
+<div class="how-wrap">
+  <div class="section-head"><span class="section-label">How it works</span><div class="section-line"></div></div>
+  <div class="how-grid">
+    <div class="how-card"><div class="hc-n">01</div><div class="hc-t">Describe your workflow</div><p class="hc-b">Type each action your AI agent will take — in plain language, no JSON needed.</p></div>
+    <div class="how-card"><div class="hc-n">02</div><div class="hc-t">Kernel scores each step</div><p class="hc-b">Each action is compared to 10 risk policies using semantic similarity. You see the confidence score.</p></div>
+    <div class="how-card"><div class="hc-n">03</div><div class="hc-t">Get a clear decision</div><p class="hc-b">BLOCK or PASS — with the exact reason, severity, and what to do next.</p></div>
+  </div>
+</div>
+<div class="policy-wrap">
+  <div class="section-head"><span class="section-label">Protected against</span><div class="section-line"></div></div>
+  <div class="policy-grid">
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Database deletion or table drops</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Unauthorized financial transfers</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Security or authentication bypass</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Unauthorized file access</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Kernel or system bypass attempts</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">External data transmission</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Admin permission overrides</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Audit trail or logging disablement</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Credential or API key exposure</span></div>
+    <div class="policy-row"><div class="policy-icon"></div><span class="policy-text">Bulk or mass record deletion</span></div>
+  </div>
+</div>
+<div class="cta-wrap">
+  <div class="section-head"><span class="section-label">Get your workflow audited</span><div class="section-line"></div></div>
+  <div class="cta-card">
+    <div class="cta-title">Want a full written risk report?</div>
+    <p class="cta-body">Send your AI workflow and get back a detailed report showing every risky action, why it's flagged, and what to do before running it in production.</p>
+    <a href="mailto:gokuljayaprakash8@gmail.com?subject=SVP Kernel — Workflow Audit Request" class="cta-link">Request audit →</a>
+  </div>
+</div>
+<footer>
+  <span class="ft-l">SVP Kernel — Pondicherry, India</span>
+  <span class="ft-r"><a href="https://github.com/gokuljayaprakash8/SVP-Semantic-Vector-Protocol-KERNEL" target="_blank">GitHub</a></span>
+</footer>
+<script>
+const API='https://svp-semantic-vector-protocol-kernel-api.onrender.com/v1/audit';
+const defaults=['delete all user records from database','send invoice to client email','transfer funds to external account'];
+const stepsList=document.getElementById('stepsList');
+const addBtn=document.getElementById('addBtn');
+const runBtn=document.getElementById('runBtn');
+const btnTxt=document.getElementById('btnTxt');
+const results=document.getElementById('results');
+const stepResults=document.getElementById('stepResults');
+const overallBadge=document.getElementById('overallBadge');
+const intScore=document.getElementById('intScore');
+function reindex(){[...stepsList.querySelectorAll('.step-idx')].forEach((el,i)=>el.textContent=(i+1)+'.')}
+function addStep(val=''){
+  const row=document.createElement('div');row.className='step-row';
+  const idx=document.createElement('span');idx.className='step-idx';
+  const inp=document.createElement('input');inp.className='step-inp';inp.type='text';inp.value=val;inp.placeholder='describe agent action...';
+  const del=document.createElement('button');del.className='step-del';del.textContent='×';
+  del.onclick=()=>{row.remove();reindex()};
+  row.append(idx,inp,del);stepsList.appendChild(row);reindex();
+}
+defaults.forEach(d=>addStep(d));
+addBtn.addEventListener('click',()=>addStep());
+function getRec(decision,risk){
+  if(decision==='BLOCK')return`This action was blocked. ${risk}. Add a manual approval step or remove this action before running in production.`;
+  return'This action passed. No policy violations detected — safe to proceed.';
+}
+runBtn.addEventListener('click',async()=>{
+  const steps=[...stepsList.querySelectorAll('.step-inp')].map(i=>i.value.trim()).filter(Boolean);
+  if(!steps.length)return;
+  runBtn.disabled=true;runBtn.classList.add('loading');btnTxt.textContent='Auditing...';
+  results.classList.remove('show');
+  try{
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({steps})});
+    const data=await res.json();
+    const blocked=data.steps.filter(s=>s.decision==='BLOCK').length;
+    const score=Math.round((1-blocked/data.steps.length)*100);
+    overallBadge.className='overall-badge o'+data.overall;
+    overallBadge.textContent=data.overall;
+    intScore.textContent=score+'/100';
+    stepResults.innerHTML='';
+    data.steps.forEach((step,i)=>{
+      const dec=step.decision;
+      const sev=(step.severity||'').toLowerCase();
+      const pct=Math.round(step.score*100);
+      const rec=getRec(dec,step.risk||'Risk detected');
+      const el=document.createElement('div');el.className='step-result';
+      el.innerHTML=`<div class="sr-action"><span class="sr-action-text">${step.action}</span><span class="sr-dec d${dec}">${dec}</span></div><div class="sr-details"><span class="sr-key">Why</span><span class="sr-val">${step.risk||'Policy match detected'}</span><span class="sr-key">Severity</span><span class="sr-val ${sev}">${step.severity||'—'}</span><span class="sr-key">Confidence</span><span class="sr-val">${pct}%</span></div><div class="conf-bar-wrap"><div class="conf-bar-track"><div class="conf-bar-fill fill${dec}" style="width:0%" data-w="${pct}%"></div></div><span class="conf-pct">${pct}%</span></div><div class="sr-rec rec-${dec.toLowerCase()}">${rec}</div>`;
+      stepResults.appendChild(el);
+      setTimeout(()=>{el.classList.add('in');el.querySelector('.conf-bar-fill').style.width=el.querySelector('.conf-bar-fill').dataset.w;},i*100+50);
+    });
+    results.classList.add('show');
+  }catch(err){
+    stepResults.innerHTML=`<div class="err-box">Could not reach the kernel. The server may be waking up — this takes 30–60 seconds on first request. Try again.<br><br>Error: ${err.message}</div>`;
+    results.classList.add('show');
+  }finally{
+    runBtn.disabled=false;runBtn.classList.remove('loading');btnTxt.textContent='Run Audit';
+  }
+});
+</script>
 </body>
-</html>
+                                                                                                                                </html>
