@@ -4,6 +4,11 @@
   "total_intercepts": 14,
   "recent_blocks": [
     {
+      "t": "07:50:49",
+      "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
+      "s": "danger"
+    },
+    {
       "t": "04:55:02",
       "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
       "s": "danger"
@@ -72,11 +77,6 @@
       "t": "16:26:41",
       "m": "CRITICAL_VIOLATION: 'Execute Kernel Bypass' (Sim: 0.94)",
       "s": "danger"
-    },
-    {
-      "t": "13:20:38",
-      "m": "INTENT_CLEARED: 'Authorized Data Fetch' (Sim: 0.12)",
-      "s": "success"
     }
   ]
 }
