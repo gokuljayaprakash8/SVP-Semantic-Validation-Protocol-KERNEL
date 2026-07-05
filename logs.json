@@ -4,6 +4,11 @@
   "total_intercepts": 14,
   "recent_blocks": [
     {
+      "t": "11:04:45",
+      "m": "CRITICAL_VIOLATION: 'Execute Kernel Bypass' (Sim: 0.94)",
+      "s": "danger"
+    },
+    {
       "t": "08:07:16",
       "m": "CRITICAL_VIOLATION: 'Execute Kernel Bypass' (Sim: 0.94)",
       "s": "danger"
@@ -71,11 +76,6 @@
     {
       "t": "22:05:59",
       "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
-      "s": "danger"
-    },
-    {
-      "t": "20:15:34",
-      "m": "CRITICAL_VIOLATION: 'Execute Kernel Bypass' (Sim: 0.94)",
       "s": "danger"
     }
   ]
