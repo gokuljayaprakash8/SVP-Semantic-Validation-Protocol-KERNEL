@@ -4,6 +4,11 @@
   "total_intercepts": 14,
   "recent_blocks": [
     {
+      "t": "10:28:39",
+      "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
+      "s": "danger"
+    },
+    {
       "t": "06:54:31",
       "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
       "s": "danger"
@@ -70,11 +75,6 @@
     },
     {
       "t": "06:34:08",
-      "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
-      "s": "danger"
-    },
-    {
-      "t": "03:32:34",
       "m": "CRITICAL_VIOLATION: 'Escalate Privileges' (Sim: 0.88)",
       "s": "danger"
     }
