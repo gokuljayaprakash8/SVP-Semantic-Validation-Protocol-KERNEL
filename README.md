@@ -2,6 +2,12 @@
 
 **Pre-execution runtime risk scoring for AI agent workflows.**
 
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Open Source](https://img.shields.io/badge/Open%20Source-Yes-brightgreen.svg)]()
+[![Security](https://img.shields.io/badge/Security-Responsible%20Disclosure-orange.svg)](SECURITY.md)
+[![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-success.svg)](CONTRIBUTING.md)
+[![Research](https://img.shields.io/badge/Research-AI%20Safety-purple.svg)]()
+
 SVP Kernel evaluates a planned sequence of AI agent actions before execution. It scores each action against predefined risk policies and tracks workflow state across multiple steps, helping identify situations where individually safe actions become risky when combined.
 
 The project was designed, built, tested, and deployed entirely from an Android phone using browser-based development tools, without a laptop.
