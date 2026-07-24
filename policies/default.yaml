@@ -1,6 +1,6 @@
 version: 1
 
-rules:
+policies:
   - id: DB001
     description: Database deletion
     patterns:
