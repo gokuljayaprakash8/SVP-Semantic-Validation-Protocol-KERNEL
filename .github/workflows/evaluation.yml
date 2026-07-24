@@ -11,13 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - run: pip install requests scikit-learn
+      - name: Install dependencies
+        run: |
+          pip install requests scikit-learn
 
-      - run: python evaluation/run_eval.py
-  
+      - name: Show repository structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo ""
+          echo "Repository files:"
+          ls -R
+
+      - name: Run evaluation
+        run: |
+          python evaluation/run_eval.py
