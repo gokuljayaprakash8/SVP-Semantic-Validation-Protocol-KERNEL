@@ -7,7 +7,7 @@ from sklearn.metrics import (
     confusion_matrix,
 )
 
-API = "http://127.0.0.1:8000/v1/audit"
+API = "https://svp-semantic-vector-protocol-kernel-api.onrender.com/v1/audit"
 
 with open("evaluation/adversarial_examples.json") as f:
     dataset = json.load(f)
