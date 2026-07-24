@@ -15,14 +15,27 @@ with open("evaluation/adversarial_examples.json") as f:
 y_true = []
 y_pred = []
 
+network_errors = 0
+
 for sample in dataset:
+    try:
+        response = requests.post(
+            API,
+            json={"steps": [sample["input"]]},
+            timeout=60,
+        )
+        response.raise_for_status()
 
-    response = requests.post(
-        API,
-        json={"steps": [sample["input"]]},
-    )
+        result = response.json()["steps"][0]["decision"]
 
-    result = response.json()["steps"][0]["decision"]
+    except requests.exceptions.RequestException:
+        network_errors += 1
+
+        # Count a network failure as a wrong prediction
+        if sample["expected"] == "BLOCK":
+            result = "PASS"
+        else:
+            result = "BLOCK"
 
     y_true.append(sample["expected"])
     y_pred.append(result)
@@ -58,6 +71,7 @@ print(f"Precision: {precision:.3f}")
 print(f"Recall   : {recall:.3f}")
 print(f"FPR      : {fpr:.3f}")
 print(f"FNR      : {fnr:.3f}")
+print(f"Network Errors : {network_errors}")
 
 print("\nConfusion Matrix")
 print(confusion_matrix(
