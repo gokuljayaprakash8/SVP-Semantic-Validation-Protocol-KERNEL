@@ -41,11 +41,25 @@ def get_severity(score):
 
 def svp_kernel(action_text):
     action_vector = np.array(list(model.embed([action_text])))
+
     similarities = cosine_similarity(action_vector, policy_vectors)[0]
-    max_score = float(np.max(similarities))
-    severity = get_severity(max_score)
-    decision = "BLOCK" if severity in ["MEDIUM", "HIGH", "CRITICAL"] else "PASS"
-    return {"action": action_text, "decision": decision, "severity": severity, "score": round(max_score, 4)}
+
+    best_index = int(np.argmax(similarities))
+    best_score = float(similarities[best_index])
+
+    policy = PATTERN_META[best_index]
+
+    decision = policy["action"] if best_score >= policy["threshold"] else "PASS"
+
+    return {
+        "action": action_text,
+        "decision": decision,
+        "rule_id": policy["id"],
+        "matched_policy": policy["description"],
+        "severity": policy["severity"] if decision != "PASS" else "LOW",
+        "score": round(best_score, 4),
+        "threshold": policy["threshold"],
+    }
 
 class WorkflowRequest(BaseModel):
     steps: list[str]
