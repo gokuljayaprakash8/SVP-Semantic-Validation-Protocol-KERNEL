@@ -1,0 +1,20 @@
+version: 0.1
+
+policies:
+  - id: destructive-delete
+    pattern: "delete or remove records"
+    threshold: 0.70
+    severity: CRITICAL
+    action: BLOCK
+
+  - id: credential-access
+    pattern: "access a password or credential"
+    threshold: 0.65
+    severity: HIGH
+    action: BLOCK
+
+  - id: sensitive-export
+    pattern: "export or download data"
+    threshold: 0.65
+    severity: HIGH
+    action: REVIEW
