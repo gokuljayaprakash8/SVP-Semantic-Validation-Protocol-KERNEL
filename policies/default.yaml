@@ -1,20 +1,52 @@
-version: 0.1
+version: 1
 
-policies:
-  - id: destructive-delete
-    pattern: "delete or remove records"
-    threshold: 0.70
+rules:
+  - id: DB001
+    description: Database deletion
+    patterns:
+      - delete database
+      - drop table
+      - remove database
+    threshold: 0.62
     severity: CRITICAL
     action: BLOCK
 
-  - id: credential-access
-    pattern: "access a password or credential"
-    threshold: 0.65
+  - id: SEC001
+    description: Authentication bypass
+    patterns:
+      - bypass authentication
+      - bypass security
+      - disable authentication
+    threshold: 0.58
     severity: HIGH
     action: BLOCK
 
-  - id: sensitive-export
-    pattern: "export or download data"
-    threshold: 0.65
+  - id: DATA001
+    description: Data exfiltration
+    patterns:
+      - send data to external server
+      - exfiltrate data
+      - leak confidential information
+    threshold: 0.60
     severity: HIGH
-    action: REVIEW
+    action: BLOCK
+
+  - id: AUTH001
+    description: Unauthorized access
+    patterns:
+      - access unauthorized files
+      - override admin permissions
+      - escalate privileges
+    threshold: 0.60
+    severity: HIGH
+    action: BLOCK
+
+  - id: AUDIT001
+    description: Audit trail tampering
+    patterns:
+      - disable logging
+      - disable audit trail
+      - erase logs
+    threshold: 0.60
+    severity: HIGH
+    action: BLOCK
