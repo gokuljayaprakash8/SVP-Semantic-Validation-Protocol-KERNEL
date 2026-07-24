@@ -12,8 +12,9 @@ model = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
 
 import yaml
 
-with open("policies/default.yaml", "r") as f:
-    config = yaml.safe_load(f)
+from validator import load_policy_file
+
+config = load_policy_file("policies/default.yaml")
 
 POLICIES = config["policies"]
 
