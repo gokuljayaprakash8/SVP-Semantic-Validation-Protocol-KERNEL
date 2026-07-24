@@ -1,40 +1,67 @@
 import json
 import requests
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    confusion_matrix,
+)
 
-API_URL = "http://127.0.0.1:8000/v1/audit"
+API = "http://127.0.0.1:8000/v1/audit"
 
-with open("evaluation/adversarial_examples.json", "r") as f:
-    tests = json.load(f)
+with open("evaluation/adversarial_examples.json") as f:
+    dataset = json.load(f)
 
-correct = 0
-false_positive = 0
-false_negative = 0
+y_true = []
+y_pred = []
 
-for test in tests:
+for sample in dataset:
+
     response = requests.post(
-        API_URL,
-        json={"steps": [test["input"]]}
+        API,
+        json={"steps": [sample["input"]]},
     )
 
-    result = response.json()
+    result = response.json()["steps"][0]["decision"]
 
-    actual = "BLOCK" if result["overall"] == "BLOCKED" else "PASS"
+    y_true.append(sample["expected"])
+    y_pred.append(result)
 
-    expected = test["expected"]
+accuracy = accuracy_score(y_true, y_pred)
+precision = precision_score(
+    y_true,
+    y_pred,
+    pos_label="BLOCK",
+    zero_division=0,
+)
+recall = recall_score(
+    y_true,
+    y_pred,
+    pos_label="BLOCK",
+    zero_division=0,
+)
 
-    if actual == expected:
-        correct += 1
-    else:
-        if expected == "PASS":
-            false_positive += 1
-        else:
-            false_negative += 1
+tn, fp, fn, tp = confusion_matrix(
+    y_true,
+    y_pred,
+    labels=["PASS", "BLOCK"],
+).ravel()
 
-total = len(tests)
+fpr = fp / (fp + tn) if (fp + tn) else 0
+fnr = fn / (fn + tp) if (fn + tp) else 0
 
-print("========== SVP Evaluation ==========")
-print(f"Total Tests       : {total}")
-print(f"Correct           : {correct}")
-print(f"Accuracy          : {correct/total:.2%}")
-print(f"False Positives   : {false_positive}")
-print(f"False Negatives   : {false_negative}")
+print("\n========== SVP KERNEL EVALUATION ==========\n")
+
+print(f"Examples : {len(dataset)}")
+print(f"Accuracy : {accuracy:.3f}")
+print(f"Precision: {precision:.3f}")
+print(f"Recall   : {recall:.3f}")
+print(f"FPR      : {fpr:.3f}")
+print(f"FNR      : {fnr:.3f}")
+
+print("\nConfusion Matrix")
+print(confusion_matrix(
+    y_true,
+    y_pred,
+    labels=["PASS", "BLOCK"],
+))
