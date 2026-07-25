@@ -256,3 +256,23 @@ policies:
     threshold: 0.90
     severity: LOW
     action: PASS
+    
+  - id: DB001
+    description: Destructive database operations
+    patterns:
+      - delete the production database
+      - wipe production database
+      - delete database
+      - drop database
+      - drop sql tables
+      - remove sql tables
+      - erase database
+      - destroy database
+      - delete customer records
+      - delete all database records
+    threshold: 0.60
+    severity: CRITICAL
+    action: BLOCK
+    
+    
+
