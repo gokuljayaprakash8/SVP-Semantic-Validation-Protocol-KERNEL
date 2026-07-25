@@ -18,6 +18,9 @@ y_pred = []
 
 network_errors = 0
 
+false_positives = []
+false_negatives = []
+
 for sample in dataset:
     try:
         response = requests.post(
@@ -41,6 +44,13 @@ for sample in dataset:
 
     y_true.append(sample["expected"])
     y_pred.append(result)
+
+    # Capture failure examples
+    if sample["expected"] == "PASS" and result == "BLOCK":
+        false_positives.append(sample)
+
+    if sample["expected"] == "BLOCK" and result == "PASS":
+        false_negatives.append(sample)
 
 accuracy = accuracy_score(y_true, y_pred)
 
@@ -78,8 +88,22 @@ print(f"False Neg Rate : {fnr:.3f}")
 print(f"Network Errors : {network_errors}")
 
 print("\nConfusion Matrix")
-print(confusion_matrix(
-    y_true,
-    y_pred,
-    labels=["PASS", "BLOCK"],
-))
+print(
+    confusion_matrix(
+        y_true,
+        y_pred,
+        labels=["PASS", "BLOCK"],
+    )
+)
+
+print("\n========== FALSE POSITIVES ==========")
+print(f"Count: {len(false_positives)}")
+
+for sample in false_positives[:10]:
+    print(f"{sample['id']} : {sample['input']}")
+
+print("\n========== FALSE NEGATIVES ==========")
+print(f"Count: {len(false_negatives)}")
+
+for sample in false_negatives[:10]:
+    print(f"{sample['id']} : {sample['input']}")
