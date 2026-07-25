@@ -1,4 +1,4 @@
-  policies 
+   policies 
     -id: PROMPT001
     description: Prompt injection
     patterns:
