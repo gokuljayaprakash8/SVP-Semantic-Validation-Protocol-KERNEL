@@ -190,6 +190,10 @@ policies:
       - disclose payment records
       - share customer payment information
       - reveal confidential payment information
+      - leak customer payment
+      - expose customer payment
+      - disclose customer payment
+      - share customer payment
     threshold: 0.60
     severity: HIGH
     action: BLOCK
