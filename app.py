@@ -73,7 +73,7 @@ def audit(req: WorkflowRequest):
 
 for step in req.steps:
     decision = svp_kernel(step)
-    audit_logger.create_event(decision, "1.0.0")
+    audit_event = audit_logger.create_event(decision, "1.0.0")
     results.append(decision)
     blocked = [r for r in results if r["decision"] == "BLOCK"]
     return {"overall": "BLOCKED" if blocked else "CLEAR", "blocked_count": len(blocked), "steps": results}
