@@ -34,6 +34,7 @@ for policy in POLICIES:
         })
 
 policy_vectors = np.array(list(model.embed(PATTERNS))) 
+audit_logger = AuditLogger()
 
 def get_severity(score):
     if score > 0.75: return "CRITICAL"
