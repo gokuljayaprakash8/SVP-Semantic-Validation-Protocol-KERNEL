@@ -1,4 +1,3 @@
-import os
 import hashlib
 import json
 import uuid
@@ -11,8 +10,8 @@ class AuditLogger:
     """
 
     def __init__(self):
-    self._previous_hash = None
-    self.log_file = "audit_log.json"
+        self._previous_hash = None
+        self.log_file = "audit_log.json"
 
     def _generate_hash(self, event: dict) -> str:
         """
@@ -23,33 +22,16 @@ class AuditLogger:
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
     def create_event(self, decision_data: dict, kernel_version: str):
-    event = {
-        "event_id": str(uuid.uuid4()),
-        "timestamp": datetime.utcnow().isoformat() + "Z",
-        "action": decision_data["action"],
-        "decision": decision_data["decision"],
-        "rule_id": decision_data["rule_id"],
-        "matched_policy": decision_data["matched_policy"],
-        "severity": decision_data["severity"],
-        "risk_score": decision_data["score"],
-        "threshold": decision_data["threshold"],
-        "kernel_version": kernel_version,
-        "previous_hash": self._previous_hash,
-    }
-        
-
-    event["hash"] = self._generate_hash(event)
-
-    self._previous_hash = event["hash"]
-
-    return event
         event = {
             "event_id": str(uuid.uuid4()),
             "timestamp": datetime.utcnow().isoformat() + "Z",
-            "action": action,
-            "decision": decision,
-            "risk_score": risk_score,
-            "policy_triggered": policy_triggered,
+            "action": decision_data["action"],
+            "decision": decision_data["decision"],
+            "rule_id": decision_data["rule_id"],
+            "matched_policy": decision_data["matched_policy"],
+            "severity": decision_data["severity"],
+            "risk_score": decision_data["score"],
+            "threshold": decision_data["threshold"],
             "kernel_version": kernel_version,
             "previous_hash": self._previous_hash,
         }
@@ -73,7 +55,7 @@ class AuditLogger:
             json.dump(logs, f, indent=2)
 
     def verify_chain(self):
-                try:
+        try:
             with open(self.log_file, "r") as f:
                 logs = json.load(f)
         except:
@@ -82,17 +64,19 @@ class AuditLogger:
         previous_hash = None
 
         for event in logs:
-           stored_hash = event.get("hash")
-           event_copy = event.copy()
-           event_copy.pop("hash", None)
-            
-           calculated_hash = self._generate_hash(event_copy)
+            stored_hash = event.get("hash")
 
-           if stored_hash != calculated_hash:
-            return False
-           if event.get("previous_hash") != previous_hash:
-            return False
+            event_copy = event.copy()
+            event_copy.pop("hash", None)
 
-           previous_hash = stored_hash
+            calculated_hash = self._generate_hash(event_copy)
+
+            if stored_hash != calculated_hash:
+                return False
+
+            if event.get("previous_hash") != previous_hash:
+                return False
+
+            previous_hash = stored_hash
 
         return True
