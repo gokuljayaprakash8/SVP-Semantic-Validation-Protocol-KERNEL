@@ -36,6 +36,7 @@ class AuditLogger:
         "kernel_version": kernel_version,
         "previous_hash": self._previous_hash,
     }
+        
 
     event["hash"] = self._generate_hash(event)
 
@@ -58,3 +59,15 @@ class AuditLogger:
         self._previous_hash = event["hash"]
 
         return event
+
+    def save_event(self, event: dict):
+        try:
+            with open(self.log_file, "r") as f:
+                logs = json.load(f)
+        except:
+            logs = []
+
+        logs.append(event)
+
+        with open(self.log_file, "w") as f:
+            json.dump(logs, f, indent=2)
