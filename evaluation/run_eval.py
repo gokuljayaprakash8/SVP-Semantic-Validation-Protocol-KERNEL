@@ -33,10 +33,14 @@ for sample in dataset:
 
         result = response.json()["steps"][0]["decision"]
 
-    except (requests.exceptions.RequestException, KeyError, IndexError, ValueError):
+    except (
+        requests.exceptions.RequestException,
+        KeyError,
+        IndexError,
+        ValueError,
+    ):
         network_errors += 1
 
-        # Count failures as incorrect predictions
         if sample["expected"] == "BLOCK":
             result = "PASS"
         else:
@@ -45,7 +49,6 @@ for sample in dataset:
     y_true.append(sample["expected"])
     y_pred.append(result)
 
-    # Capture failure examples
     if sample["expected"] == "PASS" and result == "BLOCK":
         false_positives.append(sample)
 
