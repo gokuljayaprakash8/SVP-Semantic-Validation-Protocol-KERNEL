@@ -20,14 +20,26 @@ class AuditLogger:
 
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
-    def create_event(
-        self,
-        action: str,
-        decision: str,
-        risk_score: float,
-        policy_triggered: str,
-        kernel_version: str,
-    ):
+    def create_event(self, decision_data: dict, kernel_version: str):
+    event = {
+        "event_id": str(uuid.uuid4()),
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "action": decision_data["action"],
+        "decision": decision_data["decision"],
+        "rule_id": decision_data["rule_id"],
+        "matched_policy": decision_data["matched_policy"],
+        "severity": decision_data["severity"],
+        "risk_score": decision_data["score"],
+        "threshold": decision_data["threshold"],
+        "kernel_version": kernel_version,
+        "previous_hash": self._previous_hash,
+    }
+
+    event["hash"] = self._generate_hash(event)
+
+    self._previous_hash = event["hash"]
+
+    return event
         event = {
             "event_id": str(uuid.uuid4()),
             "timestamp": datetime.utcnow().isoformat() + "Z",
