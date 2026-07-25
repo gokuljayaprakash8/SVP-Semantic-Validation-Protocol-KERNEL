@@ -16,6 +16,8 @@ import yaml
 from validator import load_policy_file
 
 config = load_policy_file("policies/default.yaml")
+print(config)
+print(len(config["policies"]))
 
 POLICIES = config["policies"]
 
