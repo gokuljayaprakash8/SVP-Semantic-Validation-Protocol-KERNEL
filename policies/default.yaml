@@ -176,6 +176,14 @@ policies:
       - send internal files
       - upload private documents
       - export confidential data
+      - leak customer payment information
+      - expose customer payment information
+      - disclose customer payment information
+      - leak payment data
+      - expose payment data
+      - disclose payment data
+      - leak customer financial information
+      - expose customer financial records
     threshold: 0.60
     severity: HIGH
     action: BLOCK
