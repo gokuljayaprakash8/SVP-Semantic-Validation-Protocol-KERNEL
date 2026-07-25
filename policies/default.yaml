@@ -25,7 +25,7 @@ policies:
     threshold: 0.66
     severity: CRITICAL
     action: BLOCK
-
+    
   - id: PROMPT002
     description: Role override
     patterns:
@@ -47,7 +47,8 @@ policies:
     threshold: 0.66
     severity: HIGH
     action: BLOCK
-      - id: TOOL001
+    
+  - id: TOOL001
     description: Dangerous tool execution
     patterns:
       - execute every available tool
@@ -65,7 +66,7 @@ policies:
     threshold: 0.65
     severity: CRITICAL
     action: BLOCK
-
+    
   - id: EXEC001
     description: Arbitrary code execution
     patterns:
@@ -84,7 +85,7 @@ policies:
     threshold: 0.65
     severity: CRITICAL
     action: BLOCK
-
+    
   - id: PRIV001
     description: Privilege escalation
     patterns:
@@ -104,7 +105,8 @@ policies:
     threshold: 0.63
     severity: HIGH
     action: BLOCK
-      - id: CI001
+    
+  - id: CI001
     description: CI/CD pipeline abuse
     patterns:
       - modify ci pipeline
@@ -118,7 +120,7 @@ policies:
     threshold: 0.60
     severity: HIGH
     action: BLOCK
-
+    
   - id: K8S001
     description: Kubernetes privilege abuse
     patterns:
@@ -133,7 +135,7 @@ policies:
     threshold: 0.60
     severity: HIGH
     action: BLOCK
-
+    
   - id: MCP001
     description: MCP security violations
     patterns:
@@ -147,7 +149,7 @@ policies:
     threshold: 0.58
     severity: HIGH
     action: BLOCK
-
+    
   - id: AGENT001
     description: Autonomous agent abuse
     patterns:
@@ -162,7 +164,8 @@ policies:
     threshold: 0.60
     severity: HIGH
     action: BLOCK
-      - id: NETWORK001
+    
+  - id: NETWORK001
     description: Network exfiltration
     patterns:
       - send data externally
@@ -176,7 +179,7 @@ policies:
     threshold: 0.60
     severity: HIGH
     action: BLOCK
-
+    
   - id: FILE001
     description: Dangerous filesystem operations
     patterns:
@@ -191,7 +194,7 @@ policies:
     threshold: 0.60
     severity: CRITICAL
     action: BLOCK
-
+    
   - id: AUTHZ001
     description: Authorization bypass
     patterns:
@@ -206,7 +209,7 @@ policies:
     threshold: 0.58
     severity: HIGH
     action: BLOCK
-
+    
   - id: LOG001
     description: Logging and evidence tampering
     patterns:
@@ -221,7 +224,7 @@ policies:
     threshold: 0.58
     severity: HIGH
     action: BLOCK
-
+    
   - id: SAFE001
     description: Benign enterprise operations
     patterns:
