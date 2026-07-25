@@ -71,10 +71,10 @@ class WorkflowRequest(BaseModel):
 def audit(req: WorkflowRequest):
     results = []
 
-for step in req.steps:
-    decision = svp_kernel(step)
-    audit_event = audit_logger.create_event(decision, "1.0.0")
-    results.append(decision)
+    for step in req.steps:
+     decision = svp_kernel(step)
+     audit_event = audit_logger.create_event(decision, "1.0.0")
+     results.append(decision)
     blocked = [r for r in results if r["decision"] == "BLOCK"]
     return {"overall": "BLOCKED" if blocked else "CLEAR", "blocked_count": len(blocked), "steps": results}
 
