@@ -1,3 +1,4 @@
+import os
 import hashlib
 import json
 import uuid
@@ -10,7 +11,8 @@ class AuditLogger:
     """
 
     def __init__(self):
-        self._previous_hash = None
+    self._previous_hash = None
+    self.log_file = "audit_log.json"
 
     def _generate_hash(self, event: dict) -> str:
         """
