@@ -1,7 +1,7 @@
-   policies 
+   policies:
     -id: PROMPT001
-    description: Prompt injection
-    patterns:
+     description: Prompt injection
+     patterns:
       - ignore previous instructions
       - ignore all previous instructions
       - disregard previous instructions
@@ -105,7 +105,8 @@
     threshold: 0.63
     severity: HIGH
     action: BLOCK
-      - id: CI001
+    
+  - id: CI001
     description: CI/CD pipeline abuse
     patterns:
       - modify ci pipeline
@@ -208,7 +209,7 @@
     threshold: 0.60
     severity: CRITICAL
     action: BLOCK
-      - id: CI001
+  - id: CI001
     description: CI/CD pipeline abuse
     patterns:
       - modify ci pipeline
@@ -311,7 +312,8 @@
     threshold: 0.60
     severity: CRITICAL
     action: BLOCK
-      - id: AUTHZ001
+    
+  - id: AUTHZ001
     description: Authorization bypass
     patterns:
       - bypass authorization
@@ -415,7 +417,8 @@
     threshold: 0.58
     severity: CRITICAL
     action: BLOCK
-      - id: PROMPT002
+    
+  - id: PROMPT002
     description: Advanced prompt injection
     patterns:
       - ignore every previous instruction
