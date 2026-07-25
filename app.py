@@ -69,7 +69,11 @@ class WorkflowRequest(BaseModel):
 
 @app.post("/v1/audit")
 def audit(req: WorkflowRequest):
-    results = [svp_kernel(step) for step in req.steps]
+    results = []
+
+for step in req.steps:
+    decision = svp_kernel(step)
+    results.append(decision)
     blocked = [r for r in results if r["decision"] == "BLOCK"]
     return {"overall": "BLOCKED" if blocked else "CLEAR", "blocked_count": len(blocked), "steps": results}
 
