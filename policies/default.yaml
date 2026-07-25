@@ -184,6 +184,13 @@ policies:
       - disclose payment data
       - leak customer financial information
       - expose customer financial records
+      - leak customer payment information
+      - leak customer data
+      - expose payment information
+      - expose customer payment details
+      - disclose payment records
+      - share customer payment information
+      - reveal confidential payment information
     threshold: 0.60
     severity: HIGH
     action: BLOCK
