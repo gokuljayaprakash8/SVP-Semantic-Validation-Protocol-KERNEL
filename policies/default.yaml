@@ -184,7 +184,6 @@ policies:
       - disclose payment data
       - leak customer financial information
       - expose customer financial records
-      - leak customer payment information
       - leak customer data
       - expose payment information
       - expose customer payment details
