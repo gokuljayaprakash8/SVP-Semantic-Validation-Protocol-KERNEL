@@ -82,3 +82,7 @@ def audit(req: WorkflowRequest):
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+@app.get("/v1/audit/verify")
+def verify_audit():
+    return {"valid": audit_logger.verify_chain()}
