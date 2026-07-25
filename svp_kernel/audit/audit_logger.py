@@ -71,3 +71,28 @@ class AuditLogger:
 
         with open(self.log_file, "w") as f:
             json.dump(logs, f, indent=2)
+
+    def verify_chain(self):
+                try:
+            with open(self.log_file, "r") as f:
+                logs = json.load(f)
+        except:
+            return False
+
+        previous_hash = None
+
+        for event in logs:
+           stored_hash = event.get("hash")
+           event_copy = event.copy()
+           event_copy.pop("hash", None)
+            
+           calculated_hash = self._generate_hash(event_copy)
+
+           if stored_hash != calculated_hash:
+            return False
+           if event.get("previous_hash") != previous_hash:
+            return False
+
+           previous_hash = stored_hash
+
+        return True
