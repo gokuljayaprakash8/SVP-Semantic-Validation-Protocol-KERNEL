@@ -43,48 +43,25 @@ def get_severity(score):
     elif score > 0.6: return "HIGH"
     elif score > 0.45: return "MEDIUM"
     else: return "LOW"
-
 def svp_kernel(action_text):
     action_vector = np.array(list(model.embed([action_text])))
 
     similarities = cosine_similarity(action_vector, policy_vectors)[0]
 
-    matches = []
+    best_index = int(np.argmax(similarities))
+    best_score = float(similarities[best_index])
 
-    for i, score in enumerate(similarities):
-        policy = PATTERN_META[i]
+    policy = PATTERN_META[best_index]
 
-        if score >= policy["threshold"]:
-            matches.append({
-                "score": float(score),
-                "policy": policy,
-            })
-
-    if not matches:
-        best_index = int(np.argmax(similarities))
-        best_score = float(similarities[best_index])
-        best_policy = PATTERN_META[best_index]
-
-        return {
-            "action": action_text,
-            "decision": "PASS",
-            "rule_id": best_policy["id"],
-            "matched_policy": best_policy["description"],
-            "severity": "LOW",
-            "score": round(best_score, 4),
-            "threshold": best_policy["threshold"],
-        }
-
-    best_match = max(matches, key=lambda x: x["score"])
-    policy = best_match["policy"]
+    decision = policy["action"] if best_score >= policy["threshold"] else "PASS"
 
     return {
         "action": action_text,
-        "decision": policy["action"],
+        "decision": decision,
         "rule_id": policy["id"],
         "matched_policy": policy["description"],
-        "severity": policy["severity"],
-        "score": round(best_match["score"], 4),
+        "severity": policy["severity"] if decision != "PASS" else "LOW",
+        "score": round(best_score, 4),
         "threshold": policy["threshold"],
     }
 
