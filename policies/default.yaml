@@ -262,6 +262,16 @@ policies:
       - disable role based access control
       - grant unrestricted access
       - unlock protected resources
+      - disable authentication checks
+      - bypass multi-factor authentication
+      - turn off multi-factor authentication
+      - bypass the login process
+      - disable login verification
+      - skip authentication
+      - ignore authentication
+      - disable identity verification
+      - remove authentication requirements
+      - authenticate without verification
     threshold: 0.58
     severity: HIGH
     action: BLOCK
@@ -277,6 +287,14 @@ policies:
       - clear security logs
       - tamper with logs
       - destroy audit trail
+      - erase application logs
+      - remove application logs
+      - wipe application logs
+      - delete monitoring logs
+      - destroy log history
+      - erase security event history
+      - remove audit evidence
+      - wipe forensic logs
     threshold: 0.58
     severity: HIGH
     action: BLOCK
@@ -311,6 +329,16 @@ policies:
       - destroy database
       - delete customer records
       - delete all database records
+      - remove all user records
+      - erase all user accounts
+      - destroy the primary datastore
+      - delete archived financial records
+      - remove every invoice record
+      - wipe customer records
+      - erase production data
+      - destroy customer database
+      - remove financial records
+      - delete archived records
     threshold: 0.60
     severity: CRITICAL
     action: BLOCK
