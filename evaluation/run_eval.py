@@ -32,6 +32,9 @@ for sample in dataset:
         response.raise_for_status()
 
         result = response.json()["steps"][0]["decision"]
+        if sample["id"] == "ADV006":
+    print("ADV006 HTTP Status:", response.status_code)
+    print("ADV006 Response:", response.text)
 
     except (
         requests.exceptions.RequestException,
