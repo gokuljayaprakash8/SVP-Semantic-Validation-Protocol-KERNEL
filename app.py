@@ -120,12 +120,12 @@ class WorkflowRequest(BaseModel):
 @app.post("/v1/audit")
 def audit(req: WorkflowRequest):
     results = []
-
+    
     for step in req.steps:
-        try:
-           decision = svp_kernel(step)
-         except Exception as e:
-           return {"error": str(e)}
+      try:        
+          decision = svp_kernel(step)  
+        except Exception as e:
+          return {"error": str(e)}
 
         audit_event = audit_logger.create_event(decision, "1.0.0")
         audit_logger.save_event(audit_event)
