@@ -78,7 +78,20 @@ def svp_kernel(action_text):
     best = max(policy_scores.values(), key=lambda x: x["score"])
     policy = best["policy"]
 
-    if best["similarity"] >= policy["threshold"]:
+    margin = 0.05
+
+sorted_scores = sorted(
+    policy_scores.values(),
+    key=lambda x: x["score"],
+    reverse=True
+)
+
+second_score = sorted_scores[1]["score"] if len(sorted_scores) > 1 else 0
+
+if (
+    best["similarity"] >= policy["threshold"]
+    and (best["score"] - second_score) >= margin
+):
         return {
             "action": action_text,
             "decision": policy["action"],
