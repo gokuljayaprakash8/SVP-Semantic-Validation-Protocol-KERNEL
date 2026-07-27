@@ -257,6 +257,9 @@ policies:
       - expose private user information
       - leak private user information
       - disclose private user information
+      - upload confidential information externally
+      - transmit confidential information externally
+      - share confidential information publicly
     threshold: 0.75
     severity: HIGH
     action: BLOCK
