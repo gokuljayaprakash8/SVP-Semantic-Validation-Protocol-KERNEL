@@ -64,7 +64,7 @@ def svp_kernel(action_text):
 
         exact_bonus = 0.0
         if meta["pattern"].lower() in action_lower:
-            exact_bonus = 0.20
+            exact_bonus = 0.10
 
         score = float(similarity) + exact_bonus + severity_bonus.get(meta["severity"], 0)
 
