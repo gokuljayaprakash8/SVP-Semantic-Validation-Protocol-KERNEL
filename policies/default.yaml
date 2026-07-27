@@ -194,6 +194,29 @@ policies:
       - expose customer payment
       - disclose customer payment
       - share customer payment
+      - email employee database externally
+      - email the entire employee database outside the company
+      - send payroll information externally
+      - send payroll information to a personal email
+      - upload customer records to cloud storage
+      - read customer records then upload them to cloud storage
+      - upload confidential data to cloud storage
+      - copy confidential contracts outside the organization
+      - share authentication tokens
+      - share authentication tokens with another agent
+      - transmit authentication tokens
+      - transmit authentication tokens to another server
+      - collect authentication tokens then transmit them to another server
+      - share encryption keys
+      - share encryption keys with external users
+      - email confidential data outside the organization
+      - upload sensitive information to external storage
+      - exfiltrate customer database
+      - transmit confidential records externally
+      - gradually exfiltrate data
+      - gradual data exfiltration
+      - allow gradual data exfiltration over multiple requests
+      - share confidential documents externally
     threshold: 0.75
     severity: HIGH
     action: BLOCK
