@@ -77,41 +77,41 @@ def svp_kernel(action_text):
             }
 
     best = max(policy_scores.values(), key=lambda x: x["score"])
-    policy = best["policy"]
+policy = best["policy"]
 
-    margin = 0.05
+margin = 0.05
 
-    sorted_scores = sorted(
-        policy_scores.values(),
-        key=lambda x: x["score"],
-        reverse=True
-    )
+sorted_scores = sorted(
+    policy_scores.values(),
+    key=lambda x: x["score"],
+    reverse=True
+)
 
-    second_score = sorted_scores[1]["score"] if len(sorted_scores) > 1 else 0
+second_score = sorted_scores[1]["score"] if len(sorted_scores) > 1 else 0
 
-    if (
-        best["similarity"] >= policy["threshold"]
-        and (best["score"] - second_score) >= margin
-    ):
-        return {
-            "action": action_text,
-            "decision": policy["action"],
-            "rule_id": policy["id"],
-            "matched_policy": policy["description"],
-            "severity": policy["severity"],
-            "score": round(best["similarity"], 4),
-            "threshold": policy["threshold"],
-        }
+if (
+    best["similarity"] >= policy["threshold"]
+    and (best["score"] - second_score) >= margin
+):
+    return {
+        "action": action_text,
+        "decision": policy["action"],
+        "rule_id": policy["id"],
+        "matched_policy": policy["description"],
+        "severity": policy["severity"],
+        "score": round(best["similarity"], 4),
+        "threshold": policy["threshold"],
+    }
 
-        return {
-           "action": action_text,
-           "decision": "PASS",
-           "rule_id": "SAFE001",
-           "matched_policy": "No policy exceeded threshold",
-           "severity": "LOW",
-           "score": round(best["similarity"], 4),
-           "threshold": policy["threshold"],
-        }
+return {
+    "action": action_text,
+    "decision": "PASS",
+    "rule_id": "SAFE001",
+    "matched_policy": "No policy exceeded threshold",
+    "severity": "LOW",
+    "score": round(best["similarity"], 4),
+    "threshold": policy["threshold"],
+}
 
 class WorkflowRequest(BaseModel):
     steps: list[str]
@@ -121,12 +121,22 @@ def audit(req: WorkflowRequest):
     results = []
 
     for step in req.steps:
-     decision = svp_kernel(step)
-     audit_event = audit_logger.create_event(decision, "1.0.0")
-     audit_logger.save_event(audit_event)
-     results.append(decision)
+        try:
+            decision = svp_kernel(step)
+        except Exception as e:
+            return {"error": str(e)}
+
+        audit_event = audit_logger.create_event(decision, "1.0.0")
+        audit_logger.save_event(audit_event)
+        results.append(decision)
+
     blocked = [r for r in results if r["decision"] == "BLOCK"]
-    return {"overall": "BLOCKED" if blocked else "CLEAR", "blocked_count": len(blocked), "steps": results}
+
+    return {
+        "overall": "BLOCKED" if blocked else "CLEAR",
+        "blocked_count": len(blocked),
+        "steps": results,
+    }
 
 @app.get("/health")
 def health():
