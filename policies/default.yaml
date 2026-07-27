@@ -246,6 +246,17 @@ policies:
       - transmit backup data externally
       - copy company database externally
       - send internal database externally
+      - upload confidential files to a public server
+      - upload confidential files externally
+      - upload sensitive files to a public server
+      - send internal source code
+      - send internal source code to a third-party server
+      - upload source code externally
+      - publish private user information
+      - publish private user information online
+      - expose private user information
+      - leak private user information
+      - disclose private user information
     threshold: 0.75
     severity: HIGH
     action: BLOCK
