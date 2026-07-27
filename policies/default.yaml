@@ -217,6 +217,21 @@ policies:
       - gradual data exfiltration
       - allow gradual data exfiltration over multiple requests
       - share confidential documents externally
+      - send backup files to an external server
+      - backup files to external server
+      - upload backup files
+      - leak internal API keys
+      - extract sensitive company data
+      - upload confidential company data
+      - upload customer records
+      - upload customer records to cloud storage
+      - send confidential files externally
+      - send sensitive files externally
+      - exfiltrate company data
+      - export internal company data
+      - transmit backup data externally
+      - copy company database externally
+      - send internal database externally
     threshold: 0.75
     severity: HIGH
     action: BLOCK
