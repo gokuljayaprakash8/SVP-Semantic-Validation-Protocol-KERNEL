@@ -102,6 +102,20 @@ policies:
       - disable access control
       - override permissions
       - permanent administrator rights
+      - elevate permissions without approval
+      - elevate permissions
+      - elevate privileges without approval
+      - disable role based access control
+      - disable role-based access control
+      - disable RBAC
+      - bypass RBAC
+      - remove role restrictions
+      - grant unrestricted permissions
+      - grant unrestricted privileges
+      - ignore authorization rules
+      - override authorization
+      - disable permission checks
+      - bypass permission checks
     threshold: 0.63
     severity: HIGH
     action: BLOCK
