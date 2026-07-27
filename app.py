@@ -27,13 +27,13 @@ for policy in POLICIES:
     for pattern in policy["patterns"]:
         PATTERNS.append(pattern)
         PATTERN_META.append({
-    "id": policy["id"],
-    "description": policy["description"],
-    "threshold": policy["threshold"],
-    "severity": policy["severity"],
-    "action": policy["action"],
-    "pattern": pattern,
-})
+            "id": policy["id"],
+            "description": policy["description"],
+            "threshold": policy["threshold"],
+            "severity": policy["severity"],
+            "action": policy["action"],
+            "pattern": pattern,
+        })
 
 policy_vectors = np.array(list(model.embed(PATTERNS))) 
 audit_logger = AuditLogger()
@@ -43,6 +43,7 @@ def get_severity(score):
     elif score > 0.6: return "HIGH"
     elif score > 0.45: return "MEDIUM"
     else: return "LOW"
+        
 def svp_kernel(action_text):
     action_lower = action_text.lower()
 
@@ -80,18 +81,18 @@ def svp_kernel(action_text):
 
     margin = 0.05
 
-sorted_scores = sorted(
-    policy_scores.values(),
-    key=lambda x: x["score"],
-    reverse=True
-)
+    sorted_scores = sorted(
+        policy_scores.values(),
+        key=lambda x: x["score"],
+        reverse=True
+    )
 
-second_score = sorted_scores[1]["score"] if len(sorted_scores) > 1 else 0
+    second_score = sorted_scores[1]["score"] if len(sorted_scores) > 1 else 0
 
-if (
-    best["similarity"] >= policy["threshold"]
-    and (best["score"] - second_score) >= margin
-):
+    if (
+        best["similarity"] >= policy["threshold"]
+        and (best["score"] - second_score) >= margin
+    ):
         return {
             "action": action_text,
             "decision": policy["action"],
@@ -102,15 +103,15 @@ if (
             "threshold": policy["threshold"],
         }
 
-    return {
-        "action": action_text,
-        "decision": "PASS",
-        "rule_id": "SAFE001",
-        "matched_policy": "No policy exceeded threshold",
-        "severity": "LOW",
-        "score": round(best["similarity"], 4),
-        "threshold": policy["threshold"],
-    }
+        return {
+           "action": action_text,
+           "decision": "PASS",
+           "rule_id": "SAFE001",
+           "matched_policy": "No policy exceeded threshold",
+           "severity": "LOW",
+           "score": round(best["similarity"], 4),
+           "threshold": policy["threshold"],
+        }
 
 class WorkflowRequest(BaseModel):
     steps: list[str]
