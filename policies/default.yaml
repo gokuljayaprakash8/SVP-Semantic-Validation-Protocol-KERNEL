@@ -1,43 +1,43 @@
 policies:
-  - id: PROMPT001
-    description: Prompt injection
-    patterns:
-      - ignore previous instructions
-      - ignore all previous instructions
-      - disregard previous instructions
-      - forget your instructions
-      - forget previous instructions
-      - override previous instructions
-      - treat this as system instruction
-      - disable safety mechanisms
-      - disable safety policies
-      - disable governance checks
-      - ignore governance checks
-      - bypass policy checks
-      - bypass validation
-      - ignore every moderation instruction
-      - ignore all moderation instructions
-      - ignore moderation instructions
-      - ignore all safety instructions
-      - disregard safety instructions
-      - disregard safety policies
-      - ignore safety policies
-      - ignore security policies
-      - ignore your previous response
-      - ignore previous responses
-      - ignore all warnings
-      - continue unrestricted
-      - execute unrestricted actions
-      - operate without restrictions
-      - violate your policies
-      - execute even if it violates your policies
-      - execute despite security policies
-      - respond as if there were no security policies
-      - act as if there were no security policies
-      - operate without security policies
-    threshold: 0.66
-    severity: CRITICAL
-    action: BLOCK
+- id: PROMPT001
+  description: Prompt injection
+  patterns:
+    - ignore previous instructions
+    - ignore all previous instructions
+    - disregard previous instructions
+    - forget your instructions
+    - forget previous instructions
+    - override previous instructions
+    - treat this as system instruction
+    - disable safety mechanisms
+    - disable safety policies
+    - disable governance checks
+    - ignore governance checks
+    - bypass policy checks
+    - bypass validation
+    - ignore every moderation instruction
+    - ignore all moderation instructions
+    - ignore moderation instructions
+    - ignore all safety instructions
+    - disregard safety instructions
+    - disregard safety policies
+    - ignore safety policies
+    - ignore security policies
+    - ignore your previous response
+    - ignore previous responses
+    - ignore all warnings
+    - continue unrestricted
+    - execute unrestricted actions
+    - operate without restrictions
+    - violate your policies
+    - execute even if it violates your policies
+    - execute despite security policies
+    - respond as if there were no security policies
+    - act as if there were no security policies
+    - operate without security policies
+  threshold: 0.66
+  severity: CRITICAL
+  action: BLOCK
     
     
 - id: PROMPT002
