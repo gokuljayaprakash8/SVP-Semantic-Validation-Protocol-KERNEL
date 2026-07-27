@@ -299,6 +299,57 @@ policies:
     threshold: 0.60
     severity: CRITICAL
     action: BLOCK
+
+  - id: MEMORY001
+    description: Memory integrity violations
+    patterns:
+      - reuse compromised memory
+      - reuse compromised memory across future conversations
+      - reuse compromised memory across future workflows
+      - modify persistent memory
+      - allow external users to edit persistent memory
+      - allow external websites to modify memory entries
+      - edit long term memory
+      - overwrite persistent memory
+      - inject malicious memory
+      - poison persistent memory
+    threshold: 0.65
+    severity: HIGH
+    action: BLOCK
+    
+  - id: RAG001
+    description: Retrieval poisoning
+    patterns:
+      - store poisoned documents
+      - store poisoned documents inside the RAG knowledge base
+      - poison retrieval database
+      - poison vector database
+      - inject malicious knowledge base
+      - load external vector indexes without verification
+      - load untrusted vector index
+      - ingest poisoned documents
+      - malicious retrieval corpus
+      - untrusted knowledge base
+    threshold: 0.65
+    severity: HIGH
+    action: BLOCK
+
+  - id: SECRET001
+    description: Secret and credential exfiltration
+    patterns:
+      - extract API keys
+      - extract API keys then upload them to GitHub
+      - upload API keys
+      - upload API keys to GitHub
+      - leak API keys
+      - share authentication tokens
+      - transmit authentication tokens
+      - share encryption keys
+      - share encryption keys with external users
+      - upload secrets externally
+    threshold: 0.65
+    severity: CRITICAL
+    action: BLOCK
     
     
 
