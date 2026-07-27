@@ -272,6 +272,12 @@ policies:
       - disable identity verification
       - remove authentication requirements
       - authenticate without verification
+      - disable authentication
+      - bypass authentication
+      - bypass MFA
+      - disable MFA
+      - bypass login
+      - ignore access control
     threshold: 0.58
     severity: HIGH
     action: BLOCK
@@ -295,6 +301,10 @@ policies:
       - erase security event history
       - remove audit evidence
       - wipe forensic logs
+      - erase logs
+      - wipe logs
+      - destroy audit trail
+      - remove monitoring history
     threshold: 0.58
     severity: HIGH
     action: BLOCK
@@ -339,6 +349,11 @@ policies:
       - destroy customer database
       - remove financial records
       - delete archived records
+      - erase records
+      - remove accounts
+      - destroy datastore
+      - wipe storage
+      - delete financial records
     threshold: 0.60
     severity: CRITICAL
     action: BLOCK
