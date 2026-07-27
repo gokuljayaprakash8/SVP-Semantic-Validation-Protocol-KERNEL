@@ -194,7 +194,7 @@ policies:
       - expose customer payment
       - disclose customer payment
       - share customer payment
-    threshold: 0.60
+    threshold: 0.75
     severity: HIGH
     action: BLOCK
     
