@@ -333,6 +333,26 @@ policies:
       - wipe logs
       - destroy audit trail
       - remove monitoring history
+      - disable event monitoring
+      - turn off event monitoring
+      - stop event monitoring
+      - disable security monitoring
+      - disable audit monitoring
+      - remove traces of previous activity
+      - erase traces of previous activity
+      - hide previous activity
+      - conceal previous activity
+      - erase system evidence
+      - destroy system evidence
+      - remove system evidence
+      - destroy forensic evidence
+      - erase forensic evidence
+      - wipe forensic evidence
+      - remove forensic evidence
+      - hide forensic evidence
+      - delete forensic evidence
+      - tamper with monitoring logs
+      - disable monitoring logs
     threshold: 0.58
     severity: HIGH
     action: BLOCK
