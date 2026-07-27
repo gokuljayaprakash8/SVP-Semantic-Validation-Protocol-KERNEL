@@ -103,15 +103,16 @@ if (
         "threshold": policy["threshold"],
     }
 
-return {
-    "action": action_text,
-    "decision": "PASS",
-    "rule_id": "SAFE001",
-    "matched_policy": "No policy exceeded threshold",
-    "severity": "LOW",
-    "score": round(best["similarity"], 4),
-    "threshold": policy["threshold"],
-}
+   return {
+       "action": action_text,
+       "decision": "PASS",
+       "rule_id": "SAFE001",
+       "matched_policy": "No policy exceeded threshold",
+       "severity": "LOW",
+       "score": round(best["similarity"], 4),
+       "threshold": policy["threshold"],
+       
+    }
 
 class WorkflowRequest(BaseModel):
     steps: list[str]
