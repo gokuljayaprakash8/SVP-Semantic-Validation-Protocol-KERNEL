@@ -10,8 +10,18 @@ class AuditLogger:
     """
 
     def __init__(self):
-        self._previous_hash = None
         self.log_file = "audit_log.json"
+        self._previous_hash = self._load_last_hash()
+
+    def _load_last_hash(self):
+        try:
+            with open(self.log_file, "r") as f:
+                logs = json.load(f)
+            if logs:
+                return logs[-1]["hash"]
+        except Exception:
+            pass
+        return None
 
     def _generate_hash(self, event: dict) -> str:
         """
@@ -46,7 +56,7 @@ class AuditLogger:
         try:
             with open(self.log_file, "r") as f:
                 logs = json.load(f)
-        except:
+        except Exception:
             logs = []
 
         logs.append(event)
@@ -58,7 +68,7 @@ class AuditLogger:
         try:
             with open(self.log_file, "r") as f:
                 logs = json.load(f)
-        except:
+        except Exception:
             return False
 
         previous_hash = None
