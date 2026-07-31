@@ -1,5 +1,31 @@
 Copyright (c) 2026 Gokul Jayaprakash
+
 All Rights Reserved.
-This project (SVP Kernel) and its accompanying source code, frontend architecture, and API design are the intellectual property of Gokul Jayaprakash.
-You may view and inspect the code for educational and portfolio evaluation purposes. You may NOT copy, modify, distribute, or use this code (or any derivative works) for commercial purposes, internal business operations, or production environments without explicit written permission from the creator.
-For enterprise licensing or design partnerships, contact: gokuljayaprakashnair@gmail.com
+
+SVP Kernel and all associated materials, including but not limited to
+source code, architecture, frontend implementation, API design,
+documentation, evaluation framework, policy definitions, and related
+intellectual property are the exclusive property of Gokul Jayaprakash.
+
+Permission is granted to view and inspect this repository solely for
+personal learning, educational review, research discussion, and portfolio
+evaluation purposes.
+
+Without prior written permission from the owner, you may not:
+
+- Copy, reproduce, or redistribute this software or any part of it.
+- Modify, create derivative works, or publish altered versions.
+- Use this project or any component of it for commercial purposes.
+- Integrate this software into internal business systems.
+- Deploy this software in production environments.
+- Use the architecture, design, implementation, or concepts as the basis
+  for competing products or services.
+
+Any commercial usage, enterprise deployment, licensing arrangement,
+partnership, or technology evaluation beyond portfolio review requires
+explicit written authorization from the owner.
+
+For licensing inquiries, enterprise usage, or partnership discussions:
+
+Contact:
+gokuljayaprakashnair@gmail.com
