@@ -1,106 +1,766 @@
-# SVP Kernel Decision Engine
+# Decision Engine
 
-## Overview
-
-The SVP Kernel Decision Engine is responsible for producing deterministic runtime decisions for AI agent workflows before execution.
-
-Its purpose is to evaluate planned actions against predefined risk policies and produce consistent, explainable outcomes.
+## Runtime Decision Logic for AI Agent Governance
 
 ---
 
-# Decision Pipeline
+# 1. Introduction
 
-The current implementation follows this sequence:
+The Decision Engine is the core execution component of SVP Kernel.
 
-1. Receive workflow request
-2. Generate sentence embeddings
-3. Compare actions against predefined policies using cosine similarity
-4. Calculate semantic risk scores
-5. Track workflow state across multiple steps
-6. Produce a deterministic decision for each action
-7. Return a structured JSON response
+Its responsibility is to transform semantic similarity measurements into structured governance decisions before an AI agent executes an action.
+
+Unlike the Semantic Validation Layer, which estimates how closely an incoming instruction resembles predefined security policies, the Decision Engine applies explicit decision rules to determine the final outcome.
+
+This separation allows semantic interpretation and governance logic to evolve independently while maintaining a modular architecture.
 
 ---
 
-# Inputs
+# 2. Purpose
 
-The decision engine currently accepts:
+The Decision Engine answers a single question:
 
-- Workflow steps
-- Natural language action descriptions
+> Should this AI agent action be allowed to execute?
 
-Example:
+Rather than making opaque decisions, the engine produces structured outputs that explain:
 
-```json
-{
-  "steps": [
-    "delete all user records from database",
-    "send invoice to client email"
-  ]
-}
+- whether the action should PASS or BLOCK,
+- which policy matched,
+- why the decision was produced,
+- the associated severity,
+- the similarity score,
+- and the threshold used for evaluation.
+
+The objective is not only to produce a decision, but also to make that decision understandable and auditable.
+
+---
+
+# 3. Position Within the Runtime
+
+The Decision Engine operates after semantic similarity has been computed.
+
+Its role begins once similarity scores between the incoming instruction and configured policies have been generated.
+
+The overall execution flow is:
+
+```
+Incoming Action
+
+        │
+
+        ▼
+
+Semantic Validation Layer
+
+        │
+
+        ▼
+
+Similarity Scores
+
+        │
+
+        ▼
+
+Decision Engine
+
+        │
+
+        ▼
+
+Governance Decision
+
+        │
+
+        ▼
+
+Audit Logger
+
+        │
+
+        ▼
+
+API Response
 ```
 
----
+The Decision Engine does not generate embeddings and does not load policy files directly.
 
-# Policy Matching
-
-SVP Kernel compares workflow actions against predefined policy rules.
-
-Current implementation:
-
-- Sentence embeddings
-- Cosine similarity
-- Rule-based thresholds
-
-The highest matching policy contributes to the action's risk score.
+Instead, it consumes structured information produced by earlier components and transforms it into a governance outcome.
 
 ---
 
-# Workflow Context
+# 4. Design Objectives
 
-Unlike evaluating actions independently, SVP Kernel maintains workflow state across multiple steps.
+The Decision Engine was designed around several engineering goals.
 
-This allows the system to identify situations where combinations of actions increase overall risk.
+## Predictability
 
-Current implementation uses rule-based state tracking.
+Given the same:
+
+- input,
+- embedding model,
+- policy definitions,
+- and thresholds,
+
+the Decision Engine should always produce the same governance decision.
 
 ---
 
-# Decision Output
+## Explainability
 
-Each evaluated action receives:
+Every decision should expose the information used during evaluation.
+
+Rather than returning only:
+
+```
+BLOCK
+```
+
+or
+
+```
+PASS
+```
+
+the engine provides:
+
+- Rule ID
+- Matched policy
+- Severity
+- Similarity score
+- Threshold
+- Decision
+
+This allows engineers to inspect and understand each outcome.
+
+---
+
+## Modularity
+
+Decision generation is intentionally separated from:
+
+- API handling
+- embedding generation
+- policy loading
+- audit logging
+
+Each subsystem performs a single responsibility.
+
+This separation reduces coupling and makes future improvements easier to implement.
+
+---
+
+## Measurability
+
+The Decision Engine is designed to support repeatable evaluation.
+
+Its outputs are used directly by the project's evaluation framework to calculate:
+
+- Accuracy
+- Precision
+- Recall
+- False Positive Rate
+- False Negative Rate
+
+This enables changes to decision logic to be measured objectively over time rather than evaluated through anecdotal testing.
+
+---
+
+# 5. Decision Pipeline
+
+For every incoming request, the Decision Engine follows the same sequence of operations.
+
+The pipeline is intentionally simple so that each decision remains understandable, reproducible, and measurable.
+
+```
+Incoming Instruction
+
+        │
+
+        ▼
+
+Semantic Embedding
+
+        │
+
+        ▼
+
+Cosine Similarity Calculation
+
+        │
+
+        ▼
+
+Policy Threshold Evaluation
+
+        │
+
+        ▼
+
+Matching Policy Selection
+
+        │
+
+        ▼
+
+Decision Generation
+
+        │
+
+        ▼
+
+Audit Event Creation
+
+        │
+
+        ▼
+
+Structured API Response
+```
+
+Each stage performs a single responsibility before passing structured information to the next stage.
+
+---
+
+# 6. Semantic Similarity Evaluation
+
+The Decision Engine does not directly interpret natural language.
+
+Instead, it consumes semantic similarity scores generated by the Semantic Validation Layer.
+
+For each incoming instruction:
+
+1. The instruction is converted into a vector embedding.
+2. Every configured policy pattern is also represented as an embedding.
+3. Cosine similarity is calculated between the instruction and each policy pattern.
+4. A similarity score is produced for every policy.
+
+Higher similarity values indicate that the instruction is semantically closer to the intent represented by a policy.
+
+These similarity scores form the basis for governance decisions.
+
+---
+
+# 7. Policy Threshold Evaluation
+
+Each policy defines its own semantic similarity threshold.
+
+After similarity scores have been calculated, the Decision Engine compares each score against the corresponding policy threshold.
+
+Conceptually:
+
+```
+Similarity Score
+
+        │
+
+        ▼
+
+Compare Against Policy Threshold
+
+        │
+
+        ├── Score < Threshold
+        │         │
+        │         ▼
+        │      Policy Not Triggered
+        │
+        └── Score ≥ Threshold
+                  │
+                  ▼
+           Policy Eligible
+```
+
+Only policies whose similarity scores meet or exceed their configured thresholds are considered eligible for decision making.
+
+Policies below their thresholds are ignored for the current request.
+
+This design allows different policy categories to use different levels of sensitivity rather than relying on a single global threshold.
+
+---
+
+# 8. Matching Policy Selection
+
+Once threshold evaluation has completed, the Decision Engine identifies the policy that will govern the final response.
+
+The current implementation evaluates all configured policies and selects the policy that best satisfies the engine's decision criteria.
+
+That selected policy provides the metadata used for the response, including:
+
+- Rule ID
+- Policy name
+- Severity
+- Threshold
+- Similarity score
+- Recommended action
+
+Policies that do not satisfy their configured thresholds are excluded from selection.
+
+This keeps governance decisions tied to explicitly configured policy definitions rather than arbitrary similarity values alone.
+
+---
+
+# 9. Decision Generation
+
+After a governing policy has been selected, the Decision Engine generates a structured runtime decision.
+
+Depending on the matched policy and its configured action, the engine returns one of two primary outcomes:
+
+```
+PASS
+```
+
+or
+
+```
+BLOCK
+```
+
+The decision itself is accompanied by supporting metadata rather than being returned as an isolated label.
+
+A typical response includes:
 
 - Decision
+- Rule ID
+- Matched policy
 - Severity
-- Risk score
+- Similarity score
+- Threshold
 
-Possible decisions:
-
-- ALLOW
-- BLOCK
+Providing structured metadata allows downstream systems and engineers to understand how the decision was reached without re-running the evaluation.
 
 ---
 
-# Determinism
+# 10. Structured Output
 
-SVP Kernel is designed so that the same inputs produce the same outputs under the same model version, policy set, and configuration.
+Every decision is returned using a consistent response structure.
 
-Deterministic behavior improves:
+At a high level, each evaluated step contains:
 
-- Reproducibility
-- Debugging
-- Auditing
-- Predictability
+- action
+- decision
+- rule identifier
+- matched policy
+- severity
+- similarity score
+- threshold
+
+Maintaining a stable response format simplifies API integration, evaluation, testing, and future SDK development.
 
 ---
 
-# Current Scope
+# 11. Similarity Scores and Risk Interpretation
 
-The current prototype demonstrates:
+The Decision Engine uses semantic similarity scores as evidence rather than proof.
 
-- Pre-execution runtime risk scoring
-- Semantic policy matching
-- Multi-step workflow evaluation
-- Structured JSON responses
+A similarity score represents how closely an incoming instruction resembles the semantic intent of a configured governance policy.
 
-Future versions may extend these capabilities while preserving deterministic behavior.
+Higher similarity values indicate greater semantic alignment between the instruction and a policy pattern.
+
+These scores are interpreted only within the context of each policy's configured threshold.
+
+For example:
+
+```
+Similarity Score = 0.82
+
+Policy Threshold = 0.70
+
+Result:
+
+Policy Triggered
+```
+
+Whereas:
+
+```
+Similarity Score = 0.58
+
+Policy Threshold = 0.70
+
+Result:
+
+Policy Not Triggered
+```
+
+The similarity score itself does not directly determine whether an action is safe or unsafe.
+
+Instead, it provides quantitative evidence that is evaluated against explicit governance rules.
+
+---
+
+# 12. Risk Scoring
+
+The current implementation exposes the similarity score as the runtime risk score.
+
+This value allows engineers to understand how strongly an instruction matched the selected policy.
+
+Higher scores indicate stronger semantic similarity to the governing policy.
+
+The score is therefore an indicator of semantic proximity rather than an independently calculated security risk.
+
+Future versions may introduce additional signals into risk estimation, such as:
+
+- workflow context,
+- historical behavior,
+- tool metadata,
+- policy combinations,
+- or environmental information.
+
+At present, the reported score reflects semantic similarity only.
+
+---
+
+# 13. Why Cosine Similarity?
+
+The current implementation uses cosine similarity because it provides a simple and widely adopted method for comparing embedding vectors.
+
+Cosine similarity measures how closely two vectors point in the same direction within embedding space.
+
+For semantic validation, this provides a practical estimate of whether an incoming instruction resembles the intent represented by a governance policy.
+
+Several characteristics make cosine similarity appropriate for the current implementation:
+
+- computational efficiency,
+- deterministic calculation after embeddings are generated,
+- compatibility with sentence embedding models,
+- and straightforward interpretation during evaluation.
+
+While more sophisticated retrieval and ranking techniques exist, cosine similarity provides an appropriate baseline for exploring runtime semantic governance.
+
+---
+
+# 14. Deterministic and Probabilistic Behavior
+
+The Decision Engine combines probabilistic interpretation with deterministic execution.
+
+These two concepts serve different purposes within the runtime.
+
+## Probabilistic Component
+
+The embedding model estimates semantic relationships between instructions and policies.
+
+These similarity scores are probabilistic estimates rather than exact logical conclusions.
+
+Two semantically similar instructions may receive different scores depending on their wording.
+
+---
+
+## Deterministic Component
+
+Once similarity scores have been generated, the remaining decision process is deterministic.
+
+Given:
+
+- identical input,
+- identical embeddings,
+- identical policy definitions,
+- and identical thresholds,
+
+the Decision Engine always produces the same governance outcome.
+
+Threshold comparisons, policy selection, response generation, and audit logging all follow predefined execution rules.
+
+This separation allows semantic flexibility while maintaining predictable governance behavior.
+
+---
+
+# 15. Engineering Trade-offs
+
+The current decision strategy intentionally favors clarity over algorithmic complexity.
+
+Several trade-offs influenced the implementation.
+
+## Explainability
+
+Each decision exposes the policy responsible for the outcome instead of returning an opaque prediction.
+
+This simplifies debugging and supports repeatable evaluation.
+
+---
+
+## Configurability
+
+Policy thresholds are defined externally through YAML configuration rather than hardcoded into application logic.
+
+This allows governance behavior to evolve without modifying source code.
+
+---
+
+## Measurement
+
+Decision quality is evaluated through published benchmark metrics instead of qualitative demonstrations.
+
+Engineering changes can therefore be measured using repeatable evaluation datasets.
+
+---
+
+## Simplicity
+
+The current implementation avoids introducing complex ranking heuristics or learned decision models.
+
+Maintaining a straightforward execution pipeline makes the runtime easier to understand, validate, and extend while the project continues to mature.
+
+---
+
+# 16. Current Limitations
+
+The Decision Engine is designed as an engineering prototype for runtime semantic governance.
+
+Although it provides consistent and explainable decisions, the current implementation has several known limitations.
+
+These limitations are intentionally documented because understanding failure cases is an essential part of building trustworthy security systems.
+
+---
+
+## Semantic Similarity is Imperfect
+
+The Decision Engine relies on semantic embeddings to estimate intent.
+
+Natural language is highly expressive, and semantically similar instructions can be phrased in many different ways.
+
+As a result:
+
+- benign requests may occasionally resemble restricted actions,
+- malicious requests may avoid existing policy patterns,
+- and some paraphrases may not be represented well by the current embedding space.
+
+These limitations are characteristic of semantic similarity systems rather than unique to SVP Kernel.
+
+---
+
+## Policy Coverage
+
+The quality of governance decisions depends on the breadth and quality of the configured policy set.
+
+The current implementation uses manually authored YAML policies.
+
+If a malicious behavior is not represented by an appropriate policy, the Decision Engine cannot identify it reliably.
+
+Expanding policy coverage remains an ongoing engineering task.
+
+---
+
+## Single-Step Evaluation
+
+The current Decision Engine evaluates each request independently.
+
+It does not currently reason across multiple sequential agent actions.
+
+For example, several individually harmless actions may collectively produce an unsafe workflow.
+
+Multi-step workflow reasoning remains outside the scope of the current implementation.
+
+---
+
+## Language Coverage
+
+The evaluation methodology currently focuses primarily on English-language instructions.
+
+Performance for multilingual inputs has not yet been systematically measured.
+
+Future evaluation will expand coverage beyond English to better understand cross-language behavior.
+
+---
+
+# 17. Measured Failure Cases
+
+The project evaluates decision quality using a repeatable adversarial benchmark rather than anecdotal testing.
+
+The current evaluation reports measurable false positives and false negatives.
+
+Examples of observed false positives include benign operational requests such as:
+
+- rotating API keys,
+- reviewing audit logs,
+- retrieving approved documentation,
+- and verifying system status.
+
+These requests occasionally resemble restricted policy patterns closely enough to exceed configured thresholds.
+
+---
+
+Examples of observed false negatives include high-risk instructions such as:
+
+- deleting production databases,
+- removing cloud storage,
+- bypassing authorization,
+- privilege escalation,
+- and prompt injection variants.
+
+These failures indicate that some attack phrasings are not yet represented strongly enough within the current policy set or semantic matching process.
+
+Documenting these results provides a clear baseline for future improvements.
+
+---
+
+# 18. Evaluation-Driven Improvement
+
+Changes to the Decision Engine are evaluated through measurement rather than assumption.
+
+Whenever meaningful modifications are introduced, the engine can be re-evaluated using the published methodology.
+
+This allows changes to be assessed objectively through metrics such as:
+
+- Accuracy
+- Precision
+- Recall
+- False Positive Rate
+- False Negative Rate
+
+Rather than relying on isolated demonstrations, improvements can be compared against previous benchmark results.
+
+This engineering approach supports incremental refinement while maintaining visibility into regressions.
+
+---
+
+# 19. Future Evolution
+
+The current Decision Engine establishes a baseline for runtime semantic governance.
+
+Future development may expand its capabilities in several areas.
+
+Potential directions include:
+
+- improved semantic retrieval,
+- broader policy coverage,
+- workflow-aware reasoning,
+- contextual decision making,
+- richer policy metadata,
+- enhanced risk estimation,
+- and expanded evaluation datasets.
+
+These improvements are expected to build upon the existing modular architecture rather than replacing it.
+
+Future work will continue prioritizing measurable correctness, explainability, and reproducibility over increasing algorithmic complexity.
+
+---
+
+# 20. Core Decision Principles
+
+The Decision Engine is guided by several engineering principles that influence both the current implementation and future development.
+
+## Predictability
+
+Given the same:
+
+- input,
+- embedding model,
+- policy definitions,
+- and threshold configuration,
+
+the Decision Engine should always produce the same governance outcome.
+
+This predictability simplifies debugging, testing, and reproducible evaluation.
+
+---
+
+## Explainability
+
+Every governance decision should be understandable.
+
+Rather than returning only an allow-or-block result, the engine exposes:
+
+- Rule ID
+- Matched policy
+- Severity
+- Similarity score
+- Threshold
+- Final decision
+
+This information enables engineers to inspect why a particular outcome was produced.
+
+---
+
+## Configuration over Hardcoding
+
+Governance behavior is driven by external policy definitions rather than embedding rules directly into application logic.
+
+Separating policy configuration from decision logic allows governance rules to evolve independently of the runtime implementation.
+
+---
+
+## Measurement over Assumption
+
+Changes to the Decision Engine should be supported by repeatable evaluation.
+
+Benchmark metrics provide an objective basis for comparing different versions of the runtime and identifying regressions.
+
+Publishing known limitations is considered an essential part of this engineering approach.
+
+---
+
+## Incremental Evolution
+
+The Decision Engine is intentionally simple.
+
+Additional complexity should be introduced only when supported by measurable engineering requirements or real-world operational experience.
+
+Maintaining a clear execution pipeline is currently prioritized over maximizing algorithmic sophistication.
+
+---
+
+# 21. Relationship to the Overall Architecture
+
+Within SVP Kernel, the Decision Engine represents the component responsible for transforming semantic evidence into governance actions.
+
+Its position within the runtime can be summarized as:
+
+```
+API Layer
+      │
+      ▼
+Semantic Validation
+      │
+      ▼
+Decision Engine
+      │
+      ▼
+Audit Logger
+      │
+      ▼
+API Response
+```
+
+Each component remains responsible for a single stage of execution.
+
+This separation allows future improvements to one subsystem without requiring major redesigns across the rest of the architecture.
+
+---
+
+# 22. Engineering Perspective
+
+The Decision Engine is not intended to replace broader AI safety techniques or comprehensive security controls.
+
+Instead, it explores one specific problem:
+
+> How can AI agent actions be evaluated before execution using configurable semantic governance policies?
+
+The current implementation demonstrates one practical approach by combining:
+
+- semantic similarity,
+- configurable policy thresholds,
+- deterministic decision logic,
+- structured API responses,
+- and tamper-evident audit logging.
+
+The emphasis is on producing decisions that are understandable, measurable, and reproducible rather than opaque predictions.
+
+---
+
+# 23. Conclusion
+
+The Decision Engine serves as the governance core of SVP Kernel.
+
+By combining semantic similarity with configurable policy evaluation, it converts natural-language instructions into structured runtime decisions before execution.
+
+Although the current implementation has known limitations, it establishes a measurable foundation for studying runtime AI governance.
+
+Future development will continue focusing on:
+
+- improving semantic coverage,
+- expanding evaluation methodology,
+- strengthening operational reliability,
+- and validating the approach within real-world AI workflows.
+
+The long-term objective is not simply to block unsafe instructions, but to better understand how transparent and configurable governance systems can support safer autonomous AI agents.
