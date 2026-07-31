@@ -42,12 +42,12 @@ SVP Kernel provides an explicit decision layer between an AI planner and executi
 
 ### Interactive Demo
 
-https://gokuljayaprakash8.github.io/SVP-Semantic-Vector-Protocol-KERNEL/
+https://gokuljayaprakash8.github.io/SVP-Semantic-Validation-Protocol-KERNEL/
 
 ### Live API
 
 ```text
-POST https://svp-semantic-vector-protocol-kernel-api.onrender.com/v1/audit
+POST https://svp-semantic-validation-protocol-kernel-api.onrender.com/v1/audit
 
 ---
 
@@ -126,7 +126,7 @@ Deterministic Decision Engine
 
 Repository Structure
 
-SVP-Semantic-Vector-Protocol-KERNEL/
+SVP-Semantic-Validation-Protocol-KERNEL/
 
 ├── app.py
 ├── validator.py
@@ -152,7 +152,7 @@ Installation
 
 git clone https://github.com/gokuljayaprakash8/SVP-Semantic-Vector-Protocol-KERNEL.git
 
-cd SVP-Semantic-Vector-Protocol-KERNEL
+cd SVP-Semantic-Validation-Protocol-KERNEL
 
 pip install -r requirements.txt
 
