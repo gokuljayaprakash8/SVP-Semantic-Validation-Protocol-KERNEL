@@ -1,828 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>SVP Kernel | Runtime Decision Kernel for AI Agents</title>
+<meta charset="UTF-8">
 
-    <meta name="description"
-        content="SVP Kernel is a runtime decision kernel that validates AI agent actions before execution using semantic analysis, deterministic policies, and tamper-evident audit logging.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="keywords"
-        content="AI Security, Agent Security, AI Infrastructure, Runtime Decision Engine, LLM Security, Policy Engine, Semantic Validation">
 
-    <meta name="author" content="SVP Kernel">
+<title>
+SVP Kernel | Runtime Decision Kernel for AI Agents
+</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+<meta name="description"
+content="SVP Kernel is a runtime decision kernel that evaluates AI agent actions using semantic validation, policy enforcement, deterministic decisions, and tamper-evident audit logging."
+>
 
 
-    <style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-        /*
-        ==========================================
-        SVP KERNEL LANDING PAGE
-        Current Architecture Version
-        ==========================================
-        */
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 
-        :root {
-
-            --background:
-                #05070d;
-
-            --surface:
-                #0d111c;
-
-            --surface-light:
-                #151b2b;
-
-            --border:
-                rgba(255,255,255,0.08);
-
-            --text-primary:
-                #f8fafc;
-
-            --text-secondary:
-                #94a3b8;
-
-            --accent:
-                #38bdf8;
-
-            --accent-secondary:
-                #818cf8;
-
-            --success:
-                #22c55e;
-
-            --warning:
-                #f59e0b;
-
-            --danger:
-                #ef4444;
-
-            --max-width:
-                1200px;
-
-            --radius:
-                16px;
-
-        }
-
-
-
-        * {
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
-
-
-
-        html {
-
-            scroll-behavior:smooth;
-
-        }
-
-
-
-        body {
-
-            font-family:
-                'Inter',
-                sans-serif;
-
-            background:
-                var(--background);
-
-            color:
-                var(--text-primary);
-
-            line-height:
-                1.6;
-
-        }
-
-
-
-        a {
-
-            color:
-                inherit;
-
-            text-decoration:
-                none;
-
-        }
-
-
-
-        img {
-
-            max-width:
-                100%;
-
-            display:
-                block;
-
-        }
-
-
-
-        .container {
-
-            width:
-                min(90%, var(--max-width));
-
-            margin:
-                auto;
-
-        }
-
-
-
-        section {
-
-            padding:
-                100px 0;
-
-        }
-
-
-
-        h1 {
-
-            font-size:
-                clamp(2.8rem,5vw,4.5rem);
-
-            line-height:
-                1.1;
-
-            font-weight:
-                800;
-
-            letter-spacing:
-                -0.04em;
-
-        }
-
-
-
-        h2 {
-
-            font-size:
-                clamp(2rem,4vw,3rem);
-
-            line-height:
-                1.2;
-
-            font-weight:
-                700;
-
-            letter-spacing:
-                -0.03em;
-
-            margin-bottom:
-                20px;
-
-        }
-
-
-
-        h3 {
-
-            font-size:
-                1.25rem;
-
-            font-weight:
-                600;
-
-            margin-bottom:
-                12px;
-
-        }
-
-
-
-        p {
-
-            color:
-                var(--text-secondary);
-
-            font-size:
-                1.05rem;
-
-        }
-
-
-
-        .gradient-text {
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--accent),
-                    var(--accent-secondary)
-                );
-
-            -webkit-background-clip:
-                text;
-
-            -webkit-text-fill-color:
-                transparent;
-
-        }
-
-
-
-        /*
-        ===============================
-        Navigation
-        ===============================
-        */
-
-
-        nav {
-
-            position:
-                fixed;
-
-            top:
-                0;
-
-            left:
-                0;
-
-            width:
-                100%;
-
-            z-index:
-                1000;
-
-            backdrop-filter:
-                blur(12px);
-
-            background:
-                rgba(5,7,13,0.75);
-
-            border-bottom:
-                1px solid var(--border);
-
-        }
-
-
-
-        .nav-container {
-
-            height:
-                80px;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                space-between;
-
-        }
-
-
-
-        .logo {
-
-            font-size:
-                1.4rem;
-
-            font-weight:
-                800;
-
-            letter-spacing:
-                -0.03em;
-
-        }
-
-
-
-        .nav-links {
-
-            display:
-                flex;
-
-            gap:
-                30px;
-
-            align-items:
-                center;
-
-        }
-
-
-
-        .nav-links a {
-
-            color:
-                var(--text-secondary);
-
-            font-size:
-                0.95rem;
-
-            transition:
-                0.2s ease;
-
-        }
-
-
-
-        .nav-links a:hover {
-
-            color:
-                var(--text-primary);
-
-        }
-
-
-
-        .nav-button {
-
-            padding:
-                10px 18px;
-
-            border-radius:
-                999px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    var(--accent),
-                    var(--accent-secondary)
-                );
-
-            color:
-                #020617;
-
-            font-weight:
-                600;
-
-        }
-
-
-
-        /*
-        ===============================
-        Responsive Navigation
-        ===============================
-        */
-
-
-        @media(max-width:768px){
-
-            .nav-links{
-
-                display:none;
-
-            }
-
-        }
-
-
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-<!-- Navigation -->
-
-<nav>
-
-    <div class="container nav-container">
-
-        <a href="#" class="logo">
-            SVP Kernel
-        </a>
-
-
-        <div class="nav-links">
-
-            <a href="#architecture">
-                Architecture
-            </a>
-
-            <a href="#evaluation">
-                Evaluation
-            </a>
-
-            <a href="#roadmap">
-                Roadmap
-            </a>
-
-            <a href="https://github.com/" class="nav-button">
-                GitHub
-            </a>
-
-        </div>
-
-    </div>
-
-</nav>
-<!--
-==========================================
-Hero Section
-==========================================
--->
-
-<section class="hero" id="home">
-
-    <div class="container">
-
-        <div class="hero-content">
-
-
-            <div class="hero-badge">
-
-                Runtime Decision Kernel for AI Agents
-
-            </div>
-
-
-
-            <h1>
-
-                Making AI Agent Actions
-                <span class="gradient-text">
-                    Safer Before Execution
-                </span>
-
-            </h1>
-
-
-
-            <p class="hero-description">
-
-                SVP Kernel is a semantic validation and deterministic
-                decision layer that evaluates AI agent actions before
-                they interact with tools, APIs, databases, and external
-                systems.
-
-            </p>
-
-
-
-            <p class="hero-question">
-
-                The core question:
-
-                <strong>
-                    "Should this AI action be allowed to execute?"
-                </strong>
-
-            </p>
-
-
-
-            <div class="hero-buttons">
-
-
-                <a href="#architecture" class="primary-button">
-
-                    Explore Architecture
-
-                </a>
-
-
-
-                <a href="https://github.com/" 
-                   class="secondary-button">
-
-                    View Repository
-
-                </a>
-
-
-            </div>
-
-
-
-            <div class="hero-status">
-
-
-                <div class="status-card">
-
-
-                    <span class="status-indicator"></span>
-
-
-                    <div>
-
-                        <strong>
-                            Current Status
-                        </strong>
-
-                        <p>
-                            Functional prototype with
-                            semantic evaluation,
-                            policy enforcement,
-                            and audit verification.
-                        </p>
-
-                    </div>
-
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-</section>
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+rel="stylesheet">
 
 
 <style>
 
 
 /*
-==========================================
-Hero Styling
-==========================================
+=========================================
+SVP KERNEL
+LIGHT THEME LANDING PAGE
+CURRENT PROJECT VERSION
+=========================================
 */
 
 
-.hero {
+:root{
 
-    min-height:
-        100vh;
 
-    display:
-        flex;
+--background:
+#f8fafc;
 
-    align-items:
-        center;
 
-    padding-top:
-        140px;
+--surface:
+#ffffff;
+
+
+--surface-secondary:
+#f1f5f9;
+
+
+--border:
+#e2e8f0;
+
+
+--text-primary:
+#0f172a;
+
+
+--text-secondary:
+#475569;
+
+
+--accent:
+#2563eb;
+
+
+--accent-light:
+#dbeafe;
+
+
+--success:
+#16a34a;
+
+
+--danger:
+#dc2626;
+
+
+--warning:
+#d97706;
+
+
+--max-width:
+1200px;
+
+
+--radius:
+16px;
+
 
 }
 
 
 
-.hero-content {
 
-    max-width:
-        900px;
+*{
 
-}
+margin:0;
 
+padding:0;
 
-
-.hero-badge {
-
-    display:
-        inline-flex;
-
-    align-items:
-        center;
-
-    padding:
-        8px 18px;
-
-    border-radius:
-        999px;
-
-    border:
-        1px solid var(--border);
-
-    background:
-        rgba(255,255,255,0.03);
-
-    color:
-        var(--accent);
-
-    font-size:
-        0.9rem;
-
-    font-weight:
-        600;
-
-    margin-bottom:
-        30px;
+box-sizing:border-box;
 
 }
 
 
 
-.hero-description {
+html{
 
-    max-width:
-        750px;
-
-    margin-top:
-        30px;
-
-    font-size:
-        1.2rem;
+scroll-behavior:smooth;
 
 }
 
 
 
-.hero-question {
+body{
 
-    margin-top:
-        25px;
+font-family:
+'Inter',
+sans-serif;
 
-    font-size:
-        1.1rem;
+
+background:
+var(--background);
+
+
+color:
+var(--text-primary);
+
+
+line-height:
+1.6;
+
 
 }
 
 
 
-.hero-question strong {
+a{
 
-    display:
-        block;
+text-decoration:none;
 
-    margin-top:
-        8px;
-
-    color:
-        var(--text-primary);
-
-    font-size:
-        1.3rem;
+color:inherit;
 
 }
 
 
 
-.hero-buttons {
+.container{
 
-    display:
-        flex;
 
-    gap:
-        18px;
+width:
+min(90%, var(--max-width));
 
-    margin-top:
-        40px;
 
-    flex-wrap:
-        wrap;
+margin:auto;
+
 
 }
 
 
 
-.primary-button,
-.secondary-button {
+section{
 
-    padding:
-        14px 28px;
+padding:
+90px 0;
 
-    border-radius:
-        999px;
-
-    font-weight:
-        600;
-
-    transition:
-        0.25s ease;
 
 }
 
 
 
-.primary-button {
 
-    background:
-        linear-gradient(
-            90deg,
-            var(--accent),
-            var(--accent-secondary)
-        );
+h1{
 
-    color:
-        #020617;
+
+font-size:
+clamp(2.7rem,5vw,4.5rem);
+
+
+line-height:
+1.1;
+
+
+letter-spacing:
+-0.04em;
+
+
+font-weight:
+800;
+
 
 }
 
 
 
-.primary-button:hover {
+h2{
 
-    transform:
-        translateY(-2px);
+
+font-size:
+clamp(2rem,4vw,3rem);
+
+
+letter-spacing:
+-0.03em;
+
+
+margin-bottom:
+20px;
+
 
 }
 
 
 
-.secondary-button {
+h3{
 
-    border:
-        1px solid var(--border);
+font-size:
+1.25rem;
 
-    background:
-        rgba(255,255,255,0.03);
-
-}
-
-
-
-.secondary-button:hover {
-
-    border-color:
-        var(--accent);
+margin-bottom:
+12px;
 
 }
 
 
 
-.hero-status {
+p{
 
-    margin-top:
-        70px;
+color:
+var(--text-secondary);
 
-}
-
-
-
-.status-card {
-
-    display:
-        flex;
-
-    gap:
-        15px;
-
-    padding:
-        24px;
-
-    border-radius:
-        var(--radius);
-
-    background:
-        var(--surface);
-
-    border:
-        1px solid var(--border);
-
-    max-width:
-        650px;
+font-size:
+1.05rem;
 
 }
 
 
 
-.status-indicator {
+.gradient-text{
 
-    width:
-        12px;
 
-    height:
-        12px;
+background:
+linear-gradient(
+90deg,
+#2563eb,
+#7c3aed
+);
 
-    margin-top:
-        8px;
 
-    border-radius:
-        50%;
+-webkit-background-clip:
+text;
 
-    background:
-        var(--success);
 
-    box-shadow:
-        0 0 15px var(--success);
+-webkit-text-fill-color:
+transparent;
+
 
 }
 
 
 
-.status-card strong {
 
-    display:
-        block;
+/*
+=========================================
+Navigation
+=========================================
+*/
 
-    margin-bottom:
-        5px;
+
+nav{
+
+
+position:
+fixed;
+
+
+top:0;
+
+
+left:0;
+
+
+width:100%;
+
+
+z-index:1000;
+
+
+background:
+rgba(255,255,255,0.85);
+
+
+backdrop-filter:
+blur(12px);
+
+
+border-bottom:
+1px solid var(--border);
+
+
+}
+
+
+
+.nav-container{
+
+
+height:
+76px;
+
+
+display:flex;
+
+
+align-items:center;
+
+
+justify-content:space-between;
+
+
+}
+
+
+
+.logo{
+
+
+font-size:
+1.4rem;
+
+
+font-weight:
+800;
+
+
+letter-spacing:
+-0.03em;
+
+
+}
+
+
+
+.logo span{
+
+
+color:
+var(--accent);
+
+
+}
+
+
+
+.nav-links{
+
+
+display:flex;
+
+
+align-items:center;
+
+
+gap:30px;
+
+
+}
+
+
+
+.nav-links a{
+
+
+font-size:
+0.95rem;
+
+
+color:
+var(--text-secondary);
+
+
+}
+
+
+
+.nav-links a:hover{
+
+
+color:
+var(--accent);
+
+
+}
+
+
+
+.nav-button{
+
+
+padding:
+10px 20px;
+
+
+border-radius:
+999px;
+
+
+background:
+var(--accent);
+
+
+color:white !important;
+
+
+font-weight:
+600;
+
 
 }
 
@@ -831,190 +430,1645 @@ Hero Styling
 @media(max-width:768px){
 
 
-    .hero {
-
-        padding-top:
-            120px;
-
-    }
+.nav-links{
 
 
-    .hero-buttons {
-
-        flex-direction:
-            column;
-
-    }
+display:none;
 
 
-    .primary-button,
-    .secondary-button {
-
-        text-align:
-            center;
-
-    }
+}
 
 
 }
 
 
 </style>
+
+
+</head>
+
+
+<body>
+
+
+<nav>
+
+
+<div class="container nav-container">
+
+
+<a href="#" class="logo">
+
+SVP <span>Kernel</span>
+
+</a>
+
+
+
+<div class="nav-links">
+
+
+<a href="#demo">
+Demo
+</a>
+
+
+<a href="#architecture">
+Architecture
+</a>
+
+
+<a href="#evaluation">
+Evaluation
+</a>
+
+
+<a href="https://github.com/" class="nav-button">
+GitHub
+</a>
+
+
+</div>
+
+
+</div>
+
+
+</nav>
 <!--
-==========================================
-Problem Section
-==========================================
+=========================================
+Hero Section
+=========================================
+-->
+
+<section id="hero">
+
+
+<div class="container">
+
+
+<div class="hero-content">
+
+
+
+<div class="hero-badge">
+
+AI Agent Runtime Safety Research
+
+</div>
+
+
+
+
+<h1>
+
+A 
+<span class="gradient-text">
+Runtime Decision Kernel
+</span>
+
+for Safer AI Agents
+
+</h1>
+
+
+
+
+<p class="hero-description">
+
+SVP Kernel evaluates AI agent actions before execution
+using semantic validation, policy-driven decisions,
+and tamper-evident audit logging.
+
+</p>
+
+
+
+
+<div class="hero-actions">
+
+
+<a href="#demo" class="primary-button">
+
+Try Live Demo
+
+</a>
+
+
+
+<a href="https://svp-semantic-vector-protocol-kernel-api.onrender.com/docs"
+class="secondary-button">
+
+Live API
+
+</a>
+
+
+
+</div>
+
+
+
+<div class="hero-status">
+
+
+<div class="status-item">
+
+
+<span class="status-dot"></span>
+
+
+API Online
+
+</div>
+
+
+
+<div class="status-item">
+
+
+FastAPI Runtime
+
+</div>
+
+
+
+<div class="status-item">
+
+
+SHA-256 Audit Verification
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div class="hero-card">
+
+
+<div class="code-window">
+
+
+<div class="window-header">
+
+
+<span></span>
+<span></span>
+<span></span>
+
+
+</div>
+
+
+
+
+<pre><code>
+
+Agent Action
+
+      ↓
+
+Semantic Validation
+
+      ↓
+
+Policy Evaluation
+
+      ↓
+
+Decision Engine
+
+      ↓
+
+Kernel Decision
+
+
+PASS / BLOCK
+
+
+      ↓
+
+Audit Record
+
+
+</code></pre>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+<style>
+
+
+/*
+=========================================
+Hero Styling
+=========================================
+*/
+
+
+
+#hero{
+
+
+padding-top:
+170px;
+
+
+}
+
+
+
+
+.hero-content{
+
+
+max-width:
+850px;
+
+
+}
+
+
+
+.hero-badge{
+
+
+display:
+inline-block;
+
+
+padding:
+8px 16px;
+
+
+border-radius:
+999px;
+
+
+background:
+var(--accent-light);
+
+
+color:
+var(--accent);
+
+
+font-weight:
+600;
+
+
+font-size:
+0.9rem;
+
+
+margin-bottom:
+25px;
+
+
+}
+
+
+
+.hero-description{
+
+
+font-size:
+1.2rem;
+
+
+max-width:
+750px;
+
+
+margin-top:
+25px;
+
+
+}
+
+
+
+.hero-actions{
+
+
+display:
+flex;
+
+
+gap:
+18px;
+
+
+margin-top:
+40px;
+
+
+flex-wrap:
+wrap;
+
+
+}
+
+
+
+.primary-button,
+.secondary-button{
+
+
+padding:
+14px 28px;
+
+
+border-radius:
+999px;
+
+
+font-weight:
+700;
+
+
+transition:
+0.2s;
+
+
+}
+
+
+
+.primary-button{
+
+
+background:
+var(--accent);
+
+
+color:white;
+
+
+}
+
+
+
+.primary-button:hover{
+
+
+transform:
+translateY(-2px);
+
+
+}
+
+
+
+.secondary-button{
+
+
+border:
+1px solid var(--border);
+
+
+background:
+white;
+
+
+}
+
+
+
+.secondary-button:hover{
+
+
+border-color:
+var(--accent);
+
+
+color:
+var(--accent);
+
+
+}
+
+
+
+.hero-status{
+
+
+display:
+flex;
+
+
+gap:
+20px;
+
+
+flex-wrap:
+wrap;
+
+
+margin-top:
+50px;
+
+
+}
+
+
+
+.status-item{
+
+
+padding:
+10px 18px;
+
+
+border:
+1px solid var(--border);
+
+
+background:
+white;
+
+
+border-radius:
+999px;
+
+
+font-size:
+0.9rem;
+
+
+color:
+var(--text-secondary);
+
+
+}
+
+
+
+.status-dot{
+
+
+display:
+inline-block;
+
+
+width:
+8px;
+
+
+height:
+8px;
+
+
+background:
+var(--success);
+
+
+border-radius:
+50%;
+
+
+margin-right:
+8px;
+
+
+}
+
+
+
+
+
+.hero-card{
+
+
+margin-top:
+70px;
+
+
+}
+
+
+
+.code-window{
+
+
+background:
+#0f172a;
+
+
+border-radius:
+20px;
+
+
+overflow:hidden;
+
+
+box-shadow:
+0 20px 50px rgba(15,23,42,0.15);
+
+
+}
+
+
+
+.window-header{
+
+
+height:
+45px;
+
+
+background:
+#1e293b;
+
+
+display:flex;
+
+
+align-items:center;
+
+
+gap:
+8px;
+
+
+padding-left:
+20px;
+
+
+}
+
+
+
+.window-header span{
+
+
+width:
+10px;
+
+
+height:
+10px;
+
+
+background:
+#94a3b8;
+
+
+border-radius:
+50%;
+
+
+}
+
+
+
+.code-window pre{
+
+
+padding:
+40px;
+
+
+overflow-x:auto;
+
+
+}
+
+
+
+.code-window code{
+
+
+color:
+#e2e8f0;
+
+
+font-size:
+1rem;
+
+
+line-height:
+2;
+
+
+}
+
+
+
+@media(max-width:768px){
+
+
+.hero-status{
+
+
+flex-direction:
+column;
+
+
+align-items:flex-start;
+
+
+}
+
+
+
+.code-window pre{
+
+
+padding:
+25px;
+
+
+}
+
+
+}
+
+
+
+    </style>
+    <!--
+=========================================
+Live Demo Section
+=========================================
+-->
+
+<section id="demo">
+
+
+<div class="container">
+
+
+<div class="section-header">
+
+
+<h2>
+
+Test SVP Kernel Live
+
+</h2>
+
+
+<p>
+
+Submit an AI agent workflow and observe how the
+runtime decision layer evaluates the action.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="demo-container">
+
+
+
+<div class="demo-input-panel">
+
+
+<label>
+
+Agent Workflow / Action
+
+</label>
+
+
+
+<textarea
+id="actionInput"
+placeholder="Example: Delete the production database">
+</textarea>
+
+
+
+
+<div class="example-actions">
+
+
+<button onclick="loadExample('delete the production database')">
+
+Destructive Action
+
+</button>
+
+
+
+<button onclick="loadExample('retrieve approved knowledge base articles')">
+
+Safe Retrieval
+
+</button>
+
+
+
+<button onclick="loadExample('rotate API keys')">
+
+Credential Action
+
+</button>
+
+
+</div>
+
+
+
+
+<button 
+class="evaluate-button"
+onclick="evaluateAction()">
+
+Evaluate With SVP Kernel
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+<div 
+id="resultCard"
+class="result-container">
+
+
+<div class="result-placeholder">
+
+Waiting for evaluation...
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<style>
+
+
+/*
+=========================================
+Demo Styling
+=========================================
+*/
+
+
+
+.section-header{
+
+
+text-align:
+center;
+
+
+max-width:
+750px;
+
+
+margin:
+0 auto 50px;
+
+
+}
+
+
+
+.demo-container{
+
+
+display:
+grid;
+
+
+grid-template-columns:
+1fr 1fr;
+
+
+gap:
+30px;
+
+
+}
+
+
+
+.demo-input-panel,
+.result-container{
+
+
+background:
+var(--surface);
+
+
+border:
+1px solid var(--border);
+
+
+border-radius:
+var(--radius);
+
+
+padding:
+35px;
+
+
+}
+
+
+
+.demo-input-panel label{
+
+
+font-weight:
+700;
+
+
+display:
+block;
+
+
+margin-bottom:
+15px;
+
+
+}
+
+
+
+
+textarea{
+
+
+width:
+100%;
+
+
+height:
+160px;
+
+
+resize:
+vertical;
+
+
+padding:
+20px;
+
+
+border:
+1px solid var(--border);
+
+
+border-radius:
+12px;
+
+
+font-family:
+inherit;
+
+
+font-size:
+1rem;
+
+
+color:
+var(--text-primary);
+
+
+background:
+var(--surface-secondary);
+
+
+}
+
+
+
+
+.example-actions{
+
+
+display:
+flex;
+
+
+gap:
+10px;
+
+
+flex-wrap:
+wrap;
+
+
+margin:
+20px 0;
+
+
+}
+
+
+
+.example-actions button{
+
+
+padding:
+8px 14px;
+
+
+border:
+1px solid var(--border);
+
+
+background:
+white;
+
+
+border-radius:
+999px;
+
+
+cursor:
+pointer;
+
+
+font-size:
+0.85rem;
+
+
+}
+
+
+
+.example-actions button:hover{
+
+
+border-color:
+var(--accent);
+
+
+color:
+var(--accent);
+
+
+}
+
+
+
+.evaluate-button{
+
+
+width:
+100%;
+
+
+padding:
+16px;
+
+
+border:
+none;
+
+
+border-radius:
+999px;
+
+
+background:
+var(--accent);
+
+
+color:white;
+
+
+font-weight:
+700;
+
+
+font-size:
+1rem;
+
+
+cursor:pointer;
+
+
+}
+
+
+
+
+.evaluate-button:hover{
+
+
+opacity:
+0.9;
+
+
+}
+
+
+
+
+.result-container{
+
+
+min-height:
+300px;
+
+
+display:
+flex;
+
+
+align-items:
+center;
+
+
+justify-content:
+center;
+
+
+}
+
+
+
+.result-placeholder{
+
+
+color:
+var(--text-secondary);
+
+
+}
+
+
+
+
+.result-card{
+
+
+width:
+100%;
+
+
+}
+
+
+
+.result-card h3{
+
+
+margin-bottom:
+20px;
+
+
+}
+
+
+
+
+.result-row{
+
+
+display:
+flex;
+
+
+justify-content:
+space-between;
+
+
+padding:
+12px 0;
+
+
+border-bottom:
+1px solid var(--border);
+
+
+}
+
+
+
+.result-label{
+
+
+font-weight:
+600;
+
+
+}
+
+
+
+.decision-pass{
+
+
+color:
+var(--success);
+
+
+font-weight:
+800;
+
+
+}
+
+
+
+.decision-block{
+
+
+color:
+var(--danger);
+
+
+font-weight:
+800;
+
+
+}
+
+
+
+
+
+@media(max-width:900px){
+
+
+.demo-container{
+
+
+grid-template-columns:
+1fr;
+
+
+}
+
+
+}
+
+
+
+</style>
+
+
+
+
+
+
+
+
+
+<script>
+
+
+/*
+=========================================
+SVP Kernel Live API Integration
+=========================================
+*/
+
+
+function loadExample(example){
+
+
+document.getElementById("actionInput").value = example;
+
+
+}
+
+
+
+
+async function evaluateAction(){
+
+
+
+const action =
+document.getElementById("actionInput").value.trim();
+
+
+
+
+const resultCard =
+document.getElementById("resultCard");
+
+
+
+
+
+if(!action){
+
+
+resultCard.innerHTML =
+
+"<p>Please enter an agent action.</p>";
+
+
+return;
+
+
+}
+
+
+
+
+resultCard.innerHTML =
+
+"<p>Evaluating through SVP Kernel...</p>";
+
+
+
+
+
+
+try {
+
+
+
+const response = await fetch(
+
+
+"https://svp-semantic-vector-protocol-kernel-api.onrender.com/v1/audit",
+
+
+{
+
+
+method:"POST",
+
+
+headers:{
+
+
+"Content-Type":"application/json"
+
+
+},
+
+
+body:JSON.stringify({
+
+
+steps:[action]
+
+
+})
+
+
+}
+
+
+
+);
+
+
+
+
+
+const data =
+await response.json();
+
+
+
+
+
+const step =
+data.steps[0];
+
+
+
+
+
+const decisionClass =
+
+step.decision === "BLOCK"
+
+?
+
+"decision-block"
+
+:
+
+"decision-pass";
+
+
+
+
+
+
+
+resultCard.innerHTML = `
+
+
+
+<div class="result-card">
+
+
+<h3>
+
+Kernel Decision:
+
+<span class="${decisionClass}">
+
+${step.decision}
+
+</span>
+
+
+</h3>
+
+
+
+<div class="result-row">
+
+<span class="result-label">
+Overall
+</span>
+
+<span>
+${data.overall}
+</span>
+
+</div>
+
+
+
+
+
+<div class="result-row">
+
+<span class="result-label">
+Risk Score
+</span>
+
+<span>
+${step.score}
+</span>
+
+</div>
+
+
+
+
+
+<div class="result-row">
+
+<span class="result-label">
+Threshold
+</span>
+
+<span>
+${step.threshold}
+</span>
+
+</div>
+
+
+
+
+
+<div class="result-row">
+
+<span class="result-label">
+Rule ID
+</span>
+
+<span>
+${step.rule_id}
+</span>
+
+</div>
+
+
+
+
+
+<div class="result-row">
+
+<span class="result-label">
+Matched Policy
+</span>
+
+<span>
+${step.matched_policy}
+</span>
+
+</div>
+
+
+
+
+
+<div class="result-row">
+
+<span class="result-label">
+Severity
+</span>
+
+<span>
+${step.severity}
+</span>
+
+</div>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+
+
+}
+
+catch(error){
+
+
+
+resultCard.innerHTML =
+
+`
+
+<div>
+
+<h3>
+API Connection Error
+</h3>
+
+
+<p>
+Unable to reach SVP Kernel runtime.
+</p>
+
+
+</div>
+
+`;
+
+
+
+}
+
+
+
+}
+
+
+
+</script>
+<!--
+=========================================
+Problem & Solution Section
+=========================================
 -->
 
 <section id="problem">
 
-    <div class="container">
 
+<div class="container">
 
-        <div class="section-header">
 
-            <h2>
-                The Security Problem With
-                <span class="gradient-text">
-                    Autonomous AI Agents
-                </span>
-            </h2>
 
+<div class="two-column">
 
-            <p>
 
-                Traditional security systems were designed around
-                users, applications, and static permissions.
-                Autonomous agents introduce a new challenge:
-                evaluating whether an action itself should happen.
 
-            </p>
+<div class="info-card">
 
 
-        </div>
+<h2>
 
+The Problem
 
+</h2>
 
 
-        <div class="problem-grid">
 
+<p>
 
-            <div class="problem-card">
+AI agents are becoming capable of taking actions across
+APIs, databases, cloud resources, and business systems.
 
+Unlike traditional software, agent behavior is influenced
+by natural language instructions and changing context.
 
-                <div class="problem-number">
-                    01
-                </div>
+</p>
 
 
-                <h3>
-                    Permission Is Not Intent
-                </h3>
 
+<p>
 
-                <p>
+This creates a need for a runtime decision layer that can
+evaluate actions before execution and provide transparent
+reasoning about the decision.
 
-                    An AI agent may technically have permission to
-                    perform an operation, but the requested action may
-                    violate organizational policies or safety boundaries.
+</p>
 
-                </p>
 
 
-            </div>
+</div>
 
 
 
 
 
-            <div class="problem-card">
 
+<div class="info-card">
 
-                <div class="problem-number">
-                    02
-                </div>
 
+<h2>
 
-                <h3>
-                    Agents Execute Actions, Not Just Text
-                </h3>
+The Approach
 
+</h2>
 
-                <p>
 
-                    Modern AI systems can call APIs, modify files,
-                    access databases, and trigger external tools.
-                    Security must evaluate actions before execution.
 
-                </p>
+<p>
 
+SVP Kernel introduces a deterministic runtime validation
+layer between AI agents and external actions.
 
-            </div>
+</p>
 
 
 
+<p>
 
+It combines semantic understanding with explicit policies
+to evaluate whether an action aligns with defined safety
+requirements.
 
-            <div class="problem-card">
+</p>
 
 
-                <div class="problem-number">
-                    03
-                </div>
 
+</div>
 
-                <h3>
-                    Static Rules Miss Semantic Meaning
-                </h3>
 
 
-                <p>
+</div>
 
-                    Keyword-based filtering struggles with variations
-                    in language. The same intent can appear through
-                    many different instructions and workflows.
 
-                </p>
 
 
-            </div>
 
-
-
-        </div>
-
-
-
-
-        <div class="security-question">
-
-
-            <p>
-                Traditional security asks:
-            </p>
-
-
-            <h3>
-                "Who is allowed to access this?"
-            </h3>
-
-
-
-            <p>
-                Agent security requires another layer:
-            </p>
-
-
-            <h3 class="gradient-text">
-                "Should this action be allowed to execute?"
-            </h3>
-
-
-        </div>
-
-
-
-    </div>
+</div>
 
 
 </section>
@@ -1023,393 +2077,216 @@ Problem Section
 
 
 
-<style>
 
 
-/*
-==========================================
-Problem Section Styling
-==========================================
-*/
-
-
-.section-header {
-
-    max-width:
-        800px;
-
-    margin-bottom:
-        60px;
-
-}
-
-
-
-.section-header p {
-
-    margin-top:
-        20px;
-
-}
-
-
-
-
-.problem-grid {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:
-        25px;
-
-}
-
-
-
-.problem-card {
-
-    padding:
-        32px;
-
-    background:
-        var(--surface);
-
-    border:
-        1px solid var(--border);
-
-    border-radius:
-        var(--radius);
-
-    transition:
-        0.25s ease;
-
-}
-
-
-
-.problem-card:hover {
-
-    transform:
-        translateY(-5px);
-
-    border-color:
-        rgba(56,189,248,0.4);
-
-}
-
-
-
-.problem-number {
-
-    color:
-        var(--accent);
-
-    font-size:
-        0.9rem;
-
-    font-weight:
-        700;
-
-    margin-bottom:
-        20px;
-
-}
-
-
-
-.problem-card p {
-
-    font-size:
-        1rem;
-
-}
-
-
-
-.security-question {
-
-    margin-top:
-        80px;
-
-    padding:
-        40px;
-
-    text-align:
-        center;
-
-    background:
-        var(--surface);
-
-    border:
-        1px solid var(--border);
-
-    border-radius:
-        var(--radius);
-
-}
-
-
-
-.security-question h3 {
-
-    font-size:
-        1.8rem;
-
-    margin:
-        15px 0 30px;
-
-}
-
-
-
-
-@media(max-width:900px){
-
-
-    .problem-grid {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-}
-
-
-
-</style>
-<!--
-==========================================
-Solution Section
-==========================================
--->
 
 <section id="solution">
 
-    <div class="container">
 
+<div class="container">
 
-        <div class="section-header">
 
 
-            <h2>
+<div class="section-header">
 
-                A Runtime Decision Layer For
-                <span class="gradient-text">
-                    AI Agent Actions
-                </span>
 
-            </h2>
+<h2>
 
+How SVP Kernel Works
 
-            <p>
+</h2>
 
-                SVP Kernel introduces a semantic validation layer
-                between autonomous AI agents and the systems they
-                interact with.
 
-                Instead of blindly executing actions, requests are
-                evaluated against policies and safety constraints
-                before execution.
+<p>
 
-            </p>
+A modular pipeline for evaluating AI agent actions.
 
+</p>
 
-        </div>
 
+</div>
 
 
 
 
-        <div class="flow-container">
 
+<div class="solution-grid">
 
-            <div class="flow-step">
 
 
-                <div class="flow-icon">
-                    01
-                </div>
 
 
-                <h3>
-                    Agent Action
-                </h3>
+<div class="solution-card">
 
 
-                <p>
-                    An AI agent proposes an action involving tools,
-                    APIs, data, or external systems.
-                </p>
+<div class="number">
 
+01
 
-            </div>
+</div>
 
 
+<h3>
 
+Receive Action
 
-            <div class="flow-arrow">
-                ↓
-            </div>
+</h3>
 
 
+<p>
 
+The runtime receives an AI agent workflow or individual
+action before execution.
 
-            <div class="flow-step">
+</p>
 
 
-                <div class="flow-icon">
-                    02
-                </div>
+</div>
 
 
-                <h3>
-                    Semantic Validation
-                </h3>
 
 
-                <p>
-                    The action is converted into a semantic
-                    representation for policy comparison.
-                </p>
 
 
-            </div>
+<div class="solution-card">
 
 
+<div class="number">
 
+02
 
-            <div class="flow-arrow">
-                ↓
-            </div>
+</div>
 
 
+<h3>
 
+Semantic Validation
 
-            <div class="flow-step">
+</h3>
 
 
-                <div class="flow-icon">
-                    03
-                </div>
+<p>
 
+The action is transformed into a semantic representation
+and compared against defined policy patterns.
 
-                <h3>
-                    Policy Evaluation
-                </h3>
+</p>
 
 
-                <p>
-                    YAML-based policies evaluate risk,
-                    thresholds, and safety requirements.
-                </p>
+</div>
 
 
-            </div>
 
 
 
 
-            <div class="flow-arrow">
-                ↓
-            </div>
+<div class="solution-card">
 
 
+<div class="number">
 
+03
 
-            <div class="flow-step">
+</div>
 
 
-                <div class="flow-icon">
-                    04
-                </div>
+<h3>
 
+Policy Evaluation
 
-                <h3>
-                    Decision Engine
-                </h3>
+</h3>
 
 
-                <p>
-                    The kernel produces a deterministic decision:
-                    allow, block, or review.
-                </p>
+<p>
 
+YAML-based policies define thresholds, severity levels,
+and expected decision behavior.
 
-            </div>
+</p>
 
 
+</div>
 
 
-            <div class="flow-arrow">
-                ↓
-            </div>
 
 
 
 
-            <div class="flow-step">
+<div class="solution-card">
 
 
-                <div class="flow-icon">
-                    05
-                </div>
+<div class="number">
 
+04
 
-                <h3>
-                    Audit Record
-                </h3>
+</div>
 
 
-                <p>
-                    The decision is stored with tamper-evident
-                    verification metadata.
-                </p>
+<h3>
 
+Kernel Decision
 
-            </div>
+</h3>
 
 
+<p>
 
-        </div>
+The deterministic decision engine produces a transparent
+PASS or BLOCK outcome.
 
+</p>
 
 
+</div>
 
 
-        <div class="solution-highlight">
 
 
-            <h3>
-                The Core Design Principle
-            </h3>
 
 
-            <p>
+<div class="solution-card">
 
-                Same input + same policy state =
-                deterministic decision.
 
-                SVP Kernel focuses on predictable,
-                explainable runtime enforcement rather than
-                opaque security decisions.
+<div class="number">
 
-            </p>
+05
 
+</div>
 
-        </div>
 
+<h3>
 
+Audit Record
 
-    </div>
+</h3>
+
+
+<p>
+
+Each decision can be recorded through tamper-evident
+audit logging.
+
+</p>
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+</div>
 
 
 </section>
+
+
+
 
 
 
@@ -1419,1040 +2296,438 @@ Solution Section
 
 
 /*
-==========================================
-Solution Section Styling
-==========================================
+=========================================
+Problem Solution Styling
+=========================================
 */
 
 
-.flow-container {
 
-    display:
-        flex;
-
-    align-items:
-        stretch;
-
-    justify-content:
-        center;
-
-    gap:
-        15px;
-
-    flex-wrap:
-        wrap;
-
-}
+.two-column{
 
 
-
-.flow-step {
-
-    flex:
-        1;
-
-    min-width:
-        200px;
-
-    padding:
-        30px;
-
-    background:
-        var(--surface);
-
-    border:
-        1px solid var(--border);
-
-    border-radius:
-        var(--radius);
-
-}
+display:
+grid;
 
 
-
-.flow-icon {
-
-    width:
-        40px;
-
-    height:
-        40px;
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    border-radius:
-        50%;
-
-    background:
-        rgba(56,189,248,0.12);
-
-    color:
-        var(--accent);
-
-    font-weight:
-        700;
-
-    margin-bottom:
-        20px;
-
-}
+grid-template-columns:
+repeat(2,1fr);
 
 
-
-.flow-arrow {
-
-    display:
-        flex;
-
-    align-items:
-        center;
-
-    justify-content:
-        center;
-
-    font-size:
-        2rem;
-
-    color:
-        var(--accent);
-
-}
-
-
-
-.solution-highlight {
-
-    margin-top:
-        70px;
-
-    padding:
-        40px;
-
-    border-radius:
-        var(--radius);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(56,189,248,0.08),
-            rgba(129,140,248,0.08)
-        );
-
-    border:
-        1px solid var(--border);
-
-}
-
-
-
-.solution-highlight h3 {
-
-    margin-bottom:
-        15px;
-
-}
-
-
-
-@media(max-width:900px){
-
-
-    .flow-arrow {
-
-        width:
-            100%;
-
-    }
+gap:
+30px;
 
 
 }
 
 
 
-</style>
-<!--
-==========================================
-Architecture Section
-==========================================
--->
+.info-card{
 
-<section id="architecture">
 
-    <div class="container">
+background:
+var(--surface);
 
 
-        <div class="section-header">
+border:
+1px solid var(--border);
 
 
-            <h2>
+border-radius:
+var(--radius);
 
-                System Architecture
 
-            </h2>
+padding:
+40px;
 
-
-            <p>
-
-                SVP Kernel is designed as a modular runtime
-                validation system where each layer has a specific
-                responsibility in the decision lifecycle.
-
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="architecture-grid">
-
-
-
-            <div class="architecture-card">
-
-
-                <div class="architecture-tag">
-                    Layer 01
-                </div>
-
-
-                <h3>
-                    Semantic Validation Layer
-                </h3>
-
-
-                <p>
-
-                    Converts incoming AI agent actions into
-                    semantic representations using embedding models.
-
-                    This allows the system to evaluate meaning
-                    rather than relying only on exact keywords.
-
-                </p>
-
-
-                <ul>
-
-                    <li>
-                        Action representation
-                    </li>
-
-                    <li>
-                        Semantic similarity scoring
-                    </li>
-
-                    <li>
-                        Context comparison
-                    </li>
-
-                </ul>
-
-
-            </div>
-
-
-
-
-
-            <div class="architecture-card">
-
-
-                <div class="architecture-tag">
-                    Layer 02
-                </div>
-
-
-                <h3>
-                    Policy Engine
-                </h3>
-
-
-                <p>
-
-                    A YAML-based Policy DSL defines safety
-                    requirements, thresholds, severity levels,
-                    and expected actions.
-
-                </p>
-
-
-                <ul>
-
-                    <li>
-                        Human-readable policies
-                    </li>
-
-                    <li>
-                        Rule matching
-                    </li>
-
-                    <li>
-                        Configurable thresholds
-                    </li>
-
-                </ul>
-
-
-            </div>
-
-
-
-
-
-            <div class="architecture-card">
-
-
-                <div class="architecture-tag">
-                    Layer 03
-                </div>
-
-
-                <h3>
-                    Deterministic Decision Engine
-                </h3>
-
-
-                <p>
-
-                    The central evaluation layer combines semantic
-                    scores and policy rules to produce consistent
-                    decisions.
-
-                </p>
-
-
-                <ul>
-
-                    <li>
-                        Similarity evaluation
-                    </li>
-
-                    <li>
-                        Threshold processing
-                    </li>
-
-                    <li>
-                        Decision generation
-                    </li>
-
-                </ul>
-
-
-            </div>
-
-
-
-
-
-            <div class="architecture-card">
-
-
-                <div class="architecture-tag">
-                    Layer 04
-                </div>
-
-
-                <h3>
-                    Safety Invariant Layer
-                </h3>
-
-
-                <p>
-
-                    Maintains predefined safety boundaries against
-                    known categories of harmful or unauthorized
-                    agent behavior.
-
-                </p>
-
-
-                <ul>
-
-                    <li>
-                        Dangerous operations
-                    </li>
-
-                    <li>
-                        Privilege escalation
-                    </li>
-
-                    <li>
-                        Authorization bypass
-                    </li>
-
-                </ul>
-
-
-            </div>
-
-
-
-
-
-            <div class="architecture-card">
-
-
-                <div class="architecture-tag">
-                    Layer 05
-                </div>
-
-
-                <h3>
-                    Audit Logging Layer
-                </h3>
-
-
-                <p>
-
-                    Records every decision using tamper-evident
-                    chained SHA-256 event verification.
-
-                </p>
-
-
-                <ul>
-
-                    <li>
-                        Decision history
-                    </li>
-
-                    <li>
-                        Hash chaining
-                    </li>
-
-                    <li>
-                        Integrity verification
-                    </li>
-
-                </ul>
-
-
-            </div>
-
-
-
-        </div>
-
-
-
-
-
-        <div class="architecture-principle">
-
-
-            <h3>
-                Architecture Principle
-            </h3>
-
-
-            <p>
-
-                Separate semantic understanding from deterministic
-                enforcement.
-
-                The embedding layer provides contextual similarity,
-                while the policy and decision layers provide
-                predictable control.
-
-            </p>
-
-
-        </div>
-
-
-
-    </div>
-
-
-</section>
-
-
-
-
-
-<style>
-
-
-/*
-==========================================
-Architecture Styling
-==========================================
-*/
-
-
-.architecture-grid {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(3,1fr);
-
-    gap:
-        25px;
 
 }
 
 
 
-.architecture-card {
 
-    padding:
-        32px;
 
-    background:
-        var(--surface);
+.solution-grid{
 
-    border:
-        1px solid var(--border);
 
-    border-radius:
-        var(--radius);
+display:
+grid;
+
+
+grid-template-columns:
+repeat(5,1fr);
+
+
+gap:
+20px;
+
 
 }
 
 
 
-.architecture-card:hover {
+.solution-card{
 
-    border-color:
-        rgba(56,189,248,0.4);
+
+background:
+var(--surface);
+
+
+border:
+1px solid var(--border);
+
+
+border-radius:
+var(--radius);
+
+
+padding:
+30px;
+
 
 }
 
 
 
-.architecture-tag {
-
-    color:
-        var(--accent);
-
-    font-size:
-        0.85rem;
-
-    font-weight:
-        700;
-
-    margin-bottom:
-        15px;
-
-}
+.number{
 
 
-
-.architecture-card ul {
-
-    margin-top:
-        20px;
-
-    padding-left:
-        20px;
-
-    color:
-        var(--text-secondary);
-
-}
+width:
+40px;
 
 
-
-.architecture-card li {
-
-    margin-bottom:
-        8px;
-
-}
+height:
+40px;
 
 
+display:
+flex;
 
-.architecture-principle {
 
-    margin-top:
-        70px;
+align-items:center;
 
-    padding:
-        40px;
 
-    background:
-        var(--surface);
+justify-content:center;
 
-    border:
-        1px solid var(--border);
 
-    border-radius:
-        var(--radius);
+background:
+var(--accent-light);
+
+
+color:
+var(--accent);
+
+
+border-radius:
+50%;
+
+
+font-weight:
+800;
+
+
+margin-bottom:
+20px;
+
 
 }
+
+
 
 
 
 @media(max-width:1000px){
 
 
-    .architecture-grid {
+.two-column{
 
-        grid-template-columns:
-            1fr;
 
-    }
+grid-template-columns:
+1fr;
 
 
 }
 
 
+
+.solution-grid{
+
+
+grid-template-columns:
+1fr;
+
+
+}
+
+
+
+}
+
+
+
 </style>
 <!--
-==========================================
-Capabilities Section
-==========================================
+=========================================
+Architecture Section
+=========================================
 -->
 
-<section id="capabilities">
+<section id="architecture">
 
-    <div class="container">
 
+<div class="container">
 
-        <div class="section-header">
 
 
-            <h2>
+<div class="section-header">
 
-                Current Capabilities
 
-            </h2>
+<h2>
 
+System Architecture
 
-            <p>
+</h2>
 
-                SVP Kernel currently provides the foundational
-                components required for runtime AI agent action
-                validation.
 
-            </p>
 
+<p>
 
-        </div>
+SVP Kernel separates semantic understanding from
+deterministic decision enforcement through modular layers.
 
+</p>
 
 
+</div>
 
 
-        <div class="capabilities-grid">
 
 
 
-            <div class="capability-card">
 
 
-                <h3>
-                    Semantic Action Evaluation
-                </h3>
+<div class="architecture-flow">
 
 
-                <p>
 
-                    Evaluates agent actions based on semantic
-                    similarity rather than only exact keyword
-                    matching.
+<div class="architecture-node">
 
-                </p>
 
+<span>
+01
+</span>
 
-            </div>
 
+<h3>
+Input Layer
+</h3>
 
 
+<p>
 
+Receives AI agent actions and workflows through the
+runtime API.
 
-            <div class="capability-card">
+</p>
 
 
-                <h3>
-                    Policy DSL
-                </h3>
+</div>
 
 
-                <p>
 
-                    YAML-based policies define rules,
-                    thresholds, severity levels, and decisions
-                    in a human-readable format.
 
-                </p>
 
+<div class="flow-arrow">
 
-            </div>
+↓
 
+</div>
 
 
 
 
-            <div class="capability-card">
 
+<div class="architecture-node">
 
-                <h3>
-                    Deterministic Decisions
-                </h3>
 
+<span>
+02
+</span>
 
-                <p>
 
-                    Produces predictable outcomes from the same
-                    action, policy configuration, and evaluation
-                    state.
+<h3>
+Semantic Validation Layer
+</h3>
 
-                </p>
 
+<p>
 
-            </div>
+Uses embedding-based similarity to evaluate the meaning
+of incoming actions against known policy patterns.
 
+</p>
 
 
+</div>
 
 
-            <div class="capability-card">
 
 
-                <h3>
-                    Adversarial Evaluation
-                </h3>
 
+<div class="flow-arrow">
 
-                <p>
+↓
 
-                    Includes an evaluation framework for measuring
-                    performance against risky and safe agent
-                    behaviors.
+</div>
 
-                </p>
 
 
-            </div>
 
 
+<div class="architecture-node">
 
 
+<span>
+03
+</span>
 
-            <div class="capability-card">
 
+<h3>
+Policy Engine
+</h3>
 
-                <h3>
-                    Tamper-Evident Audit Logs
-                </h3>
 
+<p>
 
-                <p>
+Loads YAML-based policies containing rules, thresholds,
+severity levels, and expected actions.
 
-                    Generates chained SHA-256 audit events with
-                    verification support for decision integrity.
+</p>
 
-                </p>
 
+</div>
 
-            </div>
 
 
 
 
+<div class="flow-arrow">
 
-            <div class="capability-card">
+↓
 
+</div>
 
-                <h3>
-                    FastAPI Runtime Interface
-                </h3>
 
 
-                <p>
 
-                    Provides API endpoints for interacting with
-                    the kernel decision process.
 
-                </p>
+<div class="architecture-node">
 
 
-            </div>
+<span>
+04
+</span>
 
 
+<h3>
+Decision Engine
+</h3>
 
-        </div>
 
+<p>
 
+Combines semantic scores and policy rules to generate
+a deterministic Kernel Decision.
 
-    </div>
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="flow-arrow">
+
+↓
+
+</div>
+
+
+
+
+
+<div class="architecture-node">
+
+
+<span>
+05
+</span>
+
+
+<h3>
+Audit Layer
+</h3>
+
+
+<p>
+
+Creates tamper-evident records using chained SHA-256
+hash verification.
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="architecture-principle">
+
+
+
+<h3>
+
+Design Principle
+
+</h3>
+
+
+<p>
+
+Large language models are powerful at understanding
+context, but runtime safety requires predictable and
+auditable enforcement.
+
+SVP Kernel explores the combination of semantic
+evaluation with deterministic control logic.
+
+</p>
+
+
+</div>
+
+
+
+
+
+</div>
 
 
 </section>
 
 
-
-
-
-
-
-<!--
-==========================================
-Evaluation Section
-==========================================
--->
-
-<section id="evaluation">
-
-    <div class="container">
-
-
-        <div class="section-header">
-
-
-            <h2>
-
-                Evaluation Results
-
-            </h2>
-
-
-            <p>
-
-                SVP Kernel is evaluated using an adversarial
-                dataset designed to measure semantic policy
-                enforcement performance.
-
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="benchmark-box">
-
-
-            <div class="benchmark-header">
-
-                <h3>
-                    Current Benchmark
-                </h3>
-
-
-                <p>
-                    Dataset Size: 510 examples
-                </p>
-
-
-            </div>
-
-
-
-
-            <div class="metrics-grid">
-
-
-                <div class="metric">
-
-                    <strong>
-                        68.6%
-                    </strong>
-
-                    <span>
-                        Accuracy
-                    </span>
-
-                </div>
-
-
-
-
-                <div class="metric">
-
-                    <strong>
-                        85.9%
-                    </strong>
-
-                    <span>
-                        Precision
-                    </span>
-
-                </div>
-
-
-
-
-                <div class="metric">
-
-                    <strong>
-                        59.4%
-                    </strong>
-
-                    <span>
-                        Recall
-                    </span>
-
-                </div>
-
-
-
-
-                <div class="metric">
-
-                    <strong>
-                        16.1%
-                    </strong>
-
-                    <span>
-                        False Positive Rate
-                    </span>
-
-                </div>
-
-
-
-
-                <div class="metric">
-
-                    <strong>
-                        40.6%
-                    </strong>
-
-                    <span>
-                        False Negative Rate
-                    </span>
-
-                </div>
-
-
-
-            </div>
-
-
-
-        </div>
-
-
-
-
-
-        <div class="evaluation-note">
-
-
-            <h3>
-                Evaluation Interpretation
-            </h3>
-
-
-            <p>
-
-                Current results represent an early-stage
-                validation of semantic policy enforcement.
-
-                The system currently demonstrates strong
-                precision while continuing to improve recall
-                against complex adversarial behaviors.
-
-            </p>
-
-
-        </div>
-
-
-
-    </div>
-
-
-</section>
-
-
-
-
-
-
-
-<!--
-==========================================
-Threat Coverage Section
-==========================================
--->
-
-<section id="threats">
-
-    <div class="container">
-
-
-        <div class="section-header">
-
-
-            <h2>
-
-                Evaluated Threat Categories
-
-            </h2>
-
-
-            <p>
-
-                Current testing focuses on common AI agent
-                security failure patterns.
-
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="threat-grid">
-
-
-            <div class="threat-item">
-                Prompt Injection
-            </div>
-
-
-            <div class="threat-item">
-                Privilege Escalation
-            </div>
-
-
-            <div class="threat-item">
-                Authorization Bypass
-            </div>
-
-
-            <div class="threat-item">
-                Destructive Operations
-            </div>
-
-
-            <div class="threat-item">
-                Dangerous Tool Usage
-            </div>
-
-
-            <div class="threat-item">
-                Data Exposure Risks
-            </div>
-
-
-        </div>
-
-
-
-    </div>
-
-
-</section>
 
 
 
@@ -2464,180 +2739,1350 @@ Threat Coverage Section
 
 
 /*
-==========================================
-Capabilities / Evaluation Styling
-==========================================
+=========================================
+Architecture Styling
+=========================================
 */
 
 
-.capabilities-grid {
+.architecture-flow{
 
-    display:
-        grid;
 
-    grid-template-columns:
-        repeat(3,1fr);
+display:
+flex;
 
-    gap:
-        25px;
+
+flex-direction:
+column;
+
+
+align-items:
+center;
+
+
+gap:
+20px;
+
 
 }
 
 
 
-.capability-card {
+.architecture-node{
 
-    padding:
-        30px;
 
-    background:
-        var(--surface);
+width:
+100%;
 
-    border:
-        1px solid var(--border);
 
-    border-radius:
-        var(--radius);
+max-width:
+850px;
+
+
+padding:
+35px;
+
+
+background:
+var(--surface);
+
+
+border:
+1px solid var(--border);
+
+
+border-radius:
+var(--radius);
+
+
+box-shadow:
+0 10px 30px rgba(15,23,42,0.05);
+
+
+}
+
+
+
+.architecture-node span{
+
+
+display:
+inline-flex;
+
+
+width:
+35px;
+
+
+height:
+35px;
+
+
+align-items:center;
+
+
+justify-content:center;
+
+
+background:
+var(--accent-light);
+
+
+color:
+var(--accent);
+
+
+border-radius:
+50%;
+
+
+font-weight:
+700;
+
+
+margin-bottom:
+15px;
+
+
+}
+
+
+
+.flow-arrow{
+
+
+font-size:
+2rem;
+
+
+color:
+var(--accent);
+
+
+font-weight:
+700;
+
+
+}
+
+
+
+.architecture-principle{
+
+
+margin-top:
+60px;
+
+
+padding:
+40px;
+
+
+background:
+var(--surface-secondary);
+
+
+border-radius:
+var(--radius);
+
+
+border-left:
+5px solid var(--accent);
+
 
 }
 
 
 
 
-.benchmark-box {
 
-    padding:
-        40px;
+</style>
+<!--
+=========================================
+Evaluation Section
+=========================================
+-->
 
-    background:
-        var(--surface);
+<section id="evaluation">
 
-    border:
-        1px solid var(--border);
 
-    border-radius:
-        var(--radius);
+<div class="container">
+
+
+
+<div class="section-header">
+
+
+<h2>
+
+Evaluation & Benchmark
+
+</h2>
+
+
+
+<p>
+
+SVP Kernel is evaluated using an adversarial dataset
+designed to measure semantic policy enforcement behavior.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="benchmark-summary">
+
+
+
+<div class="benchmark-header">
+
+
+<h3>
+
+Current Evaluation
+
+</h3>
+
+
+<p>
+
+510 adversarial examples evaluated
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="metrics-grid">
+
+
+
+<div class="metric-card">
+
+
+<strong>
+
+68.6%
+
+</strong>
+
+
+<span>
+
+Accuracy
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="metric-card">
+
+
+<strong>
+
+85.9%
+
+</strong>
+
+
+<span>
+
+Precision
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="metric-card">
+
+
+<strong>
+
+59.4%
+
+</strong>
+
+
+<span>
+
+Recall
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="metric-card">
+
+
+<strong>
+
+16.1%
+
+</strong>
+
+
+<span>
+
+False Positive Rate
+
+</span>
+
+
+</div>
+
+
+
+
+
+<div class="metric-card">
+
+
+<strong>
+
+40.6%
+
+</strong>
+
+
+<span>
+
+False Negative Rate
+
+</span>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="confusion-section">
+
+
+
+<h3>
+
+Confusion Matrix
+
+</h3>
+
+
+
+<div class="matrix-container">
+
+
+
+<table>
+
+
+<tr>
+
+<th></th>
+
+<th>
+Predicted Safe
+</th>
+
+
+<th>
+Predicted Risk
+</th>
+
+
+</tr>
+
+
+
+
+<tr>
+
+<th>
+Actual Safe
+</th>
+
+
+<td>
+161
+</td>
+
+
+<td>
+31
+</td>
+
+
+</tr>
+
+
+
+
+<tr>
+
+<th>
+Actual Risk
+</th>
+
+
+<td>
+129
+</td>
+
+
+<td>
+189
+</td>
+
+
+</tr>
+
+
+</table>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="evaluation-note">
+
+
+
+<h3>
+
+Current Interpretation
+
+</h3>
+
+
+
+<p>
+
+The current benchmark demonstrates strong precision,
+meaning detected risky behaviors are often correctly
+identified.
+
+The main improvement area is recall, where complex
+semantic variations can still bypass detection.
+
+</p>
+
+
+
+<p>
+
+This reflects a known limitation of embedding-based
+semantic similarity systems: actions with similar
+language patterns can sometimes have different intent.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<style>
+
+
+/*
+=========================================
+Evaluation Styling
+=========================================
+*/
+
+
+
+.benchmark-summary{
+
+
+background:
+var(--surface);
+
+
+border:
+1px solid var(--border);
+
+
+border-radius:
+var(--radius);
+
+
+padding:
+40px;
+
 
 }
 
 
 
-.benchmark-header {
-
-    margin-bottom:
-        35px;
-
-}
+.benchmark-header{
 
 
+margin-bottom:
+35px;
 
-.metrics-grid {
-
-    display:
-        grid;
-
-    grid-template-columns:
-        repeat(5,1fr);
-
-    gap:
-        20px;
-
-}
-
-
-
-.metric {
-
-    text-align:
-        center;
-
-    padding:
-        25px;
-
-    background:
-        var(--surface-light);
-
-    border-radius:
-        12px;
-
-}
-
-
-
-.metric strong {
-
-    display:
-        block;
-
-    font-size:
-        2rem;
-
-    color:
-        var(--accent);
-
-}
-
-
-
-.metric span {
-
-    color:
-        var(--text-secondary);
-
-    font-size:
-        0.9rem;
-
-}
-
-
-
-.evaluation-note {
-
-    margin-top:
-        40px;
-
-    padding:
-        30px;
-
-    border-left:
-        3px solid var(--accent);
 
 }
 
 
 
 
-.threat-grid {
+.metrics-grid{
 
-    display:
-        grid;
 
-    grid-template-columns:
-        repeat(3,1fr);
+display:
+grid;
 
-    gap:
-        20px;
+
+grid-template-columns:
+repeat(5,1fr);
+
+
+gap:
+20px;
+
 
 }
 
 
 
-.threat-item {
+.metric-card{
 
-    padding:
-        25px;
 
-    background:
-        var(--surface);
+background:
+var(--surface-secondary);
 
-    border:
-        1px solid var(--border);
 
-    border-radius:
-        12px;
+border-radius:
+12px;
 
-    text-align:
-        center;
+
+padding:
+25px;
+
+
+text-align:
+center;
+
+
+}
+
+
+
+.metric-card strong{
+
+
+display:block;
+
+
+font-size:
+2rem;
+
+
+color:
+var(--accent);
+
+
+margin-bottom:
+8px;
+
+
+}
+
+
+
+.metric-card span{
+
+
+color:
+var(--text-secondary);
+
+
+font-size:
+0.9rem;
+
+
+}
+
+
+
+
+
+.confusion-section{
+
+
+margin-top:
+60px;
+
+
+}
+
+
+
+.matrix-container{
+
+
+margin-top:
+25px;
+
+
+overflow-x:auto;
+
+
+}
+
+
+
+table{
+
+
+border-collapse:
+collapse;
+
+
+width:
+100%;
+
+
+max-width:
+600px;
+
+
+background:
+var(--surface);
+
+
+}
+
+
+
+th,
+td{
+
+
+padding:
+18px;
+
+
+border:
+1px solid var(--border);
+
+
+text-align:
+center;
+
+
+}
+
+
+
+th{
+
+
+background:
+var(--surface-secondary);
+
+
+}
+
+
+
+
+
+.evaluation-note{
+
+
+margin-top:
+50px;
+
+
+padding:
+35px;
+
+
+background:
+var(--surface-secondary);
+
+
+border-radius:
+var(--radius);
+
+
+}
+
+
+
+@media(max-width:900px){
+
+
+.metrics-grid{
+
+
+grid-template-columns:
+1fr;
+
+
+}
+
+
+
+}
+
+
+</style>
+<!--
+=========================================
+Technology Section
+=========================================
+-->
+
+<section id="technology">
+
+
+<div class="container">
+
+
+
+<div class="section-header">
+
+
+<h2>
+
+Technology Stack
+
+</h2>
+
+
+
+<p>
+
+Built using lightweight, transparent, and modular
+engineering components.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div class="technology-grid">
+
+
+
+<div class="tech-card">
+
+
+<h3>
+
+Python
+
+</h3>
+
+
+<p>
+
+Core implementation language for the runtime engine,
+policy evaluation, and API services.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="tech-card">
+
+
+<h3>
+
+FastAPI
+
+</h3>
+
+
+<p>
+
+Provides the runtime API interface for evaluating
+AI agent workflows.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="tech-card">
+
+
+<h3>
+
+Semantic Embeddings
+
+</h3>
+
+
+<p>
+
+Used for contextual similarity evaluation between
+incoming actions and policy patterns.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="tech-card">
+
+
+<h3>
+
+YAML Policy DSL
+
+</h3>
+
+
+<p>
+
+Human-readable policy definitions containing rules,
+thresholds, severity, and actions.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="tech-card">
+
+
+<h3>
+
+SHA-256 Audit Chain
+
+</h3>
+
+
+<p>
+
+Creates tamper-evident decision records with
+verification support.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="tech-card">
+
+
+<h3>
+
+GitHub Actions
+
+</h3>
+
+
+<p>
+
+Automated repository workflows for development
+quality checks.
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!--
+=========================================
+Capabilities Section
+=========================================
+-->
+
+<section id="capabilities">
+
+
+<div class="container">
+
+
+
+<div class="section-header">
+
+
+<h2>
+
+Current Capabilities
+
+</h2>
+
+
+<p>
+
+Implemented components currently available in SVP Kernel.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="capability-list">
+
+
+
+<div class="capability-item">
+
+✓ Semantic action evaluation
+
+</div>
+
+
+
+<div class="capability-item">
+
+✓ YAML-based policy enforcement
+
+</div>
+
+
+
+<div class="capability-item">
+
+✓ Deterministic decision generation
+
+</div>
+
+
+
+<div class="capability-item">
+
+✓ Runtime API interface
+
+</div>
+
+
+
+<div class="capability-item">
+
+✓ Adversarial evaluation framework
+
+</div>
+
+
+
+<div class="capability-item">
+
+✓ Tamper-evident audit verification
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!--
+=========================================
+Limitations Section
+=========================================
+-->
+
+<section id="limitations">
+
+
+<div class="container">
+
+
+
+<div class="section-header">
+
+
+<h2>
+
+Current Limitations
+
+</h2>
+
+
+
+<p>
+
+Areas where the prototype requires further engineering
+and research.
+
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="limitations-grid">
+
+
+
+<div class="limitation-card">
+
+
+<h3>
+
+Semantic Ambiguity
+
+</h3>
+
+
+<p>
+
+Embedding similarity may struggle to distinguish
+actions with similar wording but different intent.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="limitation-card">
+
+
+<h3>
+
+Recall Improvement
+
+</h3>
+
+
+<p>
+
+Complex adversarial behaviors require broader policy
+coverage and improved detection strategies.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="limitation-card">
+
+
+<h3>
+
+Evaluation Scale
+
+</h3>
+
+
+<p>
+
+The current benchmark is an initial validation set and
+requires larger real-world agent workflow testing.
+
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="limitation-card">
+
+
+<h3>
+
+Production Infrastructure
+
+</h3>
+
+
+<p>
+
+Enterprise deployment, distributed scaling, and durable
+storage require additional implementation.
+
+</p>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<style>
+
+
+/*
+=========================================
+Technology Styling
+=========================================
+*/
+
+
+
+.technology-grid{
+
+
+display:
+grid;
+
+
+grid-template-columns:
+repeat(3,1fr);
+
+
+gap:
+25px;
+
+
+}
+
+
+
+.tech-card,
+.limitation-card{
+
+
+background:
+var(--surface);
+
+
+border:
+1px solid var(--border);
+
+
+border-radius:
+var(--radius);
+
+
+padding:
+30px;
+
+
+}
+
+
+
+
+
+.capability-list{
+
+
+display:
+grid;
+
+
+grid-template-columns:
+repeat(2,1fr);
+
+
+gap:
+20px;
+
+
+}
+
+
+
+.capability-item{
+
+
+background:
+var(--surface);
+
+
+border:
+1px solid var(--border);
+
+
+border-radius:
+12px;
+
+
+padding:
+20px;
+
+
+font-weight:
+600;
+
+
+}
+
+
+
+
+
+.limitations-grid{
+
+
+display:
+grid;
+
+
+grid-template-columns:
+repeat(2,1fr);
+
+
+gap:
+25px;
+
 
 }
 
@@ -2647,14 +4092,16 @@ Capabilities / Evaluation Styling
 @media(max-width:900px){
 
 
-    .capabilities-grid,
-    .threat-grid,
-    .metrics-grid {
+.technology-grid,
+.capability-list,
+.limitations-grid{
 
-        grid-template-columns:
-            1fr;
 
-    }
+grid-template-columns:
+1fr;
+
+
+}
 
 
 }
@@ -2662,403 +4109,189 @@ Capabilities / Evaluation Styling
 
 </style>
 <!--
-==========================================
-Limitations Section
-==========================================
--->
-
-<section id="limitations">
-
-    <div class="container">
-
-
-        <div class="section-header">
-
-
-            <h2>
-
-                Current Limitations
-
-            </h2>
-
-
-            <p>
-
-                SVP Kernel is an evolving runtime validation
-                prototype. The current implementation focuses on
-                establishing the decision layer foundation.
-
-            </p>
-
-
-        </div>
-
-
-
-
-
-        <div class="limitations-grid">
-
-
-            <div class="limitation-card">
-
-
-                <h3>
-                    Semantic Ambiguity
-                </h3>
-
-
-                <p>
-
-                    Embedding-based similarity can sometimes
-                    associate actions with similar meaning while
-                    missing important differences in intent.
-
-                    For example, safe review actions and destructive
-                    operations may share contextual vocabulary.
-
-                </p>
-
-
-            </div>
-
-
-
-
-            <div class="limitation-card">
-
-
-                <h3>
-                    Recall Improvement
-                </h3>
-
-
-                <p>
-
-                    Some advanced adversarial behaviors require
-                    additional policy coverage and improved semantic
-                    reasoning strategies.
-
-                </p>
-
-
-            </div>
-
-
-
-
-            <div class="limitation-card">
-
-
-                <h3>
-                    Dataset Scale
-                </h3>
-
-
-                <p>
-
-                    Current evaluation uses a prototype adversarial
-                    dataset and requires broader testing against
-                    real-world agent workflows.
-
-                </p>
-
-
-            </div>
-
-
-
-
-            <div class="limitation-card">
-
-
-                <h3>
-                    Production Deployment
-                </h3>
-
-
-                <p>
-
-                    Large-scale distributed deployment, enterprise
-                    integrations, and persistent infrastructure
-                    require further development.
-
-                </p>
-
-
-            </div>
-
-
-        </div>
-
-
-
-    </div>
-
-
-</section>
-
-
-
-
-
-
-
-<!--
-==========================================
-Technology Section
-==========================================
--->
-
-<section id="technology">
-
-    <div class="container">
-
-
-        <div class="section-header">
-
-
-            <h2>
-
-                Technology Stack
-
-            </h2>
-
-
-            <p>
-
-                Built with lightweight and transparent engineering
-                components.
-
-            </p>
-
-
-        </div>
-
-
-
-
-        <div class="tech-grid">
-
-
-            <div class="tech-item">
-                Python
-            </div>
-
-
-            <div class="tech-item">
-                FastAPI
-            </div>
-
-
-            <div class="tech-item">
-                Sentence Embeddings
-            </div>
-
-
-            <div class="tech-item">
-                YAML Policy DSL
-            </div>
-
-
-            <div class="tech-item">
-                PyYAML
-            </div>
-
-
-            <div class="tech-item">
-                REST API
-            </div>
-
-
-            <div class="tech-item">
-                SHA-256 Audit Hashing
-            </div>
-
-
-            <div class="tech-item">
-                GitHub Actions
-            </div>
-
-
-        </div>
-
-
-
-    </div>
-
-
-</section>
-
-
-
-
-
-
-
-<!--
-==========================================
+=========================================
 Roadmap Section
-==========================================
+=========================================
 -->
 
 <section id="roadmap">
 
-    <div class="container">
 
+<div class="container">
 
-        <div class="section-header">
 
 
-            <h2>
+<div class="section-header">
 
-                Development Roadmap
 
-            </h2>
+<h2>
 
+Development Roadmap
 
-            <p>
+</h2>
 
-                Current and future improvements based on the
-                project's present implementation.
 
-            </p>
+<p>
 
+Current progress and future engineering directions.
 
-        </div>
+</p>
 
 
+</div>
 
 
 
-        <div class="roadmap-container">
 
 
-            <div class="roadmap-item completed">
 
 
-                <span>
-                    Completed
-                </span>
+<div class="roadmap-grid">
 
 
-                <h3>
 
-                    Core Runtime Foundation
+<div class="roadmap-card completed">
 
-                </h3>
 
+<span>
+Completed
+</span>
 
-                <ul>
 
-                    <li>
-                        Semantic validation engine
-                    </li>
+<h3>
 
-                    <li>
-                        YAML policy engine
-                    </li>
+Runtime Foundation
 
-                    <li>
-                        Deterministic decision engine
-                    </li>
+</h3>
 
-                    <li>
-                        Audit log verification
-                    </li>
 
-                    <li>
-                        Adversarial evaluation framework
-                    </li>
+<ul>
 
-                </ul>
+<li>
+Semantic validation engine
+</li>
 
+<li>
+Policy DSL implementation
+</li>
 
-            </div>
+<li>
+Deterministic decision engine
+</li>
 
+<li>
+FastAPI runtime interface
+</li>
 
+<li>
+Tamper-evident audit verification
+</li>
 
+<li>
+Benchmark evaluation framework
+</li>
 
+</ul>
 
-            <div class="roadmap-item">
 
+</div>
 
-                <span>
-                    Next
-                </span>
 
 
-                <h3>
 
-                    Evaluation & Explainability
 
-                </h3>
 
 
-                <ul>
+<div class="roadmap-card">
 
-                    <li>
-                        Expand adversarial datasets
-                    </li>
 
-                    <li>
-                        Improve decision explanations
-                    </li>
+<span>
+Next
+</span>
 
-                    <li>
-                        Enhance policy flexibility
-                    </li>
 
-                </ul>
+<h3>
 
+Evaluation Improvements
 
-            </div>
+</h3>
 
 
+<ul>
 
+<li>
+Expand adversarial datasets
+</li>
 
+<li>
+Improve recall performance
+</li>
 
-            <div class="roadmap-item">
+<li>
+Enhance decision explanations
+</li>
 
+<li>
+Increase workflow coverage
+</li>
 
-                <span>
-                    Future
-                </span>
+</ul>
 
 
-                <h3>
+</div>
 
-                    Ecosystem Integration
 
-                </h3>
 
 
-                <ul>
 
-                    <li>
-                        Agent framework integrations
-                    </li>
 
-                    <li>
-                        Enterprise policy management
-                    </li>
 
-                    <li>
-                        Distributed deployment support
-                    </li>
+<div class="roadmap-card">
 
-                </ul>
 
+<span>
+Future
+</span>
 
-            </div>
 
+<h3>
 
+Agent Ecosystem Integration
 
-        </div>
+</h3>
 
 
+<ul>
 
-    </div>
+<li>
+Agent framework integrations
+</li>
+
+<li>
+Policy management improvements
+</li>
+
+<li>
+Distributed runtime support
+</li>
+
+<li>
+Production infrastructure
+</li>
+
+</ul>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</div>
 
 
 </section>
@@ -3069,70 +4302,153 @@ Roadmap Section
 
 
 
+
+
 <!--
-==========================================
-Footer
-==========================================
+=========================================
+Links Section
+=========================================
 -->
+
+<section id="links">
+
+
+<div class="container">
+
+
+
+<div class="links-box">
+
+
+<h2>
+
+Explore SVP Kernel
+
+</h2>
+
+
+
+<p>
+
+Inspect the source code, test the API, or interact with
+the live runtime.
+
+</p>
+
+
+
+
+
+<div class="link-actions">
+
+
+<a 
+href="https://github.com/"
+class="primary-button">
+
+GitHub Repository
+
+</a>
+
+
+
+
+
+<a
+href="https://svp-semantic-vector-protocol-kernel-api.onrender.com/docs"
+class="secondary-button">
+
+API Documentation
+
+</a>
+
+
+
+
+<a
+href="https://svp-semantic-vector-protocol-kernel-api.onrender.com/health"
+class="secondary-button">
+
+Health Check
+
+</a>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
 
 <footer>
 
 
-    <div class="container footer-container">
+<div class="container footer-container">
 
 
-        <div>
+<div>
 
 
-            <h3>
-                SVP Kernel
-            </h3>
+<h3>
+
+SVP Kernel
+
+</h3>
 
 
-            <p>
+<p>
 
-                Runtime Decision Kernel for safer AI agents.
+A runtime decision kernel exploring safer AI agent
+execution through semantic validation and deterministic
+policy enforcement.
 
-            </p>
-
-
-        </div>
-
+</p>
 
 
-
-        <div class="footer-links">
-
-
-            <a href="https://github.com/">
-                GitHub
-            </a>
-
-
-            <a href="#">
-                Live Demo
-            </a>
-
-
-            <a href="#">
-                Live API
-            </a>
-
-
-        </div>
+</div>
 
 
 
-    </div>
+
+<div>
+
+
+<p>
+
+Built as an AI security research project.
+
+</p>
+
+
+<p>
+
+© 2026 SVP Kernel
+
+</p>
+
+
+</div>
 
 
 
-    <div class="copyright">
-
-
-        © 2026 SVP Kernel. Built for AI agent safety research.
-
-    </div>
+</div>
 
 
 
@@ -3144,217 +4460,216 @@ Footer
 
 
 
+
 <style>
 
 
 /*
-==========================================
+=========================================
 Final Styling
-==========================================
+=========================================
 */
 
 
-.limitations-grid {
 
-    display:
-        grid;
+.roadmap-grid{
 
-    grid-template-columns:
-        repeat(2,1fr);
 
-    gap:
-        25px;
+display:
+grid;
+
+
+grid-template-columns:
+repeat(3,1fr);
+
+
+gap:
+25px;
+
 
 }
 
 
 
-.limitation-card {
+.roadmap-card{
 
-    padding:
-        32px;
 
-    background:
-        var(--surface);
+background:
+var(--surface);
 
-    border:
-        1px solid var(--border);
 
-    border-radius:
-        var(--radius);
+border:
+1px solid var(--border);
+
+
+border-radius:
+var(--radius);
+
+
+padding:
+35px;
+
 
 }
 
 
 
-.tech-grid {
+.roadmap-card span{
 
-    display:
-        flex;
 
-    flex-wrap:
-        wrap;
+color:
+var(--accent);
 
-    gap:
-        15px;
+
+font-weight:
+700;
+
 
 }
 
 
 
-.tech-item {
+.roadmap-card ul{
 
-    padding:
-        14px 22px;
 
-    background:
-        var(--surface);
+margin-top:
+20px;
 
-    border:
-        1px solid var(--border);
 
-    border-radius:
-        999px;
+padding-left:
+20px;
+
+
+color:
+var(--text-secondary);
+
 
 }
 
 
 
-.roadmap-container {
+.roadmap-card li{
 
-    display:
-        grid;
 
-    grid-template-columns:
-        repeat(3,1fr);
+margin-bottom:
+10px;
 
-    gap:
-       25px;
 
 }
 
 
 
-.roadmap-item {
+.links-box{
 
-    padding:
-        35px;
 
-    background:
-        var(--surface);
+text-align:
+center;
 
-    border:
-        1px solid var(--border);
 
-    border-radius:
-        var(--radius);
+padding:
+60px 30px;
+
+
+background:
+var(--surface-secondary);
+
+
+border-radius:
+var(--radius);
+
 
 }
 
 
 
-.roadmap-item span {
+.link-actions{
 
-    color:
-        var(--accent);
 
-    font-weight:
-        700;
+display:
+flex;
+
+
+justify-content:
+center;
+
+
+gap:
+20px;
+
+
+flex-wrap:
+wrap;
+
+
+margin-top:
+30px;
+
 
 }
 
 
 
-.roadmap-item ul {
 
-    margin-top:
-        20px;
 
-    padding-left:
-        20px;
+footer{
 
-    color:
-        var(--text-secondary);
+
+padding:
+50px 0;
+
+
+border-top:
+1px solid var(--border);
+
 
 }
 
 
 
-footer {
+.footer-container{
 
-    border-top:
-        1px solid var(--border);
 
-    padding:
-        50px 0;
+display:
+flex;
+
+
+justify-content:
+space-between;
+
+
+gap:
+40px;
+
 
 }
 
 
-
-.footer-container {
-
-    display:
-        flex;
-
-    justify-content:
-        space-between;
-
-    gap:
-        30px;
-
-}
-
-
-
-.footer-links {
-
-    display:
-        flex;
-
-    gap:
-        25px;
-
-}
-
-
-
-.copyright {
-
-    text-align:
-        center;
-
-    margin-top:
-        30px;
-
-    color:
-        var(--text-secondary);
-
-    font-size:
-        0.9rem;
-
-}
 
 
 
 @media(max-width:900px){
 
 
-    .limitations-grid,
-    .roadmap-container {
-
-        grid-template-columns:
-            1fr;
-
-    }
+.roadmap-grid{
 
 
-    .footer-container {
+grid-template-columns:
+1fr;
 
-        flex-direction:
-            column;
 
-    }
+}
+
+
+
+.footer-container{
+
+
+flex-direction:
+column;
+
+
+}
+
 
 
 }
@@ -3363,6 +4678,10 @@ footer {
 </style>
 
 
+
+
+
+
 </body>
 
-               </html>
+</html>
