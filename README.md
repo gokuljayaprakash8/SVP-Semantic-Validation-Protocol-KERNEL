@@ -1,407 +1,392 @@
 # SVP Kernel
 
-**Pre-execution Runtime Decision Engine for AI Agent Workflows**
+Semantic Validation Protocol Kernel
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)]()
-[![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-green.svg)]()
-[![AI Safety](https://img.shields.io/badge/AI-Agentic%20Security-purple.svg)]()
-[![Research](https://img.shields.io/badge/Research-Active-orange.svg)]()
-[![License](https://img.shields.io/badge/License-Source%20Available-lightgrey.svg)]()
+A semantic runtime decision engine for AI agents that evaluates high-risk actions before execution using embedding-based policy matching, configurable governance rules, and tamper-evident audit logging.
 
----
+What is it?
 
-## Overview
+SVP Kernel is a runtime governance layer for AI agents. Instead of relying on exact keyword matching, it evaluates user instructions semantically against configurable security policies before execution.The system produces consistent policy decisions based on configurable semantic policies and similarity thresholds and records tamper-evident audit logs, and provides an extensible policy engine that can be adapted to different enterprise environments.
 
-SVP Kernel is a deterministic pre-execution runtime safety layer for AI agent workflows.
+Why I Built This?
 
-Instead of allowing autonomous agents to execute actions immediately, SVP Kernel evaluates every planned action against configurable semantic security policies before execution.
+As AI agents become capable of executing real-world actions, a growing challenge is determining whether an instruction should actually be executed. Existing demonstrations often focus on what an agent can do, while spending less attention on how decisions should be governed before execution.
+I built SVP Kernel as an exploration of semantic policy validation: a lightweight runtime decision layer that evaluates the intent of an instruction against configurable governance policies before execution. The project also became a practical way for me to study AI infrastructure, runtime systems, API engineering, deployment, and software security through implementation rather than theory.
 
-The kernel combines semantic similarity matching, configurable policy rules, and deterministic decision logic to classify workflow actions as **PASS** or **BLOCK** while producing transparent decision evidence.
+Modern AI agents can:
 
-Unlike traditional rule-based filters that depend on exact keyword matching, SVP Kernel uses sentence embeddings to detect semantically similar unsafe actions, making the system more resilient to paraphrasing while remaining deterministic in its final decision process.
+• Execute tools
 
----
+• Access APIs
 
-## Motivation
+• Read documents
 
-As AI agents gain the ability to access databases, APIs, cloud infrastructure, developer tools, and enterprise systems, runtime governance becomes increasingly important.
+• Trigger workflows
 
-A single unsafe tool call can result in:
+• Make autonomous decisions
 
-- Database destruction
-- Privilege escalation
-- Credential exposure
-- Sensitive data exfiltration
-- Audit trail tampering
+Without a governance layer, unsafe instructions such as prompt injection, privilege escalation, destructive actions, and data exfiltration may be executed unintentionally.
 
-SVP Kernel provides an explicit decision layer between an AI planner and execution, enabling organizations to inspect, evaluate, and govern planned actions before they occur.
+SVP Kernel explores whether semantic similarity combined with configurable policy rules can provide an interpretable first-pass runtime decision layer before execution.
 
----
+SVP Kernel receives an instruction.
 
-# Live Demo
+↓
 
-### Interactive Demo
+The instruction is converted into semantic embeddings.
 
-https://gokuljayaprakash8.github.io/SVP-Semantic-Validation-Protocol-KERNEL/
+↓
 
-### Live API
+Configured policy rules are embedded.
 
-```text
-POST https://svp-semantic-validation-protocol-kernel-api.onrender.com/v1/audit
+↓
 
----
+Cosine similarity is calculated.
 
-Core Features
+↓
 
-- Deterministic pre-execution decision engine
+Matching policies are evaluated.
+
+↓
+
+Risk scores are computed.
+
+↓
+
+A governance decision is returned.
+
+↓
+
+Every decision is recorded using tamper-evident audit logs.
+
+## Architecture
+
+SVP Kernel consists of six primary components:
+
+1. API Layer
+   - Receives requests through FastAPI endpoints.
+   - Validates incoming inputs.
+
+2. Semantic Engine
+   - Converts user instructions into vector embeddings.
+   - Compares them against embedded policy patterns using cosine similarity.
+
+3. Policy Engine
+   - Loads configurable YAML policies.
+   - Evaluates similarity thresholds.
+   - Assigns severity and recommended actions.
+
+4. Decision Engine
+   - Selects the highest-confidence policy match.
+   - Produces the final governance decision.
+
+5. Audit Logger
+   - Records every decision.
+   - Creates tamper-evident hash chains for audit verification.
+
+6. API Response Layer
+   - Returns the governance decision.
+   - Includes matched policy, confidence score, severity, and audit metadata.
+  
+## Decision Pipeline
+
+Every request follows the same processing sequence:
+
+Request
+
+↓
+
+Embedding Generation
+
+↓
+
+Policy Embedding Comparison
+
+↓
+
+Similarity Scoring
+
+↓
+
+Threshold Evaluation
+
+↓
+
+Policy Selection
+
+↓
+
+Decision Generation
+
+↓
+
+Audit Log Creation
+
+↓
+
+API Response
+
+## Current Features
+
 - Semantic policy matching using sentence embeddings
-- YAML-based Policy DSL
-- Runtime policy validation
-- Configurable similarity thresholds
-- Severity-aware decisions
-- External policy loading
-- Multi-policy evaluation
-- FastAPI REST interface
-- JSON audit evidence
-- First-pass adversarial evaluation suite
-- Modular architecture designed for future expansion
+- Configurable YAML policy engine
+- Runtime governance decisions
+- Prompt injection detection
+- Privilege escalation detection
+- Dangerous tool execution detection
+- Authorization bypass detection
+- Filesystem protection rules
+- Database protection rules
+- Network exfiltration detection
+- Tamper-evident audit logging
+- Audit chain verification endpoint
+- REST API built with FastAPI
+- Live deployment
+- Public evaluation framework
+
+## Engineering Highlights
+
+- Built as a modular FastAPI application.
+- Policies are externalized into YAML rather than hardcoded.
+- Evaluation performed using a labeled adversarial dataset.
+- Audit logs use chained SHA-256 hashes for tamper evidence.
+- Public API and live demonstration available.
+
+## Evaluation Methodology
+
+SVP Kernel is evaluated using a manually curated adversarial evaluation dataset containing both benign and malicious instructions.
+
+The evaluation includes scenarios such as:
+
+- Prompt injection
+- Privilege escalation
+- Destructive database operations
+- Filesystem attacks
+- Cloud resource deletion
+- Authorization bypass
+- Data exfiltration
+- Safe operational requests
+
+Each example is labeled with its expected outcome (ALLOW or BLOCK).
+
+The evaluation reports:
+
+- Accuracy
+- Precision
+- Recall
+- False Positive Rate
+- False Negative Rate
+- Confusion Matrix
+
+This methodology provides a repeatable baseline for measuring changes to the policy engine over time.
+
+
+## Current Benchmark
+
+Current Evaluation Results
+
+Examples: 510
+
+Accuracy: 68.6%
+
+Precision: 85.9%
+
+Recall: 59.4%
+
+False Positive Rate: 16.1%
+
+False Negative Rate: 40.6%
+
+The current implementation prioritizes precision over recall, reducing unnecessary blocking of legitimate requests while still identifying many high-risk instructions.
+
+These benchmarks serve as a baseline and will continue improving as policy coverage and semantic matching evolve.
+
+
+## Current Limitations
+
+SVP Kernel is an ongoing engineering project and currently has several known limitations.
+
+- Semantic similarity alone cannot perfectly distinguish every malicious instruction.
+
+- Some adversarial paraphrases still evade existing policy coverage.
+
+- Policy effectiveness depends on carefully tuned similarity thresholds.
+
+- Current evaluation focuses on English-language instructions.
+
+- The system currently evaluates individual requests rather than long multi-step agent workflows.
+
+- Policy rules are manually authored and require continuous refinement.
+
+These limitations are intentionally documented because measuring and understanding failure cases is an important part of building trustworthy security systems.
+
+## Roadmap
+
+Completed
+
+- Semantic policy engine
+- YAML policy configuration
+- Runtime governance decisions
+- FastAPI deployment
+- Public API
+- Tamper-evident audit logging
+- Audit verification endpoint
+- Adversarial evaluation framework
+
+In Progress
+
+- Policy coverage improvements
+- Multi-step workflow reasoning
+- Better semantic attack detection
+- Evaluation expansion
+
+Future
+
+- Production-grade observability
+- SDK support
+- Enterprise policy management
+- Design partner integrations
+- Runtime governance for autonomous AI agents
+
+## Repository Structure
+
+app.py                # FastAPI application
+
+myengine.py           # Semantic decision engine
+
+audit_logger.py       # Tamper-evident audit logging
+
+policies/             # YAML governance policies
+
+evaluation/           # Evaluation framework
+
+docs/                 # Technical documentation
+
+benchmarks/           # Benchmark data
+
+index.html            # Live demonstration
+
+## API Endpoints
+
+The current REST API exposes the following endpoints:
+
+### Health Check
+
+GET /health
+
+Returns the current health status of the deployed service.
 
 ---
 
-System Architecture
+### Semantic Decision
 
-                AI Agent
+POST /v1/audit
 
-                    │
+Evaluates an incoming instruction against configured semantic security policies and returns:
 
-                    ▼
-
-          Planned Workflow Actions
-
-                    │
-
-                    ▼
-
-             SVP Kernel Runtime
-
-                    │
-
-        ┌───────────┴───────────┐
-
-        ▼                       ▼
-
-Policy DSL Loader        Policy Validator
-
-        │
-
-        ▼
-
-Sentence Embedding Engine
-
-        │
-
-        ▼
-
-Semantic Similarity Engine
-
-        │
-
-        ▼
-
-Deterministic Decision Engine
-
-        │
-
-        ▼
-
- PASS / BLOCK Decision
-
-        │
-
-        ▼
-
- Structured JSON Evidence
+- Governance decision
+- Matched policy
+- Confidence score
+- Severity
+- Risk score
 
 ---
 
-Repository Structure
+### Audit Chain Verification
 
-SVP-Semantic-Validation-Protocol-KERNEL/
+GET /v1/audit/verify
 
-├── app.py
-├── validator.py
-├── policies/
-│   └── default.yaml
-│
-├── evaluation/
-│   ├── adversarial_examples.json
-│   ├── run_eval.py
-│   └── EVALUATION.md
-│
-├── docs/
-│   └── architecture.md
-│
-├── index.html
-├── README.md
-├── LICENSE
-└── requirements.txt
+Verifies the integrity of the tamper-evident audit log by validating the SHA-256 hash chain.
 
----
+Returns:
 
-Installation
+{
+  "valid": true
+}
 
-git clone https://github.com/gokuljayaprakash8/SVP-Semantic-Vector-Protocol-KERNEL.git
+if the audit history has not been modified.
 
+
+## Technologies Used
+
+- Python
+- FastAPI
+- Sentence Transformers
+- ONNX Runtime
+- YAML
+- NumPy
+- Docker
+- GitHub Actions
+- Render
+- GitHub Pages
+
+## Running Locally
+
+### Clone the repository
+
+```bash
+git clone https://github.com/gokuljayaprakash8/SVP-Semantic-Validation-Protocol-KERNEL.git
+```
+
+### Move into the project
+
+```bash
 cd SVP-Semantic-Validation-Protocol-KERNEL
+```
 
+### Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
+### Start the FastAPI server
+
+```bash
 uvicorn app:app --reload
+```
 
 The API will be available at:
 
+```
 http://127.0.0.1:8000
+```
 
-Interactive documentation:
+Interactive API documentation:
 
+```
 http://127.0.0.1:8000/docs
-
----
-
-Policy DSL
-
-SVP Kernel uses a YAML-based Policy DSL instead of hardcoded rules.
-
-Example:
-
-version: 1
-
-policies:
-
-- id: DB001
-  description: Database deletion
-
-  patterns:
-    - delete database
-    - drop table
-    - remove database
-
-  threshold: 0.62
-  severity: CRITICAL
-  action: BLOCK
-
-Each policy defines:
-
-- Rule ID
-- Human-readable description
-- Multiple semantic patterns
-- Similarity threshold
-- Severity level
-- Runtime action
----
-
-# REST API
-
-## Endpoint
-
-```http
-POST /v1/audit
 ```
 
-## Request
 
-```json
-{
-  "steps": [
-    "delete the production database",
-    "send invoice to customer"
-  ]
-}
-```
+## Live Demo
 
-## Example Response
+Live Application
 
-```json
-{
-  "overall": "BLOCKED",
-  "blocked_count": 1,
-  "steps": [
-    {
-      "action": "delete the production database",
-      "decision": "BLOCK",
-      "rule_id": "DB001",
-      "matched_policy": "Database deletion",
-      "severity": "CRITICAL",
-      "score": 0.82,
-      "threshold": 0.62
-    },
-    {
-      "action": "send invoice to customer",
-      "decision": "PASS",
-      "rule_id": "DATA001",
-      "matched_policy": "Data exfiltration",
-      "severity": "LOW",
-      "score": 0.18,
-      "threshold": 0.60
-    }
-  ]
-}
-```
+https://gokuljayaprakash8.github.io/SVP-Semantic-Validation-Protocol-KERNEL/
 
----
 
-# Decision Flow
+GitHub Repository
 
-For every workflow step:
+https://github.com/gokuljayaprakash8/SVP-Semantic-Validation-Protocol-KERNEL
 
-1. Receive the planned action.
-2. Generate a sentence embedding.
-3. Compare against every configured policy pattern.
-4. Select the highest semantic similarity score.
-5. Compare the score against the policy threshold.
-6. Produce a deterministic PASS or BLOCK decision.
-7. Return structured decision evidence.
+## License
 
-The current implementation always returns the same decision for the same input, model, and policy configuration.
+This project is released under the MIT License.
 
----
 
-# First-Pass Adversarial Evaluation
+## Contact
 
-SVP Kernel includes a manually curated adversarial evaluation suite designed to measure how well semantic policy matching detects unsafe requests beyond exact keyword matching.
+GitHub
 
-Current evaluation includes **100 examples** covering:
+https://github.com/gokuljayaprakash8
 
-- Database destruction
-- Authentication bypass
-- Privilege escalation
-- Data exfiltration
-- Audit trail tampering
-- Safe administrative operations
-- Benign business workflows
-- Semantic paraphrases
-- Obfuscated unsafe intent
-- Near-miss examples
+LinkedIn:
 
-The evaluation methodology is documented in:
+https://www.linkedin.com/in/gokul-jayaprakash-5a9677423?utm_source=share_via&utm_content=profile&utm_medium=member_android
 
-```text
-evaluation/EVALUATION.md
-```
 
-The dataset is available in:
 
-```text
-evaluation/adversarial_examples.json
-```
+Email
 
-This evaluation is intended as a first-pass engineering benchmark rather than a comprehensive security certification.
-
----
-
-# Engineering Decisions
-
-SVP Kernel intentionally favors deterministic behavior over model-generated decisions.
-
-Current design choices include:
-
-- FastAPI for a lightweight REST interface.
-- Sentence embeddings for semantic similarity.
-- Cosine similarity for efficient policy matching.
-- YAML Policy DSL for externalized configuration.
-- Runtime policy validation before loading.
-- Rule-specific similarity thresholds.
-- Transparent JSON decision evidence.
-- Simple architecture to enable future extensions.
-
-The project emphasizes explainability and reproducibility over autonomous reasoning.
-
----
-
-# Current Limitations
-
-SVP Kernel is an actively evolving prototype.
-
-Current limitations include:
-
-- Workflow decisions are evaluated step-by-step rather than using deep cross-step semantic reasoning.
-- Policy matching relies on embedding similarity and manually configured thresholds.
-- Policies are loaded at startup rather than reloaded dynamically.
-- Authentication and authorization are not yet implemented.
-- No persistent audit storage.
-- No policy version management.
-- Evaluation dataset is manually curated and intended for engineering validation rather than production benchmarking.
-
-These limitations are intentional trade-offs to keep the implementation understandable and extensible during early development.
-
----
-
-# Roadmap
-
-Planned areas of future work include:
-
-- Runtime policy reloading
-- Policy versioning
-- Nested Policy DSL
-- Rich policy conditions
-- Cross-workflow state analysis
-- Continuous adversarial benchmarking
-- Evaluation dashboards
-- Request history and persistent audit logs
-- Authentication and API keys
-- SDKs for Python and JavaScript
-- LangGraph integration
-- CrewAI integration
-- Multi-agent workflow governance
-- Policy explanation engine
-- Enterprise deployment tooling
-
----
-
-# Documentation
-
-Additional documentation is available in:
-
-```text
-docs/architecture.md
-evaluation/EVALUATION.md
-```
-
----
-
-# Contributing
-
-Feedback, issues, discussions, and pull requests are welcome.
-
-If you discover bugs, have ideas for improving policy evaluation, or would like to contribute adversarial test cases, please open an issue describing the proposed change.
-
-Constructive feedback is appreciated as the project continues to evolve.
-
----
-
-# Development Notes
-
-SVP Kernel was initially designed and developed using browser-based tools from an Android device as an experiment in mobile-first software development.
-
-The project demonstrates that meaningful infrastructure prototypes can be designed, implemented, documented, and published without relying on a traditional desktop development environment.
-
----
-
-# License
-
-Source Available.
-
-The repository is intended for research, learning, evaluation, and portfolio purposes.
-
-Commercial use requires explicit permission from the author.
-
-See the `LICENSE` file for complete licensing terms.
-
----
-
-# Disclaimer
-
-SVP Kernel is an experimental research project exploring deterministic runtime governance for AI agent workflows.
-
-It is not intended to replace comprehensive enterprise security controls and should not be treated as a production-ready security product without additional validation, testing, and operational safeguards.
-
+gokuljayaprakashnair@gmail.com
