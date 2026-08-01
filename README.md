@@ -758,7 +758,11 @@ The goal is to build measurable understanding of system behavior and improve the
 
 SVP Kernel is an active engineering research project exploring runtime governance for AI agents.
 
-The current implementation has several known limitations.
+Current limitations
+
+- Policy coverage continues to evolve as new adversarial patterns are identified.
+- Current benchmark results show high precision but moderate recall, indicating some malicious prompts are still missed.
+- The project currently focuses on semantic policy enforcement and does not replace full sandboxing or malware analysis.
 
 
 
