@@ -518,7 +518,7 @@ Evaluation focuses on understanding:
 Current repository organization:
 
 SVP-Semantic-Validation-Protocol-KERNEL/
-│ ├── app.py │   FastAPI application entry point │ ├── myengine.py │   Semantic decision engine │ ├── audit_logger.py │   Tamper-evident audit logging system │ ├── policies/ │   YAML policy definitions │ ├── evaluation/ │   Benchmark and evaluation framework │ ├── benchmarks/ │   Evaluation datasets and metrics │ ├── docs/ │   Technical documentation │ ├── index.html │   Interactive frontend demonstration │ ├── requirements.txt │   Python dependencies │ └── Dockerfile Container deployment configuration
+│ ├── app.py │   FastAPI application entry point │ ├──   Semantic decision engine │ ├── audit_logger.py │   Tamper-evident audit logging system │ ├── policies/ │   YAML policy definitions │ ├── evaluation/ │   Benchmark and evaluation framework │ ├── benchmarks/ │   Evaluation datasets and metrics │ ├── docs/ │   Technical documentation │ ├── index.html │   Interactive frontend demonstration │ ├── requirements.txt │   Python dependencies │ └── Dockerfile Container deployment configuration
 
 The above repository structure reflects the separation between runtime logic, policies, evaluation, and documentation.
 
