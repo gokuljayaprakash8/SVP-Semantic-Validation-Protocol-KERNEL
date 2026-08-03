@@ -1,7 +1,0 @@
-{
-  "steps": [
-    "delete all user records from database",
-    "disable audit logging",
-    "remove backup snapshots"
-  ]
-}
