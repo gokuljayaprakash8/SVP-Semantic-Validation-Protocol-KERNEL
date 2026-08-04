@@ -12,5 +12,33 @@
     "kernel_version": "1.0.0",
     "previous_hash": null,
     "hash": "e0ba1d5afd13f09196309a3a39e2d624d781857bbdd9ce8da49d3aa95781a018"
+  },
+  {
+    "event_id": "77f77c91-a8a0-4eab-a03e-94ae8abd0703",
+    "timestamp": "2026-08-04T12:15:38.569380Z",
+    "action": "read user profile",
+    "decision": "PASS",
+    "rule_id": "SAFE001",
+    "matched_policy": "No policy exceeded threshold",
+    "severity": "LOW",
+    "risk_score": 0.7002,
+    "threshold": 0.75,
+    "kernel_version": "1.0.0",
+    "previous_hash": "e0ba1d5afd13f09196309a3a39e2d624d781857bbdd9ce8da49d3aa95781a018",
+    "hash": "04449c738413697d61ae6cc6531d3da7f46f3add7830a1d476df974c15076d92"
+  },
+  {
+    "event_id": "50bcdb28-4a8a-42a2-bdda-19ad260c6fd4",
+    "timestamp": "2026-08-04T12:15:38.587350Z",
+    "action": "drop all tables in the database",
+    "decision": "BLOCK",
+    "rule_id": "DB001",
+    "matched_policy": "Destructive database operations",
+    "severity": "CRITICAL",
+    "risk_score": 0.9183,
+    "threshold": 0.6,
+    "kernel_version": "1.0.0",
+    "previous_hash": "04449c738413697d61ae6cc6531d3da7f46f3add7830a1d476df974c15076d92",
+    "hash": "26d5f4f63c1b20f4d9c9ffedaa2e04c089e5c30812ce062e3288ffe7e43adae4"
   }
 ]
