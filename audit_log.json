@@ -1,0 +1,16 @@
+[
+  {
+    "event_id": "90a1ba1c-6d7b-4dbd-9276-4923fde837f6",
+    "timestamp": "2026-08-04T10:49:27.818936Z",
+    "action": "read user profile data",
+    "decision": "PASS",
+    "rule_id": "SAFE001",
+    "matched_policy": "No policy exceeded threshold",
+    "severity": "LOW",
+    "risk_score": 0.7172,
+    "threshold": 0.75,
+    "kernel_version": "1.0.0",
+    "previous_hash": null,
+    "hash": "e0ba1d5afd13f09196309a3a39e2d624d781857bbdd9ce8da49d3aa95781a018"
+  }
+]

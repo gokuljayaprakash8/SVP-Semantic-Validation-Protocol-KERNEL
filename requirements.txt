@@ -4,3 +4,10 @@ scikit-learn
 numpy
 fastembed
 PyYAML
+fastapi
+fastembed
+numpy
+pydantic
+PyYAML
+scikit-learn
+uvicorn
