@@ -137,6 +137,11 @@ def audit(req: WorkflowRequest):
     }
 
 
+@app.get("/")
+def root():
+    return {"status": "ok", "service": "SVP Kernel"}
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}

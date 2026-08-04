@@ -11,3 +11,4 @@ pydantic
 PyYAML
 scikit-learn
 uvicorn
+gunicorn
