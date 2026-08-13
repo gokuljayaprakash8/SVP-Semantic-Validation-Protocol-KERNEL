@@ -1,0 +1,32 @@
+SVP BOUNDARY EXPERIMENT — FROZEN ARTIFACT MANIFEST
+
+KERNEL
+app.py
+app.py.baseline
+
+VERIFICATION
+app.py and app.py.baseline have identical SHA-256:
+54276b5f3cd8e6338e6c2e2576248841224261181
+
+RAW EVIDENCE
+svp_boundary_clean.txt
+svp_log_boundary_output.txt
+svp_archive_boundary_output.txt
+svp_margin_diagnostic_output.txt
+
+MITIGATION VALIDATION
+svp_v03_boundary_validation_output.txt
+
+FORMAL REPORT
+SVP_BOUNDARY_FINDING.md
+
+KEY FINDING
+High-risk ambiguous semantic matches that fall through to PASS
+in the raw SVP engine are converted to ESCALATE by the existing
+v0.3 risk-aware decision layer.
+
+CONTROL RESULT
+Unambiguous dangerous cases remain BLOCK.
+
+KERNEL STATUS
+No kernel modification was made during this validation.

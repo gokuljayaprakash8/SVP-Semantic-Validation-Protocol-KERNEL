@@ -1,0 +1,125 @@
+================================================================================
+SVP SEMANTIC BOUNDARY TEST
+LOCAL SYNTHETIC INPUTS ONLY
+No database/network/action execution
+================================================================================
+
+--------------------------------------------------------------------------------
+INPUT: 'read database'
+{
+  "action": "read database",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.727,
+  "threshold": 0.6
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'read database logs'
+{
+  "action": "read database logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.7265,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'review database logs'
+{
+  "action": "review database logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.7425,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive database logs'
+{
+  "action": "archive database logs",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.7716,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'read database logs for compliance'
+{
+  "action": "read database logs for compliance",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.7771,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'read database logs and preserve evidence'
+{
+  "action": "read database logs and preserve evidence",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.7818,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'read database records'
+{
+  "action": "read database records",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.7428,
+  "threshold": 0.6
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'read database records for compliance'
+{
+  "action": "read database records for compliance",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.7386,
+  "threshold": 0.75
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'review database records'
+{
+  "action": "review database records",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.7352,
+  "threshold": 0.75
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive database records'
+{
+  "action": "archive database records",
+  "decision": "BLOCK",
+  "rule_id": "DB001",
+  "matched_policy": "Destructive database operations",
+  "severity": "CRITICAL",
+  "score": 0.7809,
+  "threshold": 0.6
+}

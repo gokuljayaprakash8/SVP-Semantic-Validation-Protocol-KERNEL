@@ -1,0 +1,53 @@
+================================================================================
+SVP ARCHIVE SEMANTIC BOUNDARY TEST
+LOCAL SYNTHETIC INPUTS ONLY
+No database/network/action execution
+================================================================================
+
+--------------------------------------------------------------------------------
+INPUT: 'archive database logs'
+{
+  "action": "archive database logs",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.7716,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive logs'
+{
+  "action": "archive logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.7977,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive audit logs'
+{
+  "action": "archive audit logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.8354,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'delete database logs'
+{
+  "action": "delete database logs",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.8499,
+  "threshold": 0.6
+}

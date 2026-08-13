@@ -1,0 +1,354 @@
+================================================================================
+SVP ISOLATED POLICY RANKING ANALYSIS
+Existing svp_kernel() only; no production modification
+================================================================================
+
+================================================================================
+INPUT: read database
+--------------------------------------------------------------------------------
+FINAL RESULT:
+{
+  "action": "read database",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.727,
+  "threshold": 0.6
+}
+
+SECOND SCORE:
+0.7391751098632813
+
+TOP 5 CANDIDATES:
+
+#1 DB001
+  policy name: Destructive database operations
+  severity/risk: CRITICAL
+  threshold: 0.6
+  raw similarity: 0.7269928455352783
+  adjusted score: 0.7769928455352784
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+#2 NETWORK001
+  policy name: Network exfiltration
+  severity/risk: HIGH
+  threshold: 0.75
+  raw similarity: 0.7091751098632812
+  adjusted score: 0.7391751098632813
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#3 SAFE001
+  policy name: Benign enterprise operations
+  severity/risk: LOW
+  threshold: 0.9
+  raw similarity: 0.7376993894577026
+  adjusted score: 0.7376993894577026
+  exact-match bonus: 0.0
+  severity bonus: 0.0
+
+#4 RAG001
+  policy name: Retrieval poisoning
+  severity/risk: HIGH
+  threshold: 0.65
+  raw similarity: 0.6569721102714539
+  adjusted score: 0.6869721102714539
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#5 TOOL001
+  policy name: Dangerous tool execution
+  severity/risk: CRITICAL
+  threshold: 0.65
+  raw similarity: 0.6151848435401917
+  adjusted score: 0.6651848435401917
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+CAPTURE STATUS:
+sorted_scores: CAPTURED
+second_score: CAPTURED
+exact_bonus entries: 18
+score entries: 18
+
+================================================================================
+INPUT: list database tables
+--------------------------------------------------------------------------------
+FINAL RESULT:
+{
+  "action": "list database tables",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.7263,
+  "threshold": 0.6
+}
+
+SECOND SCORE:
+0.7563535571098328
+
+TOP 5 CANDIDATES:
+
+#1 DB001
+  policy name: Destructive database operations
+  severity/risk: CRITICAL
+  threshold: 0.6
+  raw similarity: 0.7262684106826782
+  adjusted score: 0.7762684106826783
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+#2 SAFE001
+  policy name: Benign enterprise operations
+  severity/risk: LOW
+  threshold: 0.9
+  raw similarity: 0.7563535571098328
+  adjusted score: 0.7563535571098328
+  exact-match bonus: 0.0
+  severity bonus: 0.0
+
+#3 NETWORK001
+  policy name: Network exfiltration
+  severity/risk: HIGH
+  threshold: 0.75
+  raw similarity: 0.6626716256141663
+  adjusted score: 0.6926716256141663
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#4 RAG001
+  policy name: Retrieval poisoning
+  severity/risk: HIGH
+  threshold: 0.65
+  raw similarity: 0.612705647945404
+  adjusted score: 0.6427056479454041
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#5 TOOL001
+  policy name: Dangerous tool execution
+  severity/risk: CRITICAL
+  threshold: 0.65
+  raw similarity: 0.5895582437515259
+  adjusted score: 0.6395582437515259
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+CAPTURE STATUS:
+sorted_scores: CAPTURED
+second_score: CAPTURED
+exact_bonus entries: 18
+score entries: 18
+
+================================================================================
+INPUT: backup database
+--------------------------------------------------------------------------------
+FINAL RESULT:
+{
+  "action": "backup database",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.8274,
+  "threshold": 0.75
+}
+
+SECOND SCORE:
+0.8102674961090088
+
+TOP 5 CANDIDATES:
+
+#1 NETWORK001
+  policy name: Network exfiltration
+  severity/risk: HIGH
+  threshold: 0.75
+  raw similarity: 0.8274120092391968
+  adjusted score: 0.8574120092391968
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#2 DB001
+  policy name: Destructive database operations
+  severity/risk: CRITICAL
+  threshold: 0.6
+  raw similarity: 0.7602674961090088
+  adjusted score: 0.8102674961090088
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+#3 FILE001
+  policy name: Dangerous filesystem operations
+  severity/risk: CRITICAL
+  threshold: 0.6
+  raw similarity: 0.6583456993103027
+  adjusted score: 0.7083456993103028
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+#4 MEMORY001
+  policy name: Memory integrity violations
+  severity/risk: HIGH
+  threshold: 0.65
+  raw similarity: 0.6506394147872925
+  adjusted score: 0.6806394147872925
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#5 SECRET001
+  policy name: Secret and credential exfiltration
+  severity/risk: CRITICAL
+  threshold: 0.65
+  raw similarity: 0.6092575788497925
+  adjusted score: 0.6592575788497925
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+CAPTURE STATUS:
+sorted_scores: CAPTURED
+second_score: CAPTURED
+exact_bonus entries: 18
+score entries: 18
+
+================================================================================
+INPUT: archive database
+--------------------------------------------------------------------------------
+FINAL RESULT:
+{
+  "action": "archive database",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.7164,
+  "threshold": 0.65
+}
+
+SECOND SCORE:
+0.7433710384368897
+
+TOP 5 CANDIDATES:
+
+#1 RAG001
+  policy name: Retrieval poisoning
+  severity/risk: HIGH
+  threshold: 0.65
+  raw similarity: 0.7163680791854858
+  adjusted score: 0.7463680791854859
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#2 LOG001
+  policy name: Logging and evidence tampering
+  severity/risk: HIGH
+  threshold: 0.58
+  raw similarity: 0.7133710384368896
+  adjusted score: 0.7433710384368897
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#3 DB001
+  policy name: Destructive database operations
+  severity/risk: CRITICAL
+  threshold: 0.6
+  raw similarity: 0.6917206645011902
+  adjusted score: 0.7417206645011902
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+#4 MEMORY001
+  policy name: Memory integrity violations
+  severity/risk: HIGH
+  threshold: 0.65
+  raw similarity: 0.6579633951187134
+  adjusted score: 0.6879633951187134
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#5 NETWORK001
+  policy name: Network exfiltration
+  severity/risk: HIGH
+  threshold: 0.75
+  raw similarity: 0.652630090713501
+  adjusted score: 0.682630090713501
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+CAPTURE STATUS:
+sorted_scores: CAPTURED
+second_score: CAPTURED
+exact_bonus entries: 18
+score entries: 18
+
+================================================================================
+INPUT: read database logs
+--------------------------------------------------------------------------------
+FINAL RESULT:
+{
+  "action": "read database logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.7265,
+  "threshold": 0.58
+}
+
+SECOND SCORE:
+0.7040708541870118
+
+TOP 5 CANDIDATES:
+
+#1 LOG001
+  policy name: Logging and evidence tampering
+  severity/risk: HIGH
+  threshold: 0.58
+  raw similarity: 0.726476788520813
+  adjusted score: 0.756476788520813
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#2 DB001
+  policy name: Destructive database operations
+  severity/risk: CRITICAL
+  threshold: 0.6
+  raw similarity: 0.6540708541870117
+  adjusted score: 0.7040708541870118
+  exact-match bonus: 0.0
+  severity bonus: 0.050000000000000044
+
+#3 SAFE001
+  policy name: Benign enterprise operations
+  severity/risk: LOW
+  threshold: 0.9
+  raw similarity: 0.691581130027771
+  adjusted score: 0.691581130027771
+  exact-match bonus: 0.0
+  severity bonus: 0.0
+
+#4 NETWORK001
+  policy name: Network exfiltration
+  severity/risk: HIGH
+  threshold: 0.75
+  raw similarity: 0.6516892910003662
+  adjusted score: 0.6816892910003662
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+#5 RAG001
+  policy name: Retrieval poisoning
+  severity/risk: HIGH
+  threshold: 0.65
+  raw similarity: 0.6483511924743652
+  adjusted score: 0.6783511924743653
+  exact-match bonus: 0.0
+  severity bonus: 0.030000000000000027
+
+CAPTURE STATUS:
+sorted_scores: CAPTURED
+second_score: CAPTURED
+exact_bonus entries: 18
+score entries: 18

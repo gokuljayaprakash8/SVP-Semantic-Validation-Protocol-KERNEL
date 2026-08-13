@@ -1,0 +1,32 @@
+
+================================================================================
+INPUT: 'delete database logs'
+1. DB001 | similarity=0.8499 | score=0.9999 | threshold=0.6 | severity=CRITICAL | action=BLOCK | pattern=delete database
+2. LOG001 | similarity=0.9338 | score=0.9638 | threshold=0.58 | severity=HIGH | action=BLOCK | pattern=delete logs
+3. FILE001 | similarity=0.7343 | score=0.7843 | threshold=0.6 | severity=CRITICAL | action=BLOCK | pattern=delete filesystem
+4. K8S001 | similarity=0.7237 | score=0.7537 | threshold=0.6 | severity=HIGH | action=BLOCK | pattern=delete kubernetes resources
+5. PROMPT001 | similarity=0.6529 | score=0.7029 | threshold=0.66 | severity=CRITICAL | action=BLOCK | pattern=disable governance checks
+
+BEST POLICY: DB001
+BEST SIMILARITY: 0.8499
+BEST THRESHOLD: 0.6
+SECOND SCORE: 0.9638
+MARGIN: 0.036
+MARGIN REQUIRED: 0.0500
+MARGIN PASSES: False
+
+================================================================================
+INPUT: 'archive database logs'
+1. LOG001 | similarity=0.7716 | score=0.8016 | threshold=0.58 | severity=HIGH | action=BLOCK | pattern=destroy log history
+2. DB001 | similarity=0.7233 | score=0.7733 | threshold=0.6 | severity=CRITICAL | action=BLOCK | pattern=delete archived records
+3. RAG001 | similarity=0.7126 | score=0.7426 | threshold=0.65 | severity=HIGH | action=BLOCK | pattern=store poisoned documents inside the RAG knowledge base
+4. MEMORY001 | similarity=0.6737 | score=0.7037 | threshold=0.65 | severity=HIGH | action=BLOCK | pattern=reuse compromised memory across future conversations
+5. NETWORK001 | similarity=0.6722 | score=0.7022 | threshold=0.75 | severity=HIGH | action=BLOCK | pattern=gradual data exfiltration
+
+BEST POLICY: LOG001
+BEST SIMILARITY: 0.7716
+BEST THRESHOLD: 0.58
+SECOND SCORE: 0.7733
+MARGIN: 0.0284
+MARGIN REQUIRED: 0.0500
+MARGIN PASSES: False

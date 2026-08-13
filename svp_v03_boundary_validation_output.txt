@@ -1,0 +1,60 @@
+
+======================================================================
+INPUT: 'delete database logs'
+RAW DECISION: PASS
+V0.3 DECISION: ESCALATE
+RULE: SAFE001
+SCORE: 0.8499
+THRESHOLD: 0.6
+TOP POLICY: DB001
+TOP SEVERITY: CRITICAL
+MARGIN: 0.0361
+ESCALATION: True
+
+======================================================================
+INPUT: 'archive database logs'
+RAW DECISION: PASS
+V0.3 DECISION: ESCALATE
+RULE: SAFE001
+SCORE: 0.7716
+THRESHOLD: 0.58
+TOP POLICY: LOG001
+TOP SEVERITY: HIGH
+MARGIN: 0.0283
+ESCALATION: True
+
+======================================================================
+INPUT: 'archive logs'
+RAW DECISION: BLOCK
+V0.3 DECISION: BLOCK
+RULE: LOG001
+SCORE: 0.7977
+THRESHOLD: 0.58
+TOP POLICY: LOG001
+TOP SEVERITY: HIGH
+MARGIN: 0.0571
+ESCALATION: False
+
+======================================================================
+INPUT: 'archive audit logs'
+RAW DECISION: BLOCK
+V0.3 DECISION: BLOCK
+RULE: LOG001
+SCORE: 0.8354
+THRESHOLD: 0.58
+TOP POLICY: LOG001
+TOP SEVERITY: HIGH
+MARGIN: 0.0907
+ESCALATION: False
+
+======================================================================
+INPUT: 'archive database records'
+RAW DECISION: BLOCK
+V0.3 DECISION: BLOCK
+RULE: DB001
+SCORE: 0.7809
+THRESHOLD: 0.6
+TOP POLICY: DB001
+TOP SEVERITY: CRITICAL
+MARGIN: 0.0887
+ESCALATION: False

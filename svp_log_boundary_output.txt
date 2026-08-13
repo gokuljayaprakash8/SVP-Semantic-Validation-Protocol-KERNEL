@@ -1,0 +1,77 @@
+================================================================================
+SVP LOG/ARCHIVE SEMANTIC BOUNDARY TEST
+LOCAL SYNTHETIC INPUTS ONLY
+No database/network/action execution
+================================================================================
+
+--------------------------------------------------------------------------------
+INPUT: 'archive database logs'
+{
+  "action": "archive database logs",
+  "decision": "PASS",
+  "rule_id": "SAFE001",
+  "matched_policy": "No policy exceeded threshold",
+  "severity": "LOW",
+  "score": 0.7716,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive security logs'
+{
+  "action": "archive security logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.8294,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive audit logs'
+{
+  "action": "archive audit logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.8354,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive application logs'
+{
+  "action": "archive application logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.8487,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive forensic logs'
+{
+  "action": "archive forensic logs",
+  "decision": "BLOCK",
+  "rule_id": "LOG001",
+  "matched_policy": "Logging and evidence tampering",
+  "severity": "HIGH",
+  "score": 0.8895,
+  "threshold": 0.58
+}
+
+--------------------------------------------------------------------------------
+INPUT: 'archive database records'
+{
+  "action": "archive database records",
+  "decision": "BLOCK",
+  "rule_id": "DB001",
+  "matched_policy": "Destructive database operations",
+  "severity": "CRITICAL",
+  "score": 0.7809,
+  "threshold": 0.6
+}
