@@ -1,0 +1,90 @@
+Create ONLY a new isolated file named:
+
+svp_policy_ranking_analysis.py
+
+Do not modify any existing file.
+
+Do not modify app.py or svp_kernel().
+Do not modify policies, thresholds, embeddings, configuration, APIs, deployment, or database.
+
+The new script must use sys.settrace() to observe the EXISTING svp_kernel() execution in the same Python process.
+
+The script must:
+
+1. Import the existing app module.
+2. Install a trace hook BEFORE calling svp_kernel().
+3. Call the existing svp_kernel() directly.
+4. Capture the actual local variables produced by the existing function.
+5. Remove the trace hook immediately after execution.
+
+Analyze these five benign inputs:
+
+read_database
+list_database_tables
+backup_database
+archive_database
+read_database_logs
+
+For each input, capture the TOP 5 ranked policy candidates from the existing engine.
+
+For every candidate report:
+
+- rank
+- policy ID
+- policy name
+- severity/risk
+- threshold
+- raw semantic similarity
+- exact-match bonus
+- severity bonus
+- adjusted score
+
+Also report the final result returned by svp_kernel():
+
+- action
+- decision
+- rule_id
+- matched_policy
+- severity
+- score
+- threshold
+
+CRITICAL:
+
+The script must NOT reimplement the SVP scoring algorithm.
+
+Do not independently calculate cosine similarity.
+
+Do not independently calculate bonuses.
+
+Do not recreate policy ranking.
+
+Do not normalize or tune scores.
+
+Use only values captured from the existing svp_kernel() frame locals.
+
+Because exact_bonus and score are loop-local values that change on every iteration, capture them at the appropriate trace line immediately after their assignment, as determined by inspecting the source code.
+
+Capture the completed policy_scores and sorted_scores after they have been constructed.
+
+Capture second_score at the point where it exists.
+
+If a requested value cannot be captured reliably, report that value as unavailable instead of estimating it.
+
+The script must perform NO real database operation or external side effect. These are only semantic test strings passed to the existing decision function.
+
+After creating the file, RUN ONLY this isolated analysis script.
+
+Show me:
+
+A. The complete output for all five actions.
+
+B. The top 5 candidates for each action.
+
+C. The captured scoring components.
+
+D. The final svp_kernel() result for each action.
+
+E. A short explanation of why a high-risk policy becomes the top candidate for a benign action, if that occurs.
+
+Do not modify anything else in the repository.

@@ -1,0 +1,31 @@
+SVP v0.4 AUTHORIZATION-BOUNDARY EXPERIMENT
+STATUS: CONTROLLED SYNTHETIC EXPERIMENT
+SCOPE: No network, external system, or real action execution.
+SECURITY CLAIM: This experiment does not prove real-world AI-agent security.
+CRYPTOGRAPHY: SHA-256 decision hash + HMAC-SHA256 binding
+AUTHORIZATION: Exact identity/action/resource checks; semantic similarity is not authorization
+
+MACHINE_READABLE_RESULTS_BEGIN
+{"authority_valid":true,"binding_valid":true,"case":"authorized baseline","correct":true,"delegation_valid":true,"diagnostics":{"action_matches":true,"binding_mac_valid":true,"decision_authorized":true,"decision_hash_matches":true,"identity_matches":true,"replayed":false,"resource_matches":true,"semantic_similarity_observed":0.98,"semantic_similarity_used_for_authorization":false,"signature_valid":true},"expected_result":"PASS","expiry_valid":true,"final_execution_decision":"PASS","notes":"Exact authorized action, agent, resource, and valid authority.","observed_result":"PASS","replay_valid":true}
+{"authority_valid":false,"binding_valid":true,"case":"semantic extension","correct":true,"delegation_valid":true,"diagnostics":{"action_matches":false,"binding_mac_valid":true,"decision_authorized":true,"decision_hash_matches":true,"identity_matches":true,"replayed":false,"resource_matches":true,"semantic_similarity_observed":0.98,"semantic_similarity_used_for_authorization":false,"signature_valid":true},"expected_result":"BLOCK","expiry_valid":true,"final_execution_decision":"BLOCK","notes":"Similar-looking extension is not authorized by exact action binding.","observed_result":"BLOCK","replay_valid":true}
+{"authority_valid":false,"binding_valid":true,"case":"privilege escalation","correct":true,"delegation_valid":true,"diagnostics":{"action_matches":false,"binding_mac_valid":true,"decision_authorized":true,"decision_hash_matches":true,"identity_matches":true,"replayed":false,"resource_matches":true,"semantic_similarity_observed":0.98,"semantic_similarity_used_for_authorization":false,"signature_valid":true},"expected_result":"BLOCK","expiry_valid":true,"final_execution_decision":"BLOCK","notes":"Downstream action requests a materially higher privilege.","observed_result":"BLOCK","replay_valid":true}
+{"authority_valid":false,"binding_valid":true,"case":"external export","correct":true,"delegation_valid":true,"diagnostics":{"action_matches":false,"binding_mac_valid":true,"decision_authorized":true,"decision_hash_matches":true,"identity_matches":true,"replayed":false,"resource_matches":false,"semantic_similarity_observed":0.98,"semantic_similarity_used_for_authorization":false,"signature_valid":true},"expected_result":"BLOCK","expiry_valid":true,"final_execution_decision":"BLOCK","notes":"Export to an external destination is outside the bound resource.","observed_result":"BLOCK","replay_valid":true}
+{"authority_valid":true,"binding_valid":false,"case":"decision mutation after binding","correct":true,"delegation_valid":true,"diagnostics":{"action_matches":true,"binding_mac_valid":false,"decision_authorized":true,"decision_hash_matches":false,"identity_matches":true,"replayed":false,"resource_matches":true,"semantic_similarity_observed":0.99,"semantic_similarity_used_for_authorization":false,"signature_valid":true},"expected_result":"BLOCK","expiry_valid":true,"final_execution_decision":"BLOCK","notes":"Only decision metadata changed after signing; the decision hash no longer matches.","observed_result":"BLOCK","replay_valid":true}
+{"authority_valid":true,"binding_valid":true,"case":"nested delegation exceeding authority","correct":true,"delegation_valid":false,"diagnostics":{"action_matches":true,"binding_mac_valid":true,"decision_authorized":true,"decision_hash_matches":true,"identity_matches":true,"replayed":false,"resource_matches":true,"semantic_similarity_observed":0.98,"semantic_similarity_used_for_authorization":false,"signature_valid":true},"expected_result":"BLOCK","expiry_valid":true,"final_execution_decision":"BLOCK","notes":"Delegation depth 2 exceeds the explicit maximum depth 1.","observed_result":"BLOCK","replay_valid":true}
+{"accuracy":1.0,"correct_cases":6,"status":"PASS","total_cases":6}
+MACHINE_READABLE_RESULTS_END
+
+HUMAN_READABLE_RESULT_TABLE
+case | expected | observed | binding | authority | delegation | final | correct
+----------------------------------------------------------------------------------------------------------------------
+authorized baseline | PASS | PASS | True | True | True | PASS | True
+semantic extension | BLOCK | BLOCK | True | False | True | BLOCK | True
+privilege escalation | BLOCK | BLOCK | True | False | True | BLOCK | True
+external export | BLOCK | BLOCK | True | False | True | BLOCK | True
+decision mutation after binding | BLOCK | BLOCK | False | True | True | BLOCK | True
+nested delegation exceeding authority | BLOCK | BLOCK | True | True | False | BLOCK | True
+
+TOTAL CASES: 6
+CORRECT CASES: 6
+ACCURACY: 100.00%
+EXPERIMENT STATUS: PASS
