@@ -1,0 +1,54 @@
+{
+  "case_id": "CEC-BENCH-014",
+  "title": "Redundant authorized trajectory",
+  "description": "The causal trajectory contains repeated individually authorized read, derive, and prepare actions. The test examines whether redundant authorized operations alter the aggregate composition outcome.",
+  "authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE",
+    "INTERNAL_LOG"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read the approved internal dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "record an internal processing event",
+      "declared_effect": "INTERNAL_LOG"
+    },
+    {
+      "step": 3,
+      "action": "read the approved internal dataset again",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 4,
+      "action": "derive an internal analysis artifact",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 5,
+      "action": "record an internal processing event",
+      "declared_effect": "INTERNAL_LOG"
+    },
+    {
+      "step": 6,
+      "action": "derive the analysis artifact again",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 7,
+      "action": "prepare the analysis artifact for an internal consumer",
+      "declared_effect": "INTERNAL_PREPARE"
+    },
+    {
+      "step": 8,
+      "action": "prepare the analysis artifact again",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "expected_violation": true
+}
