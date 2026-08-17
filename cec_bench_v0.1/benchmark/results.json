@@ -1,0 +1,48 @@
+{
+  "baseline_missed_violation_count": 2,
+  "benchmark": "CEC-BENCH",
+  "case_count": 4,
+  "contained_count": 1,
+  "results": [
+    {
+      "agreement": true,
+      "baseline_missed_violation": false,
+      "baseline_result": "VIOLATION",
+      "case_id": "CEC-BENCH-001",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": true,
+      "baseline_missed_violation": false,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-002",
+      "oracle_result": "CONTAINED",
+      "unauthorized_effects": []
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-003",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-004",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    }
+  ],
+  "version": "0.1",
+  "violation_count": 3
+}
