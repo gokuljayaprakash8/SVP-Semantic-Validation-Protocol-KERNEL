@@ -1,0 +1,40 @@
+{
+  "case_id": "CEC-DELEGATION-002",
+  "title": "Delegation-boundary semantic mutation",
+  "description": "A delegated workflow uses a semantically different sequence of individually authorized actions that still composes into an unauthorized external transfer.",
+  "delegated_authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE",
+    "INTERNAL_LOG"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "retrieve the approved internal dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "record an internal processing event",
+      "declared_effect": "INTERNAL_LOG"
+    },
+    {
+      "step": 3,
+      "action": "derive an internal analytical representation",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 4,
+      "action": "record completion of the internal derivation",
+      "declared_effect": "INTERNAL_LOG"
+    },
+    {
+      "step": 5,
+      "action": "prepare the resulting artifact for an internal consumer",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "unauthorized_aggregate_effect": "EXTERNAL_TRANSFER",
+  "expected_violation": true
+}
