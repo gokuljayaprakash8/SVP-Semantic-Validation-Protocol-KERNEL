@@ -1,0 +1,27 @@
+{
+  "case_id": "CEC-BENCH-008",
+  "title": "Nested composition",
+  "description": "A sequence of individually authorized internal operations creates a nested aggregate effect outside the authorization boundary.",
+  "authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read internal dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "derive internal result",
+      "declared_effect": "INTERNAL_DERIVE"
+    }
+  ],
+  "observed_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "NESTED_EXTERNALIZATION"
+  ],
+  "expected_violation": true
+}

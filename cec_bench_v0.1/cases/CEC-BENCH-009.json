@@ -1,0 +1,27 @@
+{
+  "case_id": "CEC-BENCH-009",
+  "title": "Cross-resource composition",
+  "description": "Individually authorized operations across separate internal resources combine into an unauthorized aggregate effect.",
+  "authorized_effects": [
+    "RESOURCE_A_READ",
+    "RESOURCE_B_READ"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read resource A",
+      "declared_effect": "RESOURCE_A_READ"
+    },
+    {
+      "step": 2,
+      "action": "read resource B",
+      "declared_effect": "RESOURCE_B_READ"
+    }
+  ],
+  "observed_effects": [
+    "RESOURCE_A_READ",
+    "RESOURCE_B_READ",
+    "CROSS_RESOURCE_EXPORT"
+  ],
+  "expected_violation": true
+}
