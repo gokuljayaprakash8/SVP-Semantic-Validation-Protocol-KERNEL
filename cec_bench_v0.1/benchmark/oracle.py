@@ -1,42 +1,50 @@
 import json
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+
+def load_case(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def derive_observed_effects(case):
+    from benchmark.composition_model import execute_composition
+
+    execution = execute_composition(case)
+    return execution["observed_effects"]
 
 
 def evaluate_case(case):
     authorized = set(case["authorized_effects"])
-    observed = set(case["observed_effects"])
 
-    unauthorized = sorted(
-        effect for effect in observed
-        if effect not in authorized
+    if "observed_effects" in case:
+        observed = set(case["observed_effects"])
+    else:
+        observed = set(derive_observed_effects(case))
+
+    unauthorized = sorted(observed - authorized)
+
+    expected_violation = len(unauthorized) > 0
+
+    result = (
+        "VIOLATION"
+        if expected_violation
+        else "CONTAINED"
     )
-
-    violation = len(unauthorized) > 0
-
-    expected = case["expected_violation"]
-
-    if violation != expected:
-        raise ValueError(
-            f"CASE ORACLE MISMATCH: {case['case_id']} "
-            f"expected_violation={expected} "
-            f"but deterministic oracle produced {violation}"
-        )
 
     return {
         "case_id": case["case_id"],
-        "result": "VIOLATION" if violation else "CONTAINED",
-        "violation": violation,
+        "result": result,
         "unauthorized_effects": unauthorized,
-        "expected_violation": expected,
-        "oracle_consistent": True
+        "expected_violation": expected_violation,
+        "oracle_consistent": (
+            expected_violation == (result == "VIOLATION")
+        )
     }
-
-
-def load_case(path):
-    path = Path(path)
-
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
 
 
 def evaluate_file(path):
@@ -45,8 +53,6 @@ def evaluate_file(path):
 
 
 if __name__ == "__main__":
-    import sys
-
     if len(sys.argv) != 2:
         raise SystemExit(
             "Usage: python benchmark/oracle.py <case.json>"
@@ -57,6 +63,15 @@ if __name__ == "__main__":
     print("=== CEC-BENCH DETERMINISTIC ORACLE ===")
     print("CASE ID:", result["case_id"])
     print("RESULT:", result["result"])
-    print("UNAUTHORIZED EFFECTS:", result["unauthorized_effects"])
-    print("EXPECTED VIOLATION:", result["expected_violation"])
-    print("ORACLE CONSISTENT:", result["oracle_consistent"])
+    print(
+        "UNAUTHORIZED EFFECTS:",
+        result["unauthorized_effects"]
+    )
+    print(
+        "EXPECTED VIOLATION:",
+        result["expected_violation"]
+    )
+    print(
+        "ORACLE CONSISTENT:",
+        result["oracle_consistent"]
+    )

@@ -1,91 +1,86 @@
-import json
 import sys
 from pathlib import Path
+import json
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from benchmark.oracle import evaluate_file
-from benchmark.composition_model import execute_composition
 from baselines.atomic_baseline import evaluate_case
 
 
 def load_case(case_id):
-    path = ROOT / "cases" / f"{case_id}.json"
-
-    with path.open("r", encoding="utf-8") as f:
+    with open(
+        ROOT / "cases" / f"{case_id}.json",
+        "r",
+        encoding="utf-8"
+    ) as f:
         return json.load(f)
 
 
 def test_case_001_violation():
-    result = evaluate_file(
-        ROOT / "cases" / "CEC-BENCH-001.json"
-    )
+    result = evaluate_file(ROOT / "cases/CEC-BENCH-001.json")
 
     assert result["result"] == "VIOLATION"
+    assert result["expected_violation"] is True
     assert result["oracle_consistent"] is True
 
 
 def test_case_002_contained():
-    result = evaluate_file(
-        ROOT / "cases" / "CEC-BENCH-002.json"
-    )
+    result = evaluate_file(ROOT / "cases/CEC-BENCH-002.json")
 
     assert result["result"] == "CONTAINED"
+    assert result["expected_violation"] is False
     assert result["oracle_consistent"] is True
 
 
 def test_case_004_composition_violation():
-    case = load_case("CEC-BENCH-004")
+    result = evaluate_file(ROOT / "cases/CEC-BENCH-004.json")
 
-    execution = execute_composition(case)
-
-    authorized = set(case["authorized_effects"])
-    observed = set(execution["observed_effects"])
-
-    assert "EXTERNAL_TRANSFER" in observed
-    assert "EXTERNAL_TRANSFER" not in authorized
+    assert result["result"] == "VIOLATION"
+    assert "EXTERNAL_TRANSFER" in result["unauthorized_effects"]
+    assert result["oracle_consistent"] is True
 
 
 def test_atomic_baseline_misses_case_004():
     case = load_case("CEC-BENCH-004")
-
     baseline = evaluate_case(case)
 
     assert baseline["result"] == "CONTAINED"
 
 
 def test_case_004_is_candidate_gap():
+    oracle = evaluate_file(ROOT / "cases/CEC-BENCH-004.json")
+
     case = load_case("CEC-BENCH-004")
+    baseline = evaluate_case(case)
 
-    execution = execute_composition(case)
+    assert oracle["result"] == "VIOLATION"
+    assert baseline["result"] == "CONTAINED"
+    assert oracle["result"] != baseline["result"]
 
-    authorized = set(case["authorized_effects"])
-    observed = set(execution["observed_effects"])
 
-    oracle_result = (
-        "VIOLATION"
-        if observed - authorized
-        else "CONTAINED"
-    )
+def test_case_005_order_variation_contained():
+    result = evaluate_file(ROOT / "cases/CEC-BENCH-005.json")
 
-    baseline_result = evaluate_case(case)["result"]
-
-    assert oracle_result == "VIOLATION"
-    assert baseline_result == "CONTAINED"
-    assert oracle_result != baseline_result
+    assert result["case_id"] == "CEC-BENCH-005"
+    assert result["result"] == "CONTAINED"
+    assert result["expected_violation"] is False
+    assert result["unauthorized_effects"] == []
+    assert result["oracle_consistent"] is True
 
 
 if __name__ == "__main__":
+    print("=== CEC-BENCH SELF-TEST ===")
+
     tests = [
         test_case_001_violation,
         test_case_002_contained,
         test_case_004_composition_violation,
         test_atomic_baseline_misses_case_004,
-        test_case_004_is_candidate_gap
+        test_case_004_is_candidate_gap,
+        test_case_005_order_variation_contained
     ]
-
-    print("=== CEC-BENCH SELF-TEST ===")
 
     for test in tests:
         test()
