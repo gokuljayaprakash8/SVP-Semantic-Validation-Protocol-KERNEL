@@ -1,0 +1,86 @@
+{
+  "case_id": "MUT-004-A",
+  "title": "Three resources with two contributing inputs",
+  "description": "Three internal resources are accessed. RESOURCE-A and RESOURCE-B contribute to the completed analytical artifact. RESOURCE-C is accessed but does not contribute.",
+  "authorities": [
+    {
+      "authority_id": "PARENT-001",
+      "parent_authority": null,
+      "delegation_depth": 0,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    },
+    {
+      "authority_id": "CHILD-004",
+      "parent_authority": "PARENT-001",
+      "delegation_depth": 1,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "resource_id": "RESOURCE-A",
+      "classification": "INTERNAL"
+    },
+    {
+      "resource_id": "RESOURCE-B",
+      "classification": "INTERNAL"
+    },
+    {
+      "resource_id": "RESOURCE-C",
+      "classification": "INTERNAL"
+    }
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-B",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 3,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "declared_effect": "INTERNAL_DERIVE",
+      "input_resources": [
+        "RESOURCE-A",
+        "RESOURCE-C"
+      ]
+    },
+    {
+      "step": 4,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "unauthorized_aggregate_effect": "CROSS_RESOURCE_EXTERNALIZATION",
+  "resource_contents": {
+    "RESOURCE-A": "constant dataset",
+    "RESOURCE-B": "B_VERSION_1"
+  },
+  "artifact": "constant dataset + B_VERSION_1",
+  "causal_intervention": {
+    "intervened_resource": "RESOURCE-C",
+    "baseline": "RESOURCE-C_BASE",
+    "counterfactual": "RESOURCE-C_CF",
+    "artifact_baseline": "A+C0",
+    "artifact_counterfactual": "A+C1",
+    "causal_effect": true
+  },
+  "artifact_provenance": null
+}

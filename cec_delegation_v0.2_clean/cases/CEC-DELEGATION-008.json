@@ -1,0 +1,68 @@
+{
+  "case_id": "CEC-DELEGATION-008",
+  "title": "Irrelevant secondary resource negative control",
+  "description": "Two internal resources are accessed, but only RESOURCE-A contributes to the completed analytical artifact. RESOURCE-B is read independently and does not contribute to the artifact.",
+  "authorities": [
+    {
+      "authority_id": "PARENT-001",
+      "parent_authority": null,
+      "delegation_depth": 0,
+      "delegated_effects": []
+    },
+    {
+      "authority_id": "CHILD-005",
+      "parent_authority": "PARENT-001",
+      "delegation_depth": 1,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "resource_id": "RESOURCE-A",
+      "classification": "INTERNAL"
+    },
+    {
+      "resource_id": "RESOURCE-B",
+      "classification": "INTERNAL"
+    }
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "authority_id": "CHILD-005",
+      "resource_id": "RESOURCE-A",
+      "action": "read the approved internal dataset from resource A",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "authority_id": "CHILD-005",
+      "resource_id": "RESOURCE-B",
+      "action": "read the approved internal dataset from resource B independently",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 3,
+      "authority_id": "CHILD-005",
+      "resource_id": "RESOURCE-A",
+      "action": "derive an analytical artifact from resource A only",
+      "declared_effect": "INTERNAL_DERIVE",
+      "input_resources": [
+        "RESOURCE-A"
+      ]
+    },
+    {
+      "step": 4,
+      "authority_id": "CHILD-005",
+      "resource_id": "RESOURCE-A",
+      "action": "prepare the artifact derived from resource A for an internal consumer",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "unauthorized_aggregate_effect": "CROSS_RESOURCE_EXTERNALIZATION",
+  "expected_violation": false
+}
