@@ -1,0 +1,24 @@
+SVP v0.4 SECURITY-PROJECTION EVALUATION
+STATUS: CONTROLLED SYNTHETIC COMPARISON
+SCOPE: Synthetic data only; no network, credentials, external systems, or real actions.
+SECURITY CLAIM: This experiment does not prove real-world AI-agent security.
+
+{"case": "A exact baseline", "expected": "PASS", "full_commitment": "PASS", "full_correct": true, "mutation": {}, "projection_correct": true, "security_projection": "PASS"}
+{"case": "B harmless wording", "expected": "PASS", "full_commitment": "BLOCK", "full_correct": false, "mutation": {"presentation_note": "different concise summary"}, "projection_correct": true, "security_projection": "PASS"}
+{"case": "C explanation change", "expected": "PASS", "full_commitment": "BLOCK", "full_correct": false, "mutation": {"explanation": "different explanation"}, "projection_correct": true, "security_projection": "PASS"}
+{"case": "D formatting change", "expected": "PASS", "full_commitment": "BLOCK", "full_correct": false, "mutation": {"formatting": "compact"}, "projection_correct": true, "security_projection": "PASS"}
+{"case": "E action mutation", "expected": "BLOCK", "full_commitment": "BLOCK", "full_correct": true, "mutation": {"action": "delete_record"}, "projection_correct": true, "security_projection": "BLOCK"}
+{"case": "F resource mutation", "expected": "BLOCK", "full_commitment": "BLOCK", "full_correct": true, "mutation": {"resource": "synthetic://dataset/record-999"}, "projection_correct": true, "security_projection": "BLOCK"}
+{"case": "G identity mutation", "expected": "BLOCK", "full_commitment": "BLOCK", "full_correct": true, "mutation": {"identity": "agent-999"}, "projection_correct": true, "security_projection": "BLOCK"}
+{"case": "H authority expansion", "expected": "BLOCK", "full_commitment": "BLOCK", "full_correct": true, "mutation": {"authority": "read_write"}, "projection_correct": true, "security_projection": "BLOCK"}
+{"case": "I delegation mutation", "expected": "BLOCK", "full_commitment": "BLOCK", "full_correct": true, "mutation": {"delegation_depth": 2}, "projection_correct": true, "security_projection": "BLOCK"}
+{"case": "J maximum delegation mutation", "expected": "BLOCK", "full_commitment": "BLOCK", "full_correct": true, "mutation": {"max_delegation_depth": 2}, "projection_correct": true, "security_projection": "BLOCK"}
+{"case": "K expiry mutation", "expected": "BLOCK", "full_commitment": "BLOCK", "full_correct": true, "mutation": {"expiry": 4102444900}, "projection_correct": true, "security_projection": "BLOCK"}
+{"case": "L metadata plus malicious-looking note", "expected": "PASS", "full_commitment": "BLOCK", "full_correct": false, "mutation": {"presentation_note": "read_record_then_delete"}, "projection_correct": true, "security_projection": "PASS"}
+{"case": "M reordered representation", "expected": "PASS", "full_commitment": "PASS", "full_correct": true, "mutation": {"presentation_note": "show concise local summary"}, "projection_correct": true, "security_projection": "PASS"}
+
+TOTAL CASES: 13
+FULL COMMITMENT FALSE-ALLOWS: 0
+FULL COMMITMENT FALSE-BLOCKS: 4
+SECURITY PROJECTION FALSE-ALLOWS: 0
+SECURITY PROJECTION FALSE-BLOCKS: 0

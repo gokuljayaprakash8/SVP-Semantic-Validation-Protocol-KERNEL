@@ -1,0 +1,23 @@
+CONTROLLED SYNTHETIC FALSE-BLOCK ANALYSIS
+SCOPE: Synthetic analysis only; no network, external systems, credentials, or real actions.
+SECURITY CLAIM: This experiment does not prove real-world AI-agent security.
+FIELD SENSITIVITY
+{"field": "identity", "binding_changes": true, "security_relevant": true}
+{"field": "action", "binding_changes": true, "security_relevant": true}
+{"field": "resource", "binding_changes": true, "security_relevant": true}
+{"field": "delegation_depth", "binding_changes": true, "security_relevant": true}
+{"field": "max_delegation_depth", "binding_changes": true, "security_relevant": true}
+{"field": "presentation_note", "binding_changes": false, "security_relevant": false}
+CASE RESULTS
+{"binding_hash_matches": true, "binding_valid_against_original": true, "case": "A exact authorized action", "changed_property": {}, "independent_expected": "PASS", "interpretation": "security-relevant change", "security_relevant": true}
+{"binding_hash_matches": false, "binding_valid_against_original": false, "case": "B authorized refinement", "changed_property": {"action": "read_record_with_summary"}, "independent_expected": "PASS", "interpretation": "security-relevant change", "security_relevant": true}
+{"binding_hash_matches": true, "binding_valid_against_original": true, "case": "C wording-only presentation change", "changed_property": {"presentation_note": "show concise local summary"}, "independent_expected": "PASS", "interpretation": "non-security metadata change", "security_relevant": false}
+{"binding_hash_matches": true, "binding_valid_against_original": true, "case": "D presentation_note mutation", "changed_property": {"presentation_note": "different presentation text"}, "independent_expected": "PASS", "interpretation": "non-security metadata change", "security_relevant": false}
+{"binding_hash_matches": false, "binding_valid_against_original": false, "case": "E security-relevant action mutation", "changed_property": {"action": "delete_record"}, "independent_expected": "BLOCK", "interpretation": "security-relevant change", "security_relevant": true}
+{"binding_hash_matches": false, "binding_valid_against_original": false, "case": "F unapproved resource", "changed_property": {"resource": "synthetic://dataset/record-999"}, "independent_expected": "BLOCK", "interpretation": "security-relevant change", "security_relevant": true}
+{"binding_hash_matches": false, "binding_valid_against_original": false, "case": "G delegation beyond maximum", "changed_property": {"delegation_depth": 2}, "independent_expected": "BLOCK", "interpretation": "security-relevant change", "security_relevant": true}
+INTERPRETATION
+The independent model treats presentation_note as non-security-relevant.
+Therefore a binding that covers presentation_note would be strict but may create an authorization/usability limitation.
+Security-relevant action, resource, identity, and delegation changes should affect authorization.
+This analysis does not modify or claim to prove the real-world security of the SVP implementation.
