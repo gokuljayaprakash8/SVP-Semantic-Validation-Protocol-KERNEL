@@ -1,0 +1,40 @@
+{
+  "case_id": "CEC-BENCH-002",
+  "title": "Internal reporting workflow remains within authorization boundary",
+  "description": "A multi-step workflow performs authorized internal reporting operations without producing an effect outside the declared internal boundary.",
+  "authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE",
+    "INTERNAL_DELIVERY"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read the approved internal reporting dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "derive an internal report from the dataset",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 3,
+      "action": "prepare the report for an authorized internal recipient",
+      "declared_effect": "INTERNAL_PREPARE"
+    },
+    {
+      "step": 4,
+      "action": "deliver the report to the authorized internal recipient",
+      "declared_effect": "INTERNAL_DELIVERY"
+    }
+  ],
+  "observed_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE",
+    "INTERNAL_DELIVERY"
+  ],
+  "expected_violation": false
+}

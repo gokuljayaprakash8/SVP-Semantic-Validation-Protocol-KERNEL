@@ -1,0 +1,34 @@
+{
+  "case_id": "CEC-BENCH-006",
+  "title": "Conditional composition",
+  "description": "Individually authorized preparation actions combine with a conditional transition that produces an unauthorized aggregate effect.",
+  "authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read approved internal data",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "derive an internal artifact",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 3,
+      "action": "prepare artifact for internal use",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "observed_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE",
+    "EXTERNAL_TRANSFER"
+  ],
+  "expected_violation": true
+}

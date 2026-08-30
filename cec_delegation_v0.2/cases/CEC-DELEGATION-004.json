@@ -1,0 +1,59 @@
+{
+  "case_id": "CEC-DELEGATION-004",
+  "title": "Depth-2 recursive delegation aggregate-effect boundary",
+  "description": "A parent authority delegates a restricted internal scope to a child authority, which delegates the same restricted scope to a second child. Every action performed by the depth-2 authority is individually authorized, but the composed trajectory produces an unauthorized external transfer.",
+  "authorities": [
+    {
+      "authority_id": "PARENT-001",
+      "parent_authority": null,
+      "delegation_depth": 0,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    },
+    {
+      "authority_id": "CHILD-001",
+      "parent_authority": "PARENT-001",
+      "delegation_depth": 1,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    },
+    {
+      "authority_id": "CHILD-002",
+      "parent_authority": "CHILD-001",
+      "delegation_depth": 2,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "authority_id": "CHILD-002",
+      "action": "read the approved internal dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "authority_id": "CHILD-002",
+      "action": "derive an internal analytical artifact",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 3,
+      "authority_id": "CHILD-002",
+      "action": "prepare the analytical artifact for an internal consumer",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "unauthorized_aggregate_effect": "EXTERNAL_TRANSFER",
+  "expected_violation": true
+}
