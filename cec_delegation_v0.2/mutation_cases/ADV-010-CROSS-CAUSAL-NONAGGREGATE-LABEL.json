@@ -1,0 +1,4 @@
+{
+  "case_id": "ADV-010-CROSS-CAUSAL-NONAGGREGATE",
+  "expected_violation": false
+}

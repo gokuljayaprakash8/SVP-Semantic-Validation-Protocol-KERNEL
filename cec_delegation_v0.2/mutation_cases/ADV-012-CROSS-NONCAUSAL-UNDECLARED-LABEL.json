@@ -1,0 +1,4 @@
+{
+  "case_id": "ADV-012-CROSS-NONCAUSAL-UNDECLARED",
+  "expected_violation": false
+}

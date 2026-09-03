@@ -1,0 +1,4 @@
+{
+  "case_id": "MUT-006-UNDECLARED-B-CAUSAL",
+  "expected_violation": true
+}

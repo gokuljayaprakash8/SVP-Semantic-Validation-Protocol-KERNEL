@@ -1,38 +1,93 @@
 import json
 import sys
+from pathlib import Path
 
-from delegation_model import execute_delegation
+from .delegation_model import execute_delegation
 
 
-def evaluate_case(case):
-    result = execute_delegation(case)
-
-    child_authorities = {
-        a["authority_id"]: a
-        for a in case["authorities"]
-    }
+def evaluate_case(case, expected_violation):
+    try:
+        result = execute_delegation(case)
+    except ValueError:
+        # Any deterministic delegation-model rejection is a security
+        # violation: invalid scope, broken lineage, forged depth,
+        # unknown authority, or another failed delegation invariant.
+        return {
+            "case_id": case["case_id"],
+            "result": "VIOLATION",
+            "unauthorized_effects": [
+                case["unauthorized_aggregate_effect"]
+            ],
+            "expected_violation": expected_violation,
+            "oracle_consistent": expected_violation is True,
+        }
 
     unauthorized_effects = set()
-
-    for action in result["authority_trace"]:
-        authority = child_authorities[action["authority_id"]]
-
-        effect = action["effect"]
-
-        if effect not in authority["delegated_effects"]:
-            unauthorized_effects.add(effect)
-
     aggregate_effect = case["unauthorized_aggregate_effect"]
 
+    # ------------------------------------------------------------
+    # CEC EFFECT-AUTHORIZATION INVARIANT
+    #
+    # An effect is authorized only when the authority performing
+    # that effect explicitly possesses the effect in its delegated
+    # scope.
+    #
+    # Causal evidence does NOT grant authority.
+    # ------------------------------------------------------------
+
+    aggregate_authorized = False
+
+    for action in case.get("actions", []):
+        if action.get("declared_effect") != aggregate_effect:
+            continue
+
+        authority_id = action.get("authority_id")
+
+        authority = next(
+            (
+                a
+                for a in case.get("authorities", [])
+                if a.get("authority_id") == authority_id
+            ),
+            None,
+        )
+
+        if authority and aggregate_effect in authority.get(
+            "delegated_effects", []
+        ):
+            aggregate_authorized = True
+            break
+
+    # ------------------------------------------------------------
+    # DIRECT OBSERVATION
+    # ------------------------------------------------------------
+
     if aggregate_effect in result["observed_effects"]:
-        unauthorized_effects.add(aggregate_effect)
+        if not aggregate_authorized:
+            unauthorized_effects.add(aggregate_effect)
+
+    # ------------------------------------------------------------
+    # CAUSAL EFFECT INTEGRITY
+    #
+    # If causal intervention proves that the aggregate effect
+    # exists even though no explicit aggregate action occurred,
+    # the effect still requires authorization.
+    #
+    # IMPORTANT:
+    # We intentionally do NOT reject undeclared causal inputs by
+    # themselves. This preserves ADV-008.
+    # ------------------------------------------------------------
+
+    causal = case.get("causal_intervention")
+
+    if causal and causal.get("causal_effect") is True:
+        if not aggregate_authorized:
+            unauthorized_effects.add(aggregate_effect)
 
     if unauthorized_effects:
         oracle_result = "VIOLATION"
     else:
         oracle_result = "CONTAINED"
-
-    expected_violation = case["expected_violation"]
 
     return {
         "case_id": case["case_id"],
@@ -42,7 +97,7 @@ def evaluate_case(case):
         "oracle_consistent": (
             expected_violation
             == (oracle_result == "VIOLATION")
-        )
+        ),
     }
 
 
@@ -52,10 +107,26 @@ if __name__ == "__main__":
             "Usage: python benchmark/oracle.py <case.json>"
         )
 
-    with open(sys.argv[1], encoding="utf-8") as f:
+    case_path = Path(sys.argv[1])
+
+    with open(case_path, encoding="utf-8") as f:
         case = json.load(f)
 
-    result = evaluate_case(case)
+    label_path = case_path.with_name(
+        case_path.stem + "-LABEL.json"
+    )
+
+    if not label_path.exists():
+        raise SystemExit(
+            f"GROUND TRUTH LABEL NOT FOUND: {label_path}"
+        )
+
+    with open(label_path, encoding="utf-8") as f:
+        label = json.load(f)
+
+    expected_violation = label["expected_violation"]
+
+    result = evaluate_case(case, expected_violation)
 
     print("=== CEC DELEGATION v0.2 DETERMINISTIC ORACLE ===")
     print("CASE ID:", result["case_id"])

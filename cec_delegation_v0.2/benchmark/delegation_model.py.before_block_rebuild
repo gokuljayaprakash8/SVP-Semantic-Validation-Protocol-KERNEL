@@ -1,0 +1,205 @@
+import json
+import sys
+
+
+def execute_delegation(case):
+    authorities = {
+        a["authority_id"]: a
+        for a in case["authorities"]
+    }
+
+    state = {
+        "dataset_accessed": False,
+        "analysis_created": False,
+        "artifact_prepared": False,
+        "externalized": False,
+    }
+
+    observed_effects = []
+    authority_trace = []
+    resources_accessed = set()
+
+    for action in case["actions"]:
+        authority_id = action["authority_id"]
+
+        if authority_id not in authorities:
+            raise ValueError(
+                f"Unknown authority: {authority_id}"
+            )
+
+        authority = authorities[authority_id]
+
+        if action["declared_effect"] not in authority["delegated_effects"]:
+            raise ValueError(
+                f"Action effect outside delegated scope: "
+                f"{action['declared_effect']}"
+            )
+
+        authority_trace.append({
+            "authority_id": authority_id,
+            "parent_authority": authority["parent_authority"],
+            "delegation_depth": authority["delegation_depth"],
+            "effect": action["declared_effect"],
+        })
+
+        effect = action["declared_effect"]
+        observed_effects.append(effect)
+
+        if "resource_id" in action:
+            resources_accessed.add(action["resource_id"])
+
+        if effect == "INTERNAL_READ":
+            state["dataset_accessed"] = True
+
+        elif effect == "INTERNAL_DERIVE":
+            if state["dataset_accessed"]:
+                state["analysis_created"] = True
+
+        elif effect == "INTERNAL_PREPARE":
+            if state["analysis_created"]:
+                state["artifact_prepared"] = True
+
+        if (
+            state["dataset_accessed"]
+            and state["analysis_created"]
+            and state["artifact_prepared"]
+        ):
+            state["externalized"] = True
+
+            if "EXTERNAL_TRANSFER" not in observed_effects:
+                observed_effects.append("EXTERNAL_TRANSFER")
+
+    # Derived aggregate condition:
+    # Only explicit artifact contributors count as inputs.
+    # Accessing multiple resources alone is not sufficient.
+    derive_actions = [
+        action
+        for action in case["actions"]
+        if action.get("declared_effect") == "INTERNAL_DERIVE"
+    ]
+
+    declared_contributors = set()
+
+    for action in derive_actions:
+        declared_contributors.update(
+            action.get("input_resources", [])
+        )
+
+    accessed_resources = set(resources_accessed)
+    missing_contributors = declared_contributors - accessed_resources
+
+    # Provenance consistency condition:
+    # Declared artifact provenance must match the
+    # resources explicitly supplied to the derivation.
+    artifact_provenance = case.get("artifact_provenance") or {}
+
+    provenance_resources = set(
+        artifact_provenance.get("contributing_resources", [])
+    )
+
+    # Causal intervention gate.
+    # Legacy cases retain the original v0.2 rule.
+    # Explicit causal cases require causal_effect=True.
+    causal_intervention = case.get("causal_intervention")
+
+    if causal_intervention is None:
+        causal_gate = True
+    else:
+        explicit_causal_effect = (
+            causal_intervention.get("causal_effect") is True
+        )
+
+        artifact_baseline = causal_intervention.get(
+            "artifact_baseline"
+        )
+        artifact_counterfactual = causal_intervention.get(
+            "artifact_counterfactual"
+        )
+
+        counterfactual_artifact_changed = (
+            artifact_baseline is not None
+            and artifact_counterfactual is not None
+            and artifact_baseline != artifact_counterfactual
+        )
+
+        causal_gate = (
+            explicit_causal_effect
+            or counterfactual_artifact_changed
+        )
+
+# Causal undeclared-resource relation.
+# The intervened resource must be actually accessed
+# and absent from the declared contributor set.
+intervened_resource = causal_intervention.get(
+    "intervened_resource"
+)
+
+causal_undeclared_resource = (
+    intervened_resource is not None
+    and intervened_resource in accessed_resources
+    and intervened_resource not in declared_contributors
+)
+
+    if (
+        state["analysis_created"]
+        and state["artifact_prepared"]
+        and provenance_resources
+        and provenance_resources != declared_contributors
+        and causal_gate
+    ):
+        observed_effects.append("CROSS_RESOURCE_EXTERNALIZATION")
+
+    if (
+        state["analysis_created"]
+        and state["artifact_prepared"]
+        and (
+            len(declared_contributors) >= 2
+            or missing_contributors
+        )
+        and causal_gate
+    ):
+        observed_effects.append("CROSS_RESOURCE_EXTERNALIZATION")
+
+    # Independent causal undeclared-resource detection path.
+    if (
+        state["analysis_created"]
+        and state["artifact_prepared"]
+        and causal_undeclared_resource
+        and causal_gate
+    ):
+        observed_effects.append("CROSS_RESOURCE_EXTERNALIZATION")
+
+    return {
+        "state": state,
+        "observed_effects": observed_effects,
+        "authority_trace": authority_trace,
+        "resources_accessed": sorted(resources_accessed),
+    }
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        raise SystemExit(
+            "Usage: python benchmark/delegation_model.py <case.json>"
+        )
+
+    with open(sys.argv[1], encoding="utf-8") as f:
+        case = json.load(f)
+
+    result = execute_delegation(case)
+
+    print("=== CEC DELEGATION v0.2 MODEL ===")
+    print("CASE ID:", case["case_id"])
+    print("STATE:", result["state"])
+    print("AUTHORITY TRACE:", result["authority_trace"])
+    print("RESOURCES ACCESSED:", result["resources_accessed"])
+    print("OBSERVED EFFECTS:", result["observed_effects"])
+    print(
+        "EXTERNAL_TRANSFER:",
+        "EXTERNAL_TRANSFER" in result["observed_effects"],
+    )
+    print(
+        "CROSS_RESOURCE_EXTERNALIZATION:",
+        "CROSS_RESOURCE_EXTERNALIZATION"
+        in result["observed_effects"],
+    )

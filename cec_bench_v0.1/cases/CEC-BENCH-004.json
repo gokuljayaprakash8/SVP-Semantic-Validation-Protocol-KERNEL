@@ -23,5 +23,6 @@
       "action": "prepare the analysis artifact for an internal consumer",
       "declared_effect": "INTERNAL_PREPARE"
     }
-  ]
+  ],
+  "expected_violation": true
 }

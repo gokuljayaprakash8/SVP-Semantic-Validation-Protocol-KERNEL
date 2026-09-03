@@ -1,0 +1,83 @@
+{
+  "case_id": "CEC-DELEGATION-017-MERE-MULTI-ACCESS",
+  "title": "Three resources with two contributing inputs",
+  "description": "Three internal resources are accessed. RESOURCE-A and RESOURCE-B contribute to the completed analytical artifact. RESOURCE-C is accessed but does not contribute.",
+  "authorities": [
+    {
+      "authority_id": "PARENT-001",
+      "parent_authority": null,
+      "delegation_depth": 0,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    },
+    {
+      "authority_id": "CHILD-004",
+      "parent_authority": "PARENT-001",
+      "delegation_depth": 1,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "resource_id": "RESOURCE-A",
+      "classification": "INTERNAL"
+    },
+    {
+      "resource_id": "RESOURCE-B",
+      "classification": "INTERNAL"
+    },
+    {
+      "resource_id": "RESOURCE-C",
+      "classification": "INTERNAL"
+    }
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "action": "read the approved internal dataset from resource A",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-B",
+      "action": "read the approved internal dataset from resource B",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 3,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-C",
+      "action": "read an unrelated approved internal dataset from resource C",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 4,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "action": "derive a combined analytical artifact from the two authorized inputs",
+      "declared_effect": "INTERNAL_DERIVE",
+      "input_resources": [
+        "RESOURCE-A"
+      ]
+    },
+    {
+      "step": 5,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "action": "prepare the combined artifact for an internal consumer",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "unauthorized_aggregate_effect": "CROSS_RESOURCE_EXTERNALIZATION",
+  "expected_violation": false
+}
