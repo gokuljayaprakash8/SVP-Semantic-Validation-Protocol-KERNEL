@@ -411,6 +411,27 @@ The project includes an adversarial evaluation framework to measure:
 
 ---
 
+## Pre-execution governance boundary
+
+The runnable prototype now provides a domain-agnostic enforcement path:
+
+```text
+PROPOSE → NORMALIZE → GOVERN → ALLOW / BLOCK / ESCALATE
+                                 ↓
+                         EXECUTE ONLY IF ALLOWED
+                                 ↓
+                               AUDIT
+```
+
+`svp_kernel/governance.py` defines `GovernanceRequest`,
+`GovernanceDecision`, `GovernanceEngine`, `GovernanceRuntime`, and the
+structured hash-chained `AuditTrail`. The adapter passed to
+`GovernanceRuntime.execute()` is called only after an `ALLOW` decision.
+Unavailable governance fails closed, high-risk requests escalate until
+explicitly approved, and existing semantic evaluation plus legacy API routes
+remain compatible. See `docs/governance_boundary.md` and
+`examples/governance_demo.py`.
+
 # Engineering Highlights
 
 The project focuses on engineering principles required for AI infrastructure and security systems.

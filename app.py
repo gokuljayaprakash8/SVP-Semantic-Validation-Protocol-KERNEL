@@ -1,12 +1,20 @@
 import threading
+from typing import Any
+
 import numpy as np
 import yaml
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from svp_kernel.audit.audit_logger import AuditLogger
+from svp_kernel.governance import (
+    AuditTrail,
+    GovernanceEngine,
+    GovernanceRequest,
+    GovernanceRuntime,
+)
 from validator import load_policy_file
 from svp_v06_runtime_gate import create_bound_decision, verify_bound_decision, consume_authorization
 
@@ -135,12 +143,33 @@ def svp_kernel(action_text: str) -> dict:
     }
 
 
+governance_engine = GovernanceEngine(
+    evaluator=lambda request: svp_kernel(request.action),
+    policy_version="1.0.0",
+)
+governance_audit = AuditTrail(legacy_logger=audit_logger)
+governance_runtime = GovernanceRuntime(governance_engine, governance_audit)
+
+
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
 
 class WorkflowRequest(BaseModel):
     steps: list[str]
+
+
+class GovernanceRequestPayload(BaseModel):
+    principal: str = Field(..., min_length=1)
+    agent: str = Field(..., min_length=1)
+    delegation: dict[str, Any] = Field(default_factory=dict)
+    intent: str = Field(..., min_length=1)
+    action: str = Field(..., min_length=1)
+    resource: str = Field(..., min_length=1)
+    context: dict[str, Any] = Field(default_factory=dict)
+    state: dict[str, Any] = Field(default_factory=dict)
+    request_id: str | None = Field(default=None, min_length=1)
+    trace_id: str | None = Field(default=None, min_length=1)
 
 
 @app.get("/")
@@ -151,6 +180,20 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.post("/v1/govern")
+def govern(req: GovernanceRequestPayload):
+    """Evaluate a proposal and return an audit trace without executing it."""
+
+    proposal = GovernanceRequest.from_mapping(
+        req.dict(exclude_none=True)
+    )
+    decision, trace = governance_runtime.govern(proposal)
+    return {
+        "decision": decision.to_dict(),
+        "audit": trace.to_dict(),
+    }
 
 
 @app.post("/v1/audit")
