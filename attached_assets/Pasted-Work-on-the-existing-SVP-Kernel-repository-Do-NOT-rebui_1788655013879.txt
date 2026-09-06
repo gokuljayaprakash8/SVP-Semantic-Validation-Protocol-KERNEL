@@ -1,0 +1,64 @@
+Work on the existing SVP Kernel repository. Do NOT rebuild it from scratch and do NOT delete historical research.
+
+Goal for today: turn the existing project into a coherent, runnable pre-execution governance-layer prototype.
+
+Core property to prove:
+
+A machine can propose an action, but it cannot cause the governed side effect until SVP independently evaluates the request and returns an enforceable decision.
+
+Target flow:
+
+PROPOSE
+→ NORMALIZE
+→ GOVERN
+→ ALLOW / BLOCK / ESCALATE
+→ EXECUTE ONLY IF ALLOWED
+→ AUDIT
+
+First inspect the existing repository and identify:
+1. current runtime/API entry point
+2. existing policy/risk evaluation
+3. audit/telemetry
+4. existing tests
+5. existing client/integration path
+6. what already implements the above and what is missing
+
+Preserve the historical SVP/CEC/v0.6.3/Zenodo/28-28/mutation research artifacts.
+
+Work on branch:
+work/svp-learning
+
+Do not modify main, rewrite history, expose secrets, or delete research.
+
+Implement the minimum missing pieces needed for:
+
+- GovernanceRequest: principal, agent, delegation, intent, action, resource, context, state
+- GovernanceDecision: ALLOW, BLOCK, ESCALATE + reason, rule, risk, policy version, request/trace ID
+- pre-execution enforcement boundary
+- deterministic policy/invariant decision
+- execution adapter that is called ONLY after ALLOW
+- structured audit trace
+- fail-safe behavior for high-risk/unavailable governance
+- tests proving BLOCK means the execution adapter is NOT called
+- tests for ALLOW, BLOCK, ESCALATE, malformed input, policy violation, deterministic repeatability, audit
+- preserve an extension point for future multi-step/CEC composition
+- keep the core agent/framework/domain agnostic
+
+Use the existing architecture wherever possible. Do not add dashboards or unrelated frontend features.
+
+Create one end-to-end demo:
+
+1. benign action → ALLOW → execution happens → audit
+2. prohibited action → BLOCK → execution does NOT happen → audit
+3. high-risk action → ESCALATE → execution does NOT happen until approved → audit
+
+Run existing tests first, then new tests and the demo.
+
+Update concise documentation explaining the governance boundary, request/decision model, enforcement, audit, integration and limitations.
+
+When finished:
+- report files changed
+- report tests/results
+- explain architectural decisions
+- commit on work/svp-learning
+- do NOT push/merge to main
