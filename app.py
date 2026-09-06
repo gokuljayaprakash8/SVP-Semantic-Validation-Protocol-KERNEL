@@ -233,7 +233,38 @@ def audit_v06(req: WorkflowRequest):
 V06_EXECUTED_ACTIONS = []
 
 
-def v06_execution_gate(action: str, record: dict):
+class V06ExecutionAdapter:
+    """Active v0.6 sink, reachable only through GovernanceRuntime.execute."""
+
+    def execute(self, request: GovernanceRequest):
+        V06_EXECUTED_ACTIONS.append(request.action)
+        return {"action": request.action}
+
+
+v06_execution_adapter = V06ExecutionAdapter()
+
+
+def _v06_request(action: str, payload: dict | None = None) -> GovernanceRequest:
+    payload = payload or {}
+    return GovernanceRequest.from_mapping(
+        {
+            "principal": payload.get("principal", "legacy-v06-caller"),
+            "agent": payload.get("agent", "legacy-v06-agent"),
+            "delegation": payload.get("delegation", {}),
+            "intent": payload.get("intent", action),
+            "action": action,
+            "resource": payload.get("resource", "legacy://v06-test"),
+            "context": payload.get("context", {}),
+            "state": payload.get("state", {}),
+        }
+    )
+
+
+def v06_execution_gate(
+    action: str,
+    record: dict,
+    payload: dict | None = None,
+):
     if record is None:
         return False, "NO DECISION"
 
@@ -243,11 +274,17 @@ def v06_execution_gate(action: str, record: dict):
         return False, reason
 
     consumed, consume_reason = consume_authorization(record)
-
     if not consumed:
         return False, consume_reason
 
-    V06_EXECUTED_ACTIONS.append(action)
+    try:
+        request = _v06_request(action, payload)
+    except (TypeError, ValueError) as exc:
+        return False, f"MALFORMED REQUEST: {type(exc).__name__}"
+
+    result = governance_runtime.execute(request, v06_execution_adapter)
+    if not result.executed:
+        return False, result.decision.reason
 
     return True, "EXECUTION AUTHORIZED"
 
@@ -257,7 +294,7 @@ def execute_v06_test(payload: dict):
     action = payload.get("action")
     record = payload.get("record")
 
-    allowed, reason = v06_execution_gate(action, record)
+    allowed, reason = v06_execution_gate(action, record, payload)
 
     if not allowed:
         return {

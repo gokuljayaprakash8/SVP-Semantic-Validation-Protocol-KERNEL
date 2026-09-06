@@ -39,50 +39,186 @@ class _BlockingClient:
 
 
 class GovernanceBypassFindingsTests(unittest.TestCase):
-    def test_legacy_execution_endpoint_bypasses_current_block(self):
-        """Document the active v06 endpoint's separate PASS authorization path."""
+    def setUp(self):
+        self.original_replay_db = legacy_gate.REPLAY_DB
+        self.original_executed = list(app_module.V06_EXECUTED_ACTIONS)
+        self.original_audit = app_module.governance_runtime.audit
+        app_module.governance_runtime.audit = AuditTrail()
+
+    def tearDown(self):
+        legacy_gate.REPLAY_DB = self.original_replay_db
+        app_module.V06_EXECUTED_ACTIONS[:] = self.original_executed
+        app_module.governance_runtime.audit = self.original_audit
+
+    def _legacy_pass_record(self, action):
+        return create_bound_decision(
+            action,
+            {
+                "decision": "PASS",
+                "rule_id": "LEGACY-PASS",
+                "threshold": 0.0,
+            },
+        )
+
+    def _isolated_replay_db(self):
+        temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(temp_dir.cleanup)
+        legacy_gate.REPLAY_DB = str(
+            Path(temp_dir.name) / "bypass-regression.sqlite3"
+        )
+
+    def test_current_semantic_block_prevents_legacy_endpoint_execution(self):
+        """The active endpoint must use a fresh current governance decision."""
 
         action = "delete production data"
-        original_replay_db = legacy_gate.REPLAY_DB
-        original_executed = list(app_module.V06_EXECUTED_ACTIONS)
+        current_policy_result = app_module.svp_kernel(action)
+        self.assertEqual(current_policy_result["decision"], BLOCK)
+        self.assertEqual(current_policy_result["rule_id"], "DB001")
+        self._isolated_replay_db()
 
-        try:
-            current_policy_result = app_module.svp_kernel(action)
-            self.assertEqual(current_policy_result["decision"], BLOCK)
-            self.assertEqual(current_policy_result["rule_id"], "DB001")
+        with patch.object(
+            app_module.governance_runtime.engine,
+            "evaluate",
+            wraps=app_module.governance_runtime.engine.evaluate,
+        ) as evaluate:
+            response = app_module.execute_v06_test(
+                {
+                    "action": action,
+                    "record": self._legacy_pass_record(action),
+                }
+            )
 
-            with tempfile.TemporaryDirectory() as temp_dir:
-                legacy_gate.REPLAY_DB = str(
-                    Path(temp_dir) / "bypass-regression.sqlite3"
-                )
+        self.assertEqual(evaluate.call_count, 1)
+        self.assertFalse(response["executed"])
+        self.assertEqual(response["reason"], "POLICY_VIOLATION")
+        self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [])
 
-                legacy_pass_record = create_bound_decision(
-                    action,
-                    {
-                        "decision": "PASS",
-                        "rule_id": "LEGACY-PASS",
-                        "threshold": 0.0,
-                    },
-                )
+    def test_legacy_pass_cannot_override_current_block(self):
+        """A legacy PASS is evidence, not permission to execute."""
 
-                fail_if_governance_is_called = patch.object(
-                    app_module.governance_runtime.engine,
-                    "evaluate",
-                    side_effect=AssertionError(
-                        "legacy execution path unexpectedly invoked GovernanceRuntime"
-                    ),
-                )
-                with fail_if_governance_is_called:
-                    response = app_module.execute_v06_test(
-                        {"action": action, "record": legacy_pass_record}
-                    )
+        action = "delete production data"
+        self._isolated_replay_db()
+        with patch.object(
+            app_module,
+            "svp_kernel",
+            return_value={
+                "action": action,
+                "decision": BLOCK,
+                "rule_id": "DB001",
+                "severity": "CRITICAL",
+                "score": 1.0,
+            },
+        ):
+            response = app_module.execute_v06_test(
+                {
+                    "action": action,
+                    "record": self._legacy_pass_record(action),
+                }
+            )
 
-            self.assertTrue(response["executed"])
-            self.assertEqual(response["reason"], "EXECUTION AUTHORIZED")
-            self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [action])
-        finally:
-            legacy_gate.REPLAY_DB = original_replay_db
-            app_module.V06_EXECUTED_ACTIONS[:] = original_executed
+        self.assertFalse(response["executed"])
+        self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [])
+
+    def test_unapproved_escalate_cannot_reach_active_sink(self):
+        action = "rotate production signing keys"
+        self._isolated_replay_db()
+        with patch.object(
+            app_module,
+            "svp_kernel",
+            return_value={
+                "action": action,
+                "decision": "PASS",
+                "rule_id": "KEYS001",
+                "severity": "HIGH",
+                "score": 0.95,
+            },
+        ):
+            response = app_module.execute_v06_test(
+                {
+                    "action": action,
+                    "record": self._legacy_pass_record(action),
+                }
+            )
+
+        self.assertFalse(response["executed"])
+        self.assertEqual(response["reason"], "HIGH_RISK_REQUIRES_APPROVAL")
+        self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [])
+
+    def test_allow_reaches_active_sink_exactly_once(self):
+        action = "read synthetic record"
+        self._isolated_replay_db()
+        with patch.object(
+            app_module,
+            "svp_kernel",
+            return_value={
+                "action": action,
+                "decision": "PASS",
+                "rule_id": "SAFE001",
+                "severity": "LOW",
+                "score": 0.10,
+            },
+        ):
+            response = app_module.execute_v06_test(
+                {
+                    "action": action,
+                    "record": self._legacy_pass_record(action),
+                }
+            )
+
+        self.assertTrue(response["executed"])
+        self.assertEqual(response["reason"], "EXECUTION AUTHORIZED")
+        self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [action])
+
+    def test_direct_legacy_gate_call_cannot_reach_sink_after_block(self):
+        action = "delete production data"
+        self._isolated_replay_db()
+        with patch.object(
+            app_module,
+            "svp_kernel",
+            return_value={
+                "action": action,
+                "decision": BLOCK,
+                "rule_id": "DB001",
+                "severity": "CRITICAL",
+                "score": 1.0,
+            },
+        ):
+            allowed, reason = app_module.v06_execution_gate(
+                action,
+                self._legacy_pass_record(action),
+            )
+
+        self.assertFalse(allowed)
+        self.assertEqual(reason, "POLICY_VIOLATION")
+        self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [])
+
+    def test_active_dispatcher_blocks_v06_adapter_on_block(self):
+        action = "delete production data"
+        request = GovernanceRequest(
+            principal="agent-controlled",
+            agent="untrusted-agent",
+            delegation={},
+            intent="prohibited operation",
+            action=action,
+            resource="db://production",
+        )
+        runtime = GovernanceRuntime(
+            GovernanceEngine(
+                lambda _: {
+                    "decision": BLOCK,
+                    "rule_id": "DB001",
+                    "severity": "CRITICAL",
+                    "score": 1.0,
+                }
+            ),
+            AuditTrail(),
+        )
+
+        result = runtime.execute(request, app_module.v06_execution_adapter)
+
+        self.assertEqual(result.decision.outcome, BLOCK)
+        self.assertFalse(result.executed)
+        self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [])
 
     def test_direct_adapter_remains_callable_after_governance_block(self):
         """Document that the adapter is supplied, not owned, by the runtime."""
