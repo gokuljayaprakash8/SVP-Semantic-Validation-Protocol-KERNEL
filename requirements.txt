@@ -1,14 +1,14 @@
-fastapi
-uvicorn
-scikit-learn
-numpy
-fastembed
-PyYAML
-fastapi
-fastembed
-numpy
-pydantic
-PyYAML
-scikit-learn
-uvicorn
-gunicorn
+# Direct application and deployment dependencies.
+# The fully resolved production set is pinned in requirements.lock.
+fastapi==0.141.1
+uvicorn==0.52.1
+gunicorn==26.0.0
+fastembed==0.8.0
+onnxruntime==1.28.0
+huggingface-hub==1.26.0
+numpy==2.5.1
+scikit-learn==1.9.0
+PyYAML==6.0.3
+pydantic==2.13.4
+requests==2.34.2
+httpx==0.28.1

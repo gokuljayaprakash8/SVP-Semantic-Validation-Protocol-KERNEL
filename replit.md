@@ -4,9 +4,9 @@ A runtime governance kernel for AI agents. It evaluates agent actions against se
 
 ## Stack
 
-- **Language:** Python 3.12
+- **Language:** Python 3.12.12
 - **Framework:** FastAPI + Uvicorn
-- **Embeddings:** fastembed (`BAAI/bge-small-en-v1.5`, ~67MB, downloaded on first run)
+- **Embeddings:** FastEmbed 0.8.0 (`BAAI/bge-small-en-v1.5`, ~67MB)
 - **Similarity:** scikit-learn cosine similarity
 - **Policy config:** YAML (`policies/default.yaml`)
 
@@ -18,14 +18,22 @@ The workflow `Start application` runs:
 uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-**Note:** First startup downloads the embedding model (~67MB) and takes ~15–20 seconds.
+The model is initialized on the first readiness or governance request. The
+application downloads the pinned Qdrant ONNX snapshot revision
+`52398278842ec682c6f32300af41344b1c0b0bb2` into `SVP_MODEL_CACHE_DIR`
+(default `/tmp/svp-fastembed`) and passes that local snapshot to FastEmbed.
+There is no semantic fallback if the model cannot load.
 
 ## API Endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
 | `GET` | `/health` | Health check — returns `{"status": "ok"}` |
+| `GET` | `/ready` | Readiness check — verifies policy and model inference |
+| `POST` | `/v1/govern` | Evaluate a structured proposal without execution |
 | `POST` | `/v1/audit` | Evaluate a list of agent action steps |
+| `POST` | `/v1/audit/v06` | Produce legacy v0.6 bound decision evidence |
+| `POST` | `/v1/execute/v06-test` | Synthetic compatibility path through current governance |
 | `GET` | `/v1/audit/verify` | Verify audit log chain integrity |
 
 ### Example: evaluate actions
