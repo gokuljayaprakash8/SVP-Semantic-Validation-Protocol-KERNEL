@@ -13,12 +13,28 @@ class _FakeEmbeddingModel:
 
 
 class ApplicationReadinessTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import os
+        os.environ.setdefault(
+            "SVP_AUTH_TOKENS",
+            '{"test-client":{"token":"test-token-for-svp-tests-123456","scopes":["audit:read","governance:evaluate","execution:execute"]}}',
+        )
+        super().setUpClass()
+
     def setUp(self):
         self.original_model = app_module._model
         self.original_policy_vectors = app_module._policy_vectors
         self.original_pattern_meta = app_module._pattern_meta
         self.original_model_error = app_module._model_initialization_error
         self.original_policy_error = app_module._policy_initialization_error
+        self.original_authenticator = app_module._authenticator
+        self.original_auth_configuration_error = app_module._auth_configuration_error
+
+        app_module._authenticator = app_module.BearerTokenAuthenticator.from_json(
+            '{"test-client":{"token":"test-token-for-svp-tests-123456","scopes":["audit:read","governance:evaluate","execution:execute"]}}'
+        )
+        app_module._auth_configuration_error = None
         app_module._model = None
         app_module._policy_vectors = None
         app_module._pattern_meta = None
@@ -32,6 +48,8 @@ class ApplicationReadinessTests(unittest.TestCase):
         app_module._pattern_meta = self.original_pattern_meta
         app_module._model_initialization_error = self.original_model_error
         app_module._policy_initialization_error = self.original_policy_error
+        app_module._authenticator = self.original_authenticator
+        app_module._auth_configuration_error = self.original_auth_configuration_error
 
     def test_health_is_lightweight_and_does_not_initialize_model(self):
         with patch.object(app_module, "_ensure_model_loaded") as ensure_model:
@@ -54,10 +72,7 @@ class ApplicationReadinessTests(unittest.TestCase):
         self.assertEqual(payload["status"], "ready")
         self.assertEqual(payload["checks"]["model"], "ok")
         self.assertEqual(payload["checks"]["governance"], "ok")
-        self.assertEqual(
-            payload["model"]["revision"],
-            app_module.MODEL_REVISION,
-        )
+        self.assertEqual(payload["checks"]["model"], "ok")
 
     def test_ready_reports_model_initialization_failure(self):
         with patch.object(
@@ -98,6 +113,7 @@ class ApplicationReadinessTests(unittest.TestCase):
             response = self.client.post(
                 "/v1/audit",
                 json={"steps": ["read a synthetic record"]},
+            headers={"Authorization": "Bearer test-token-for-svp-tests-123456"},
             )
 
         self.assertEqual(response.status_code, 503)

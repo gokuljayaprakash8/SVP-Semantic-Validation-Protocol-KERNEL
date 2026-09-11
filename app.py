@@ -8,8 +8,9 @@ from typing import Any
 import numpy as np
 import yaml
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
 
 from svp_kernel.audit.audit_logger import AuditLogger
@@ -19,6 +20,14 @@ from svp_kernel.governance import (
     GovernanceRequest,
     GovernanceRuntime,
 )
+from svp_kernel.auth import (
+    AUDIT_SCOPE,
+    EXECUTION_SCOPE,
+    GOVERNANCE_SCOPE,
+    AuthConfigurationError,
+    AuthenticatedPrincipal,
+    BearerTokenAuthenticator,
+)
 from validator import load_policy_file
 from svp_v06_runtime_gate import create_bound_decision, verify_bound_decision, consume_authorization
 
@@ -26,12 +35,118 @@ from svp_v06_runtime_gate import create_bound_decision, verify_bound_decision, c
 logger = logging.getLogger("svp.app")
 
 app = FastAPI()
+
+# ---------------------------------------------------------------------------
+# API authentication and CORS configuration.
+# ---------------------------------------------------------------------------
+AUTH_TOKENS_ENV = "SVP_AUTH_TOKENS"
+CORS_ORIGINS_ENV = "SVP_CORS_ORIGINS"
+
+try:
+    _authenticator = BearerTokenAuthenticator.from_json(
+        os.getenv(AUTH_TOKENS_ENV)
+    )
+    _auth_configuration_error: Exception | None = None
+except AuthConfigurationError as exc:
+    _authenticator = None
+    _auth_configuration_error = exc
+    logger.error(
+        "API authentication is unavailable: %s",
+        exc,
+    )
+
+
+def _load_cors_origins(raw_config: str | None) -> list[str]:
+    if not raw_config or not raw_config.strip():
+        return []
+
+    origins = [origin.strip() for origin in raw_config.split(",") if origin.strip()]
+    if not origins or "*" in origins:
+        raise ValueError(
+            f"{CORS_ORIGINS_ENV} must contain explicit origins and cannot include '*'"
+        )
+    if any(origin == "*" or "://" not in origin for origin in origins):
+        raise ValueError(
+            f"{CORS_ORIGINS_ENV} must contain explicit absolute origins"
+        )
+    return origins
+
+
+try:
+    CORS_ORIGINS = _load_cors_origins(os.getenv(CORS_ORIGINS_ENV))
+    _cors_configuration_error: Exception | None = None
+except ValueError as exc:
+    CORS_ORIGINS = []
+    _cors_configuration_error = exc
+    logger.error("CORS is disabled due to invalid configuration: %s", exc)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+_bearer_scheme = HTTPBearer(auto_error=False)
+
+
+def _authentication_error(
+    status_code: int,
+    error: str,
+    *,
+    required_scope: str | None = None,
+) -> HTTPException:
+    detail: dict[str, str] = {
+        "status": "unauthorized" if status_code == 401 else "forbidden",
+        "error": error,
+    }
+    if required_scope is not None:
+        detail["required_scope"] = required_scope
+    headers = {"WWW-Authenticate": "Bearer"} if status_code == 401 else None
+    return HTTPException(
+        status_code=status_code,
+        detail=detail,
+        headers=headers,
+    )
+
+
+def authenticate_request(
+    credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
+) -> AuthenticatedPrincipal:
+    """Authenticate a bearer token without granting any permissions."""
+    if _auth_configuration_error is not None or _authenticator is None:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "status": "unavailable",
+                "error": "AUTH_CONFIGURATION_UNAVAILABLE",
+            },
+        )
+    if credentials is None:
+        raise _authentication_error(401, "AUTHENTICATION_REQUIRED")
+
+    principal = _authenticator.authenticate(credentials.credentials)
+    if principal is None:
+        raise _authentication_error(401, "INVALID_CREDENTIALS")
+    return principal
+
+
+def require_scope(scope: str):
+    """Build an authorization dependency for one explicit API scope."""
+
+    def dependency(
+        principal: AuthenticatedPrincipal = Depends(authenticate_request),
+    ) -> AuthenticatedPrincipal:
+        if scope not in principal.scopes:
+            raise _authentication_error(403, "INSUFFICIENT_SCOPE", required_scope=scope)
+        return principal
+
+    return dependency
+
+
+require_governance = require_scope(GOVERNANCE_SCOPE)
+require_audit = require_scope(AUDIT_SCOPE)
+require_execution = require_scope(EXECUTION_SCOPE)
 
 # ---------------------------------------------------------------------------
 # Runtime configuration and policy initialization.
@@ -327,7 +442,9 @@ class GovernanceRequestPayload(BaseModel):
 
 
 @app.get("/")
-def root():
+def root(
+    _principal: AuthenticatedPrincipal = Depends(require_audit),
+):
     return {"status": "ok", "service": "SVP Kernel"}
 
 
@@ -359,16 +476,14 @@ def ready():
             "model": "ok",
             "governance": "ok",
         },
-        "model": {
-            "name": MODEL_NAME,
-            "repository": MODEL_REPOSITORY,
-            "revision": MODEL_REVISION,
-        },
     }
 
 
 @app.post("/v1/govern")
-def govern(req: GovernanceRequestPayload):
+def govern(
+    req: GovernanceRequestPayload,
+    _principal: AuthenticatedPrincipal = Depends(require_governance),
+):
     """Evaluate a proposal and return an audit trace without executing it."""
 
     proposal = GovernanceRequest.from_mapping(
@@ -382,7 +497,10 @@ def govern(req: GovernanceRequestPayload):
 
 
 @app.post("/v1/audit")
-def audit(req: WorkflowRequest):
+def audit(
+    req: WorkflowRequest,
+    _principal: AuthenticatedPrincipal = Depends(require_audit),
+):
     results = []
     for step in req.steps:
         try:
@@ -411,7 +529,10 @@ def audit(req: WorkflowRequest):
 
 
 @app.post("/v1/audit/v06")
-def audit_v06(req: WorkflowRequest):
+def audit_v06(
+    req: WorkflowRequest,
+    _principal: AuthenticatedPrincipal = Depends(require_audit),
+):
     results = []
     for step in req.steps:
         try:
@@ -499,7 +620,10 @@ def v06_execution_gate(
 
 
 @app.post("/v1/execute/v06-test")
-def execute_v06_test(payload: dict):
+def execute_v06_test(
+    payload: dict,
+    _principal: AuthenticatedPrincipal = Depends(require_execution),
+):
     action = payload.get("action")
     record = payload.get("record")
 
@@ -519,5 +643,7 @@ def execute_v06_test(payload: dict):
 
 
 @app.get("/v1/audit/verify")
-def verify_audit():
+def verify_audit(
+    _principal: AuthenticatedPrincipal = Depends(require_audit),
+):
     return {"valid": audit_logger.verify_chain()}
