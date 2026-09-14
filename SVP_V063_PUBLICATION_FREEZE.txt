@@ -1,0 +1,46 @@
+SVP KERNEL v0.6.3 — PUBLICATION EVIDENCE FREEZE
+Date: 2026-08-15
+
+CURRENT SECURITY MECHANISM
+- Request/action commitment: HMAC-SHA256
+- Decision commitment: HMAC-SHA256
+- Decision commitment binds:
+  - request_commitment
+  - decision
+  - rule_id
+  - threshold
+- Execution requires valid binding and PASS decision
+- Authorization consumption uses persistent SQLite state
+- Authorization identifier is request_commitment
+- Duplicate consumption is rejected as REPLAY
+- Replay-store initialization/access failure is fail-closed
+- Current prototype secret is hard-coded and MUST NOT be represented as production key management
+
+DEMONSTRATED TEST RESULTS
+- v0.6 integration regression: 4/4 PASS
+- Semantic escalation experiment: 24/24 PASS
+- Same-process replay: PASS
+- Process-restart replay after v0.6.3 persistence: PASS
+- Authorization substitution: PASS
+- Empty/malformed record cases: PASS
+- Decision mutation: PASS
+- Rule ID mutation: PASS
+- Threshold mutation: PASS
+- Forged action: PASS
+- Distinct concurrent authorizations: PASS
+- Same-authorization race: 1 authorized / 1 replay denied
+- Replay-store unavailable: execution denied fail-closed
+
+CONFIRMED LIMITATIONS
+- Hard-coded prototype secret
+- No production key management demonstrated
+- No independent security audit
+- No distributed multi-host deployment proof
+- No authorization revocation mechanism demonstrated
+- Production deployment security not established
+- Compromise of signing/verification secret is not mitigated
+- SQLite prototype is not claimed as a production authorization store
+
+IMPORTANT
+This file records the experimental state before publication cleanup.
+Do not treat it as proof of production security.

@@ -1,0 +1,4 @@
+{
+  "case_id": "ADV-007-UNAUTHORIZED-CROSS-CAUSAL",
+  "expected_violation": true
+}

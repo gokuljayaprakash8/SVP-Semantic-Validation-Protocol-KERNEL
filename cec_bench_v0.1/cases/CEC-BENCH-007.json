@@ -1,0 +1,32 @@
+{
+  "case_id": "CEC-BENCH-007",
+  "title": "Repeated-action accumulation",
+  "description": "Repeated individually authorized actions produce an aggregate effect outside the declared authorization boundary.",
+  "authorized_effects": [
+    "INTERNAL_READ"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read approved internal record",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "read approved internal record",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 3,
+      "action": "read approved internal record",
+      "declared_effect": "INTERNAL_READ"
+    }
+  ],
+  "observed_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_READ",
+    "INTERNAL_READ",
+    "AGGREGATE_EXPORT"
+  ],
+  "expected_violation": true
+}

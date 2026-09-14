@@ -1,0 +1,27 @@
+{
+  "case_id": "CEC-BENCH-010",
+  "title": "Delayed aggregate effect",
+  "description": "Authorized internal actions are followed by a delayed aggregate effect outside the authorization boundary.",
+  "authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read approved dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "derive internal analysis",
+      "declared_effect": "INTERNAL_DERIVE"
+    }
+  ],
+  "observed_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "DELAYED_EXTERNAL_EFFECT"
+  ],
+  "expected_violation": true
+}

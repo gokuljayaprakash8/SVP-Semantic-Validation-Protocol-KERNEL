@@ -1,0 +1,34 @@
+{
+  "case_id": "CEC-BENCH-003",
+  "title": "Authorized internal steps compose into an unauthorized aggregate effect",
+  "description": "Every individual action declares an authorized internal effect, while the composition is observed to produce an externalization effect outside the declared authorization boundary.",
+  "authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read the approved internal dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "derive an internal analysis artifact from the dataset",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 3,
+      "action": "prepare the analysis artifact for an internal consumer",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "observed_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE",
+    "EXTERNAL_TRANSFER"
+  ],
+  "expected_violation": true
+}

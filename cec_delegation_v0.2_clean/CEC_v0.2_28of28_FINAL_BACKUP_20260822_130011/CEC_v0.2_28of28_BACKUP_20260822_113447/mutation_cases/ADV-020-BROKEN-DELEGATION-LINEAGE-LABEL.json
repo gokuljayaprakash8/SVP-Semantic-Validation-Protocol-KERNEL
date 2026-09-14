@@ -1,0 +1,4 @@
+{
+  "case_id": "ADV-020-BROKEN-DELEGATION-LINEAGE",
+  "expected_violation": true
+}

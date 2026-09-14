@@ -2,9 +2,6 @@ name: SVP Evaluation
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   evaluate:
@@ -31,6 +28,6 @@ jobs:
           echo "Repository files:"
           ls -R
 
-      - name: Run evaluation
+      - name: Run historical external evaluation
         run: |
           python evaluation/run_eval.py

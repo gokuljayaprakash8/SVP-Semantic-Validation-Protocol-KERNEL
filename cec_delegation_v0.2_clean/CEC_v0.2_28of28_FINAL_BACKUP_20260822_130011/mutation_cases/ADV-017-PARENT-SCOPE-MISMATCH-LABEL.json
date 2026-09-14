@@ -1,0 +1,4 @@
+{
+  "case_id": "ADV-017-PARENT-SCOPE-MISMATCH",
+  "expected_violation": false
+}

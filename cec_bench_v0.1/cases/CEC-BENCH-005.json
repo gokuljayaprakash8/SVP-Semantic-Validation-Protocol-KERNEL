@@ -1,0 +1,28 @@
+{
+  "case_id": "CEC-BENCH-005",
+  "title": "Order Variation Composition",
+  "description": "Tests whether the aggregate unauthorized effect is produced when the same authorized prerequisites occur in a different order.",
+  "authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "prepare the analysis artifact for an internal consumer",
+      "declared_effect": "INTERNAL_PREPARE"
+    },
+    {
+      "step": 2,
+      "action": "read the approved internal dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 3,
+      "action": "derive an internal analysis artifact from the dataset",
+      "declared_effect": "INTERNAL_DERIVE"
+    }
+  ],
+  "expected_violation": false
+}

@@ -1,0 +1,28 @@
+{
+  "case_id": "CEC-BENCH-004",
+  "title": "Execution-derived aggregate effect",
+  "description": "All individual actions are authorized, while the deterministic composition model derives an aggregate effect outside the authorization boundary.",
+  "authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "action": "read the approved internal dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "action": "derive an internal analysis artifact from the dataset",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 3,
+      "action": "prepare the analysis artifact for an internal consumer",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "expected_violation": true
+}

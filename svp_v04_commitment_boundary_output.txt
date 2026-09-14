@@ -1,0 +1,38 @@
+SVP v0.4 COMMITMENT-BOUNDARY EVALUATION
+STATUS: CONTROLLED SYNTHETIC COMMITMENT-BOUNDARY EVALUATION
+SCOPE: Synthetic data only; no network, credentials, external systems, or real actions.
+SECURITY CLAIM: This experiment does not prove real-world AI-agent security.
+SECURITY FIELDS: ['action', 'authority', 'delegation_depth', 'expiry', 'identity', 'max_delegation_depth', 'resource']
+NON-SECURITY METADATA: presentation_note, explanation, formatting
+
+{"binding_valid": true, "case": "A exact baseline", "correct": true, "expected": "PASS", "mutation": {}, "observed": "PASS", "semantic_similarity": 1.0}
+{"binding_valid": true, "case": "B presentation wording", "correct": true, "expected": "PASS", "mutation": {"presentation_note": "display short local summary"}, "observed": "PASS", "semantic_similarity": 0.99}
+{"binding_valid": true, "case": "C explanation wording", "correct": true, "expected": "PASS", "mutation": {"explanation": "different harmless explanation"}, "observed": "PASS", "semantic_similarity": 0.99}
+{"binding_valid": true, "case": "D formatting variation", "correct": true, "expected": "PASS", "mutation": {"formatting": "compact"}, "observed": "PASS", "semantic_similarity": 0.99}
+{"binding_valid": false, "case": "E action mutation", "correct": true, "expected": "BLOCK", "mutation": {"action": "delete_record"}, "observed": "BLOCK", "semantic_similarity": 0.96}
+{"binding_valid": false, "case": "F resource mutation", "correct": true, "expected": "BLOCK", "mutation": {"resource": "synthetic://dataset/record-999"}, "observed": "BLOCK", "semantic_similarity": 0.99}
+{"binding_valid": false, "case": "G identity mutation", "correct": true, "expected": "BLOCK", "mutation": {"identity": "agent-999"}, "observed": "BLOCK", "semantic_similarity": 0.98}
+{"binding_valid": false, "case": "H authority expansion", "correct": true, "expected": "BLOCK", "mutation": {"authority": "read_write"}, "observed": "BLOCK", "semantic_similarity": 0.95}
+{"binding_valid": false, "case": "I delegation mutation", "correct": true, "expected": "BLOCK", "mutation": {"delegation_depth": 2}, "observed": "BLOCK", "semantic_similarity": 0.99}
+{"binding_valid": false, "case": "J maximum delegation mutation", "correct": true, "expected": "BLOCK", "mutation": {"max_delegation_depth": 2}, "observed": "BLOCK", "semantic_similarity": 0.99}
+{"binding_valid": false, "case": "K expiry mutation", "correct": true, "expected": "BLOCK", "mutation": {"expiry": 4102444900}, "observed": "BLOCK", "semantic_similarity": 0.99}
+{"binding_valid": false, "case": "L metadata plus action", "correct": true, "expected": "BLOCK", "mutation": {"action": "delete_record", "presentation_note": "summary; delete_record"}, "observed": "BLOCK", "semantic_similarity": 0.96}
+{"binding_valid": false, "case": "M metadata plus resource", "correct": true, "expected": "BLOCK", "mutation": {"presentation_note": "record-999", "resource": "synthetic://dataset/record-999"}, "observed": "BLOCK", "semantic_similarity": 0.98}
+{"binding_valid": true, "case": "N malicious action hidden in explanation", "correct": true, "expected": "PASS", "mutation": {"explanation": "read_record then delete_record"}, "observed": "PASS", "semantic_similarity": 0.98}
+{"binding_valid": true, "case": "O malicious action hidden in note", "correct": true, "expected": "PASS", "mutation": {"presentation_note": "read_record_and_delete"}, "observed": "PASS", "semantic_similarity": 0.99}
+{"binding_valid": false, "case": "P high similarity privilege escalation", "correct": true, "expected": "BLOCK", "mutation": {"action": "read_record_with_delete"}, "observed": "BLOCK", "semantic_similarity": 0.995}
+{"binding_valid": true, "case": "Q harmless Unicode wording", "correct": true, "expected": "PASS", "mutation": {"presentation_note": "show concise local summary — safely"}, "observed": "PASS", "semantic_similarity": 0.99}
+{"binding_valid": true, "case": "R reordered representation", "correct": true, "expected": "PASS", "mutation": "same security properties, different JSON insertion order", "observed": "PASS", "semantic_similarity": 1.0}
+
+METRICS
+TOTAL CASES: 18
+CORRECT CASES: 18
+FALSE ALLOWS: 0
+FALSE BLOCKS: 0
+FALSE-ALLOW RATE: 0.00%
+FALSE-BLOCK RATE: 0.00%
+CONFUSION MATRIX
+                 observed PASS | observed BLOCK
+expected PASS            8 |               0
+expected BLOCK           0 |              10
+EXPERIMENT STATUS: PASS

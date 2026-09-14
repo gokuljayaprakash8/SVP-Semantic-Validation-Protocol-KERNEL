@@ -1,0 +1,75 @@
+{
+  "case_id": "ADV-007-AUTHORIZED-CROSS-CAUSAL",
+  "title": "Authorized cross-resource causal contribution",
+  "description": "RESOURCE-B causally contributes to an artifact targeting RESOURCE-A, but the authority explicitly delegates the aggregate externalization effect.",
+  "authorities": [
+    {
+      "authority_id": "CHILD-004",
+      "parent_authority": "PARENT-001",
+      "delegation_depth": 1,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE",
+        "CROSS_RESOURCE_EXTERNALIZATION"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "resource_id": "RESOURCE-A",
+      "classification": "INTERNAL"
+    },
+    {
+      "resource_id": "RESOURCE-B",
+      "classification": "INTERNAL"
+    }
+  ],
+  "artifact": "A+B_VERSION_1",
+  "artifact_provenance": null,
+  "causal_intervention": {
+    "intervened_resource": "RESOURCE-B",
+    "baseline": "B_VERSION_1",
+    "counterfactual": "B_VERSION_2",
+    "artifact_baseline": "A+B_VERSION_1",
+    "artifact_counterfactual": "A+B_VERSION_2",
+    "causal_effect": true
+  },
+  "unauthorized_aggregate_effect": "CROSS_RESOURCE_EXTERNALIZATION",
+  "actions": [
+    {
+      "step": 1,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-B",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 3,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "declared_effect": "INTERNAL_DERIVE",
+      "input_resources": [
+        "RESOURCE-A",
+        "RESOURCE-B"
+      ]
+    },
+    {
+      "step": 4,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "declared_effect": "INTERNAL_PREPARE"
+    },
+    {
+      "step": 5,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "declared_effect": "CROSS_RESOURCE_EXTERNALIZATION"
+    }
+  ]
+}

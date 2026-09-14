@@ -1,0 +1,66 @@
+{
+  "case_id": "CEC-DELEGATION-011",
+  "title": "Two contributing inputs without completed artifact",
+  "description": "RESOURCE-A and RESOURCE-B contribute to an analysis, but the resulting artifact is never prepared for an internal consumer.",
+  "authorities": [
+    {
+      "authority_id": "PARENT-001",
+      "parent_authority": null,
+      "delegation_depth": 0,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    },
+    {
+      "authority_id": "CHILD-004",
+      "parent_authority": "PARENT-001",
+      "delegation_depth": 1,
+      "delegated_effects": [
+        "INTERNAL_READ",
+        "INTERNAL_DERIVE",
+        "INTERNAL_PREPARE"
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "resource_id": "RESOURCE-A",
+      "classification": "INTERNAL"
+    },
+    {
+      "resource_id": "RESOURCE-B",
+      "classification": "INTERNAL"
+    }
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "action": "read the approved internal dataset from resource A",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-B",
+      "action": "read the approved internal dataset from resource B",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 3,
+      "authority_id": "CHILD-004",
+      "resource_id": "RESOURCE-A",
+      "action": "derive a combined analytical artifact from the two authorized inputs",
+      "declared_effect": "INTERNAL_DERIVE",
+      "input_resources": [
+        "RESOURCE-A",
+        "RESOURCE-B"
+      ]
+    }
+  ],
+  "unauthorized_aggregate_effect": "CROSS_RESOURCE_EXTERNALIZATION",
+  "expected_violation": false
+}

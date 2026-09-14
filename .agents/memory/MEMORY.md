@@ -1,0 +1,1 @@
+- [FastEmbed model pinning](fastembed-model-pinning.md) — pin the Qdrant ONNX snapshot externally, then pass its local path through FastEmbed.

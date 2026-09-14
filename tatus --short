@@ -1,0 +1,10 @@
+[33mcf4b471[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31mgitsafe-backup/main[m[33m)[m Add script for independent falsification of SVP version 04
+[33m68c8b74[m Implement svp v04 drift matrix calculation script
+[33m48eb32f[m Implement SVP v04 authorization boundary logic and documentation
+[33m43fc3bf[m Document SVP boundary finding and v0.3 validation
+[33mb61c41e[m Add risk-aware escalation logic module
+[33mb18d35a[m Add svp_v02_escalation_experiment.py
+[33m9f16018[m Add evaluation script for database experiment 001
+[33m15ec61c[m Add ground truth script db001
+[33m39fb1e0[m Implement svp_benign_control module
+[33mdff4c7c[m Add failure analysis script for database troubleshooting

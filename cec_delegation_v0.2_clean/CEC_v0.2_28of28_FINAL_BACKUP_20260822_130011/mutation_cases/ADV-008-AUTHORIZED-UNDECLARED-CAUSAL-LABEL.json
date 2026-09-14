@@ -1,0 +1,4 @@
+{
+  "case_id": "ADV-008-AUTHORIZED-UNDECLARED-CAUSAL",
+  "expected_violation": false
+}

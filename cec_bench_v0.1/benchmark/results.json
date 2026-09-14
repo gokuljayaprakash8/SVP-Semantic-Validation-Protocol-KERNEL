@@ -1,0 +1,154 @@
+{
+  "baseline_missed_violation_count": 11,
+  "benchmark": "CEC-BENCH",
+  "case_count": 15,
+  "contained_count": 3,
+  "results": [
+    {
+      "agreement": true,
+      "baseline_missed_violation": false,
+      "baseline_result": "VIOLATION",
+      "case_id": "CEC-BENCH-001",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": true,
+      "baseline_missed_violation": false,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-002",
+      "oracle_result": "CONTAINED",
+      "unauthorized_effects": []
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-003",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-004",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": true,
+      "baseline_missed_violation": false,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-005",
+      "oracle_result": "CONTAINED",
+      "unauthorized_effects": []
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-006",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-007",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "AGGREGATE_EXPORT"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-008",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "NESTED_EXTERNALIZATION"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-009",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "CROSS_RESOURCE_EXPORT"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-010",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "DELAYED_EXTERNAL_EFFECT"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-011",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-012",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-013",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": false,
+      "baseline_missed_violation": true,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-014",
+      "oracle_result": "VIOLATION",
+      "unauthorized_effects": [
+        "EXTERNAL_TRANSFER"
+      ]
+    },
+    {
+      "agreement": true,
+      "baseline_missed_violation": false,
+      "baseline_result": "CONTAINED",
+      "case_id": "CEC-BENCH-015",
+      "oracle_result": "CONTAINED",
+      "unauthorized_effects": []
+    }
+  ],
+  "version": "0.1",
+  "violation_count": 12
+}

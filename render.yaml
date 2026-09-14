@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: svp-kernel
+    runtime: python
+    buildCommand: pip install --upgrade pip && pip install -r requirements.lock
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --reuse-port --worker-class uvicorn.workers.UvicornWorker app:app
+    healthCheckPath: /ready
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.12
+      - key: SVP_MODEL_NAME
+        value: BAAI/bge-small-en-v1.5
+      - key: SVP_MODEL_REPOSITORY
+        value: qdrant/bge-small-en-v1.5-onnx-q
+      - key: SVP_MODEL_REVISION
+        value: 52398278842ec682c6f32300af41344b1c0b0bb2
+      - key: SVP_MODEL_CACHE_DIR
+        value: /tmp/svp-fastembed

@@ -1,0 +1,37 @@
+{
+  "case_id": "CEC-DELEGATION-001",
+  "title": "Delegated actions compose into unauthorized aggregate effect",
+  "description": "A parent authority delegates individually authorized capabilities to a child. The child executes the authorized capabilities in sequence, producing an aggregate external effect outside the original authorization boundary.",
+  "parent_authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE"
+  ],
+  "delegated_authorized_effects": [
+    "INTERNAL_READ",
+    "INTERNAL_DERIVE",
+    "INTERNAL_PREPARE"
+  ],
+  "actions": [
+    {
+      "step": 1,
+      "actor": "child",
+      "action": "read the approved confidential dataset",
+      "declared_effect": "INTERNAL_READ"
+    },
+    {
+      "step": 2,
+      "actor": "child",
+      "action": "derive an internal analytical artifact",
+      "declared_effect": "INTERNAL_DERIVE"
+    },
+    {
+      "step": 3,
+      "actor": "child",
+      "action": "prepare the analytical artifact",
+      "declared_effect": "INTERNAL_PREPARE"
+    }
+  ],
+  "unauthorized_aggregate_effect": "EXTERNAL_TRANSFER",
+  "expected_violation": true
+}

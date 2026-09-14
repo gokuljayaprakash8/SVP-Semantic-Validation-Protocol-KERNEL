@@ -4,7 +4,7 @@
 
 ### A Runtime Decision Kernel for Safer AI Agents
 
-![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Python](https://img.shields.io/badge/Python-3.12.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
 ![AI Security](https://img.shields.io/badge/AI-Security-red)
 ![Semantic Validation](https://img.shields.io/badge/Semantic-Validation-purple)
@@ -18,6 +18,30 @@ SVP Kernel is a runtime decision layer that evaluates AI agent actions before ex
 
 The goal is to explore how AI agents can be given stronger runtime governance through a combination of semantic understanding and explicit safety controls.
 
+## Production foundation
+
+The active service entrypoint is `app:app` and the supported runtime baseline
+is Python 3.12.12. Direct dependencies are pinned in `requirements.txt`; the
+fully resolved deployment set is pinned in `requirements.lock`.
+
+The active semantic model remains `BAAI/bge-small-en-v1.5`. FastEmbed receives
+an exact ONNX snapshot from
+`qdrant/bge-small-en-v1.5-onnx-q` at revision
+`52398278842ec682c6f32300af41344b1c0b0bb2`, cached under
+`SVP_MODEL_CACHE_DIR` (default `/tmp/svp-fastembed`). Model or policy
+initialization failures are reported by `/ready` and never become an
+execution allow.
+
+`GET /health` is lightweight process liveness. `GET /ready` performs the
+configured policy/model readiness probe and returns HTTP 503 until governance
+inference is available. The Replit workflow and the repository-controlled
+Render contract both run `app:app`; the Render contract uses the platform
+provided `$PORT`.
+
+Historical v0.x, CEC, publication, and benchmark artifacts are preserved for
+research reproducibility and are intentionally separate from the active
+production entrypoint and primary CI path.
+
 
 
 ---
@@ -25,6 +49,10 @@ The goal is to explore how AI agents can be given stronger runtime governance th
 ## 🚀 Live Demo
 
 Interact with the deployed SVP Kernel runtime:
+
+The links below are legacy deployment references. This production-foundation
+batch adds the repository-controlled runtime and Render contract, but does not
+publish or certify a new deployment.
 
 **Frontend Demo**
 
@@ -411,6 +439,27 @@ The project includes an adversarial evaluation framework to measure:
 
 ---
 
+## Pre-execution governance boundary
+
+The runnable prototype now provides a domain-agnostic enforcement path:
+
+```text
+PROPOSE → NORMALIZE → GOVERN → ALLOW / BLOCK / ESCALATE
+                                 ↓
+                         EXECUTE ONLY IF ALLOWED
+                                 ↓
+                               AUDIT
+```
+
+`svp_kernel/governance.py` defines `GovernanceRequest`,
+`GovernanceDecision`, `GovernanceEngine`, `GovernanceRuntime`, and the
+structured hash-chained `AuditTrail`. The adapter passed to
+`GovernanceRuntime.execute()` is called only after an `ALLOW` decision.
+Unavailable governance fails closed, high-risk requests escalate until
+explicitly approved, and existing semantic evaluation plus legacy API routes
+remain compatible. See `docs/governance_boundary.md` and
+`examples/governance_demo.py`.
+
 # Engineering Highlights
 
 The project focuses on engineering principles required for AI infrastructure and security systems.
@@ -500,7 +549,7 @@ Evaluation focuses on understanding:
 |---|---|
 | Python | Core implementation |
 | FastAPI | Runtime API framework |
-| Sentence Transformers | Semantic embedding generation |
+| FastEmbed | Semantic embedding generation |
 | ONNX Runtime | Model execution support |
 | NumPy | Vector operations |
 | YAML | Policy configuration |
