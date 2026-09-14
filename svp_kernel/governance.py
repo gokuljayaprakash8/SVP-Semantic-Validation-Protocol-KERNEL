@@ -491,9 +491,15 @@ class ExecutionResult:
 class GovernanceRuntime:
     """Pre-execution boundary: evaluate first, invoke adapter only on ALLOW."""
 
-    def __init__(self, engine: GovernanceEngine, audit: AuditTrail | None = None):
+    def __init__(
+        self,
+        engine: GovernanceEngine,
+        audit: AuditTrail | None = None,
+        execution_capability: object | None = None,
+    ):
         self.engine = engine
         self.audit = audit or AuditTrail()
+        self._execution_capability = execution_capability
 
     def govern(self, request: GovernanceRequest) -> tuple[GovernanceDecision, AuditTrace]:
         decision = self.engine.evaluate(request)
@@ -524,7 +530,14 @@ class GovernanceRuntime:
             return ExecutionResult(decision, False, False, None, trace)
 
         try:
-            output = adapter.execute(normalized)
+            governed_execute = getattr(adapter, "_execute_with_capability", None)
+            if governed_execute is not None:
+                output = governed_execute(
+                    normalized,
+                    self._execution_capability,
+                )
+            else:
+                output = adapter.execute(normalized)
         except Exception as exc:
             trace = self.audit.record(
                 normalized,

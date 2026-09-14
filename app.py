@@ -382,7 +382,12 @@ governance_engine = GovernanceEngine(
     policy_version="1.0.0",
 )
 governance_audit = AuditTrail(legacy_logger=audit_logger)
-governance_runtime = GovernanceRuntime(governance_engine, governance_audit)
+_v06_execution_capability = object()
+governance_runtime = GovernanceRuntime(
+    governance_engine,
+    governance_audit,
+    execution_capability=_v06_execution_capability,
+)
 
 
 def _structured_initialization_error(exc: RuntimeInitializationError) -> HTTPException:
@@ -564,14 +569,22 @@ V06_EXECUTED_ACTIONS = []
 
 
 class V06ExecutionAdapter:
-    """Active v0.6 sink, reachable only through GovernanceRuntime.execute."""
+    """Active v0.6 sink; direct execution is rejected."""
+
+    def __init__(self, capability):
+        self._capability = capability
 
     def execute(self, request: GovernanceRequest):
+        raise PermissionError("V06 execution requires governance capability")
+
+    def _execute_with_capability(self, request, capability):
+        if capability is not self._capability:
+            raise PermissionError("V06 execution capability invalid")
         V06_EXECUTED_ACTIONS.append(request.action)
         return {"action": request.action}
 
 
-v06_execution_adapter = V06ExecutionAdapter()
+v06_execution_adapter = V06ExecutionAdapter(_v06_execution_capability)
 
 
 def _v06_request(action: str, payload: dict | None = None) -> GovernanceRequest:

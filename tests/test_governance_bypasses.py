@@ -220,6 +220,26 @@ class GovernanceBypassFindingsTests(unittest.TestCase):
         self.assertFalse(result.executed)
         self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [])
 
+
+    def test_direct_v06_adapter_requires_governance_capability(self):
+        """Direct access to the active V06 sink cannot execute an action."""
+
+        request = GovernanceRequest.from_mapping(
+            {
+                "principal": "test-principal",
+                "agent": "test-agent",
+                "delegation": {},
+                "intent": "delete production data",
+                "action": "delete production data",
+                "resource": "production-database",
+            }
+        )
+
+        with self.assertRaises(PermissionError):
+            app_module.v06_execution_adapter.execute(request)
+
+        self.assertEqual(app_module.V06_EXECUTED_ACTIONS, [])
+
     def test_direct_adapter_remains_callable_after_governance_block(self):
         """Document that the adapter is supplied, not owned, by the runtime."""
 
