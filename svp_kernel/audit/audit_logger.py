@@ -53,16 +53,42 @@ class AuditLogger:
         return event
 
     def save_event(self, event: dict):
-        try:
-            with open(self.log_file, "r") as f:
-                logs = json.load(f)
-        except Exception:
-            logs = []
+        import fcntl
+        import os
+        import tempfile
 
-        logs.append(event)
+        lock_file = f"{self.log_file}.lock"
+        with open(lock_file, "a+") as lock:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            try:
+                try:
+                    with open(self.log_file, "r") as f:
+                        logs = json.load(f)
+                except FileNotFoundError:
+                    logs = []
 
-        with open(self.log_file, "w") as f:
-            json.dump(logs, f, indent=2)
+                previous_hash = logs[-1]["hash"] if logs else None
+                persisted_event = dict(event)
+                persisted_event["previous_hash"] = previous_hash
+                persisted_event.pop("hash", None)
+                persisted_event["hash"] = self._generate_hash(persisted_event)
+
+                directory = os.path.dirname(os.path.abspath(self.log_file))
+                fd, temp_path = tempfile.mkstemp(dir=directory, prefix=".audit_log.", suffix=".tmp")
+                try:
+                    with os.fdopen(fd, "w") as f:
+                        json.dump(logs + [persisted_event], f, indent=2)
+                        f.flush()
+                        os.fsync(f.fileno())
+                    os.replace(temp_path, self.log_file)
+                finally:
+                    if os.path.exists(temp_path):
+                        os.unlink(temp_path)
+
+                self._previous_hash = persisted_event["hash"]
+                return persisted_event
+            finally:
+                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
     def verify_chain(self):
         try:
